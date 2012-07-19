@@ -8,28 +8,28 @@ file_exists(dirname(__FILE__)."/BaseModel.php")
 interface IIM
 {
 	/**
-	* ·¢ËÍÒ»¸öÏûÏ¢
-	* ·µ»ØÒ»¸öMessage¶ÔÏó
+	* å‘é€ä¸€ä¸ªæ¶ˆæ¯
+	* è¿”å›ä¸€ä¸ªMessageå¯¹è±¡
 	*/
 	function send($arr);
 	
 	/**
-	* »ñÈ¡·ûºÏÌõ¼şµÄÏûÏ¢
+	* è·å–ç¬¦åˆæ¡ä»¶çš„æ¶ˆæ¯
 	*/
 	function receive($arr);
 	
 	/**
-	* ¸üĞÂÏûÏ¢µÄ×´Ì¬
+	* æ›´æ–°æ¶ˆæ¯çš„çŠ¶æ€
 	*/
 	function update($arr);
 	
 	/**
-	* ÍøÁÄÄ£Ê½ÖĞ·¢ËÍÒ»¸öÏûÏ¢
+	* ç½‘èŠæ¨¡å¼ä¸­å‘é€ä¸€ä¸ªæ¶ˆæ¯
 	*/
 	function webTalk($arr);
 	
 	/**
-	* ½«array»òobject×ªÎªJSON¸ñÊ½Êı¾İ
+	* å°†arrayæˆ–objectè½¬ä¸ºJSONæ ¼å¼æ•°æ®
 	*/
 	function toJSON($arr);
 }
