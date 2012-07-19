@@ -6,8 +6,8 @@ class BaseModel {
 	
 	public $printSQL = false;
 	
-	public function __construct() {
-		$this->DB = new MySql ();
+	public function __construct( $app="" ) {
+		$this->DB = new MySql ($app);
 	}
 	
 	public function __destruct() {
