@@ -10,8 +10,8 @@ class MyLogin
 	private $model ;
 	public function __construct($callback = "", $uid = null)
 	{
-		$this->mysql = new MySql();
-		$this->model = new BaseModel();
+		$this->mysql = new MySql("gelivable");
+		$this->model = new BaseModel("gelivable");
 		if (! $_SERVER ['SCRIPT_URI'])
 			$_SERVER ['SCRIPT_URI'] = "http://" . $_SERVER ['HTTP_HOST'] . $_SERVER ['REQUEST_URI'];
 		$this->callbackUrl = $_GET ['callback'] ? $_GET ['callback'] : $callback;
