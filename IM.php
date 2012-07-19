@@ -2,7 +2,7 @@
 
 if(file_exists(dirname(__FILE__)."/MyTable.php") )
 	include_once dirname(__FILE__)."/MyTable.php";
-file_exists(dirname(__FILE__)."/BaseModel.php") 
+if(file_exists(dirname(__FILE__)."/BaseModel.php") )	
 	include_once dirname(__FILE__)."/BaseModel.php";
 	
 interface IIM
@@ -127,7 +127,7 @@ class KVIM implements IIM
 	private $kv ;
 	private $model ;
 	
-	private const $KEY_MESSAGE_ID = "im_message_id";
+	private $KEY_MESSAGE_ID = "im_message_id";
 	function KVIM()
 	{
 		$this->kv = new SaeKV();
@@ -215,7 +215,7 @@ class KVIM implements IIM
 				foreach( $messages as $k => $v )
 				{
 					$messageId = $v->message_id . "";
-					if( in_array($messageId , $data['message_id'] )
+					if( in_array($messageId , $data['message_id'] ))
 					{
 						$this->kv->delete($k);
 					}
