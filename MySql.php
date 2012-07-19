@@ -33,7 +33,7 @@ class BaseMysql
 	protected $dbName  ;
 	protected $charset ;
 	protected $port ;
-	public function __construct( )
+	public function __construct()
 	{
 		$this->port = 3306;
 		$this->host = $_SERVER['HTTP_HOST'];
