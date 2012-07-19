@@ -152,7 +152,7 @@ class KVIM implements IIM
 	function getMeeageId()
 	{
 		$id = $this->kv->get($this->KEY_MESSAGE_ID);
-		if(id == false)
+		if($id == false)
 			$id = 0 ;
 		$id++;
 		$this->kv->set($this->KEY_MESSAGE_ID , $id);
