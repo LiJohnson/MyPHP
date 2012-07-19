@@ -52,7 +52,7 @@ class MySqlIM implements IIM
 	
 	function MySqlIM()
 	{
-		$this->model = new BaseModel();
+		$this->model = new BaseModel("gelivable");
 		//$this->model->printSQL = 1==1;
 	}
 	
@@ -132,7 +132,7 @@ class KVIM implements IIM
 	{
 		$this->kv = new SaeKV();
 		$this->kv->init();
-		$this->model = new BaseModel();
+		$this->model = new BaseModel("gelivable");
 	}
 	
 	private function arrayToMessage( $arr )
