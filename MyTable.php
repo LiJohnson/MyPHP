@@ -8,6 +8,7 @@ class Message{
 	var $recipient_id;
 	var $sender_name;
 	var $recipient_name;
+	var $is_read;
 }
 
 class Users
