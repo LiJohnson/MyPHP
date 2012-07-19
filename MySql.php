@@ -12,6 +12,11 @@ if( class_exists('SaeMysql') )
 				$this->setAppname($appname);
 				$this->setAuth("5k0zlkwxy1" , "2zz05ky3250h2wkhmyy1xhxyzmjzwmkl30hwwhlk");
 			}
+                        elseif( $appname == 'gelivable' )
+                        {
+				$this->setAppname($appname);
+				$this->setAuth("4x5zzx0z40" , "1j0j1hwhjhk452y2k22jym55j34j4lh2x4jkhk3h");
+			}
 		}	
 	}
 }
