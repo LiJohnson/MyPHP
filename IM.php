@@ -206,7 +206,7 @@ class KVIM implements IIM
 	}
 	function update($data)
 	{
-        	return var_dump($data);
+        	return var_dump($data['message_id']);
 		if( is_array($data['message_id']) )
 		{
 			$mssages = $this->kv->pkrget('', 100);
