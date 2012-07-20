@@ -176,11 +176,7 @@ class KVIM implements IIM
 			foreach( $messages as $k => $v )
 			{
                         	if(!is_object($v))continue;
-				if( $v->is_read == 0)
-				{
-					$json[] = $v ;
-				}				
-				else if( $messageId > 0 && $v->message_id >  $messageId && $v->recipient_id == -1 );
+				if( ($v->is_read == 0) || ( $messageId > 0 && $v->message_id >  $messageId && $v->recipient_id == -1) )
 				{
 					$json[] = $v ;
 				}
