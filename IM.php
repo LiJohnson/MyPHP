@@ -219,8 +219,7 @@ class KVIM implements IIM
 					$messageId = $v->message_id . "";
 					if( in_array($messageId , $data['message_id'] ))
 					{
-                                        	echo $k;
-                                          //$this->kv->delete($k);
+                                        	$this->kv->delete($k);
 					}
 				}
 				if ($i < 100) break;
