@@ -176,7 +176,7 @@ class KVIM implements IIM
 			foreach( $messages as $k => $v )
 			{
                         	if(!is_object($v))continue;
-				if( ($v->is_read == 0) || ( $messageId > 0 && $v->message_id >  $messageId && $v->recipient_id == -1) )
+				if( $v->is_read == 0)
 				{
 					$json[] = $v ;
 				}
@@ -186,17 +186,17 @@ class KVIM implements IIM
 			$user->last_date = date ( "Y-m-d H:i:s" ) ;
 			$this->model->update($user , " and id = " .$data['senderId']);
 		}
-		else
-		{
-			$mssages = $this->kv->pkrget("-1");
-			foreach( $messages as $k => $v )
-			{
-				if( $messageId > 0 && $v->message_id >  $messageId && $v->recipient_id == -1 );
-				{
-					$json[] = $v ;
-				}
-			}
-		}
+                
+                $mssages = $this->kv->pkrget("-1",100);
+                foreach( $messages as $k => $v )
+                {
+                        if( $messageId > 0 && $v->message_id >  $messageId && $v->recipient_id == -1 );
+                        {
+                                $json[] = $v ;
+                        }
+                        if()
+                }
+		
 		return $json;
 	}
 	function update($data)
