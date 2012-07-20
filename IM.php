@@ -207,8 +207,8 @@ class KVIM implements IIM
 			$messages = $this->kv->pkrget('', 100);
 			while (true) 
 			{
-				end($mssages);
-				$start_key = key($mssages);
+				end($messages);
+				$start_key = key($messages);
 				foreach( $messages as $k => $v )
 				{
 					$messageId = $v->message_id . "";
@@ -218,7 +218,7 @@ class KVIM implements IIM
 					}
 				}
 				if ($i < 100) break;
-				$mssages = $this->kv->pkrget('', 100, $start_key);
+				$messages = $this->kv->pkrget('', 100, $start_key);
 			}
 			
 		}
