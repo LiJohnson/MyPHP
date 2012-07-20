@@ -209,7 +209,7 @@ class KVIM implements IIM
         	
 		if( is_array($data['message_id']) )
 		{
-			$mssages = $this->kv->pkrget('', 100);
+			$messages = $this->kv->pkrget('', 100);
 			while (true) 
 			{
 				end($mssages);
