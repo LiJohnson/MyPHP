@@ -206,7 +206,7 @@ class KVIM implements IIM
 	}
 	function update($data)
 	{
-        	return var_dump($data['message_id']);
+        	
 		if( is_array($data['message_id']) )
 		{
 			$mssages = $this->kv->pkrget('', 100);
@@ -219,7 +219,8 @@ class KVIM implements IIM
 					$messageId = $v->message_id . "";
 					if( in_array($messageId , $data['message_id'] ))
 					{
-						$this->kv->delete($k);
+                                        	echo $k;
+                                          //$this->kv->delete($k);
 					}
 				}
 				if ($i < 100) break;
