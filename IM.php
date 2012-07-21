@@ -218,7 +218,9 @@ class KVIM implements IIM
                 {
                  
                        $now = $this->stringToTimeStamp(date("Y-m-d H:i:s"));
-                          $created = $this->stringToTimeStamp($v->created_at); var_dump( $now - $created > 60 );
+                          $created = $this->stringToTimeStamp($v->created_at);
+                          var_dump( $now );
+                          var_dump($created);
                           if( $now - $created > 60 )
                           {
                                   $this->kv->delete($k);  
