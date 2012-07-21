@@ -212,11 +212,11 @@ class KVIM implements IIM
                                 }
                         }  
 		}
-                
+                $now = $this->stringToTimeStamp(date("Y-m-d H:i:s"));
                 foreach( $this->getAllKV("-1") as  $k => $v )
                 {
                  
-                       $now = $this->stringToTimeStamp(date("Y-m-d H:i:s"));
+                      
                        $created = $this->stringToTimeStamp($v->created_at);
                        var_dump( $now );
                        var_dump($created);
