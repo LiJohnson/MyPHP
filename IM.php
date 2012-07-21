@@ -271,7 +271,7 @@ class KVIM implements IIM
       {
               $kv = new SaeKV();
               $ret = $kv->init();
-              
+              $start_key = "";
               $tmp = array() ;
               while (true){
                       $ret = $kv->pkrget($pkr, 100 , $start_key);  
