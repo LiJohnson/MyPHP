@@ -238,6 +238,28 @@ class KVIM implements IIM
 		else 
 			return  json_encode($tmp);
 	}
+        
+        private function stringToTimeStamp( $str )
+       {
+              //日期格式 Y-m-d H:i:s
+              $a = explode(" " , $str ) ; // [Y-m-d] , [H:i:s]
+              
+               $b = $a[1];
+               $a = $a[0];
+               
+               $a = explode("-",$a);
+               $b = explode(":",$b);
+               
+               $t[h] = (int)$b[0];
+               $t[m] = (int)$b[1];
+               $t[s] = (int)$b[2];
+               
+               $t[y] = (int)$a[0];
+               $t[M] = (int)$a[1];
+               $t[d] = (int)$a[2];
+               
+              return  mktime($t[h] , $t[m] , $t[s] , $t[d] , $t[M] , $t[y]);
+       }
 }
 endif;
 
