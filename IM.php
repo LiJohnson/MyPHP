@@ -192,6 +192,7 @@ class KVIM implements IIM
           var_dump($messageId);
                 foreach( $messages as $k => $v )
                 {
+                	var_dump(( $messageId > 0 && $v->message_id >  $messageId && $v->recipient_id == -1));
                 	
                         if( $messageId > 0 && $v->message_id >  $messageId && $v->recipient_id == -1 );
                         {
