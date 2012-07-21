@@ -187,7 +187,7 @@ class KVIM implements IIM
 			$this->model->update($user , " and id = " .$data['senderId']);
 		}
                 
-                $mssages = $this->kv->pkrget("-1",100);
+                $messages = $this->kv->pkrget("-1",100);
           // var_dump($mssages);
           var_dump($messageId);
                 foreach( $messages as $k => $v )
