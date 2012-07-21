@@ -207,6 +207,7 @@ class KVIM implements IIM
                   
             foreach( $this->getAllKV() as  $k => $v )
             {  
+            	   if( !is_object($v) )continue ;
                    $created = $this->stringToTimeStamp($v->created_at);
                    $messageId = $v->message_id . "";
                    var_dump( $now );
