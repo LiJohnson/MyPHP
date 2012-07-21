@@ -144,7 +144,7 @@ class KVIM implements IIM
 		$msg->sender_name = $arr['sender_name'];
 		$msg->recipient_name = $arr['recipient_name'];
 		$msg->message_id = $this->getMeeageId();
-		$msg->created_at =date ( "Y-m-d H:i:s" );
+		$msg->created_at =date( "Y-m-d H:i:s" );
 		$msg->is_read = 0 ;
 		return $msg;
 	}
