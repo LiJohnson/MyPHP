@@ -190,7 +190,7 @@ class KVIM implements IIM
                 $messages = $this->kv->pkrget("-1",100);
                 foreach( $messages as $k => $v )
                 {         
-                  //var_dump($messageId); 
+                 	var_dump($messageId); 
                         if( $messageId > 0 && $v->message_id >  $messageId && $v->recipient_id == -1 );
                         {
                                 $json[] = $v ;
