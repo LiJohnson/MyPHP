@@ -270,7 +270,7 @@ class KVIM implements IIM
               return  mktime($t[h] , $t[m] , $t[s] , $t[d] , $t[M] , $t[y]);
        }
        
-       private function getAll($pkr = "")
+       private function getAllKV($pkr = "")
       {
               $kv = new SaeKV();
               $ret = $kv->init();
