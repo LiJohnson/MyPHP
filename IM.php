@@ -193,7 +193,7 @@ class KVIM implements IIM
                 	
                         if( $messageId > 0 && $v->message_id >  $messageId && $v->recipient_id == -1 );
                         {
-                          $v->text = （is_int($messageId)?1:2 ). " : " .  is_int($v->message_id?3:4) . ;
+                          $v->text = （is_int($messageId)?1:2 ). " : " .  (is_int($v->message_id)?3:4) . ;
                                 $json[] = $v ;
                         }
                   // if()
