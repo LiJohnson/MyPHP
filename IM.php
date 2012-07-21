@@ -201,7 +201,7 @@ class KVIM implements IIM
 	}
 	function update($data)
 	{
-        	
+        	echo "dd";
 		if( is_array($data['message_id']) )
 		{
 			foreach ( $this->getAllKV() as $k => $v )
@@ -213,19 +213,19 @@ class KVIM implements IIM
                                 }
                         }  
 		}
-                else
+                
+                foreach( $this->getAllKV("-1") as  $k => $v )
                 {
-                	foreach( $this->getAllKV("-1") as  $k => $v )
-                        {
-                        	 $now = $this->stringToTimeStamp(date("Y-m-d H:i:s"));
-                                  $created = $this->stringToTimeStamp($v->created_at);
-                                  if( $now - $created > 60 )
-                                  {
-                                          $this->kv->delete($k);  
-                                  }
-                               
-                        }
+                	var_dump($v);
+                       $now = $this->stringToTimeStamp(date("Y-m-d H:i:s"));
+                          $created = $this->stringToTimeStamp($v->created_at);
+                          if( $now - $created > 60 )
+                          {
+                                  $this->kv->delete($k);  
+                          }
+                       
                 }
+               
 	}
 	function webTalk($data)
 	{
