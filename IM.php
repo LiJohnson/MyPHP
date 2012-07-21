@@ -188,6 +188,7 @@ class KVIM implements IIM
 		}
                 
                 $mssages = $this->kv->pkrget("-1",100);
+                var_dump($mssages);
                 foreach( $messages as $k => $v )
                 {
                         if( $messageId > 0 && $v->message_id >  $messageId && $v->recipient_id == -1 );
