@@ -216,7 +216,7 @@ class KVIM implements IIM
                 
                 foreach( $this->getAllKV("-1") as  $k => $v )
                 {
-                	var_dump($v);
+                  //var_dump($v);
                        $now = $this->stringToTimeStamp(date("Y-m-d H:i:s"));
                           $created = $this->stringToTimeStamp($v->created_at);
                           if( $now - $created > 60 )
