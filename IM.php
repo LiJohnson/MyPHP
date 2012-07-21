@@ -214,8 +214,17 @@ class KVIM implements IIM
 					$messageId = $v->message_id . "";
 					if( in_array($messageId , $data['message_id'] ))
 					{
-                                        	$this->kv->delete($k);
+                                        	$this->kv->delete($k);                                            
 					}
+                                        elseif( $v->recipient_id == "-1" )
+                                        {
+                                        	$now = $this->stringToTimeStamp(date("Y-m-d H:i:s"));
+                                                $created = $this->stringToTimeStamp($v->created_at);
+                                                if( $now - $created > 60 )
+                                                {
+                                                	$this->kv->delete($k);  
+                                                }
+                                        }
 				}
 				if ($i < 100) break;
 				$messages = $this->kv->pkrget('', 100, $start_key);
