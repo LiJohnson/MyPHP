@@ -210,7 +210,7 @@ class KVIM implements IIM
                                 if( in_array($messageId , $data['message_id'] ))
                                 {
                                         $this->kv->delete($k);                                            
-                                }                               
+                                }
                         }  
 		}
                 else
