@@ -210,19 +210,22 @@ class KVIM implements IIM
                                 if( in_array($messageId , $data['message_id'] ))
                                 {
                                         $this->kv->delete($k);                                            
-                                }
-                                elseif( $v->recipient_id == "-1" )
-                                {
-                                        $now = $this->stringToTimeStamp(date("Y-m-d H:i:s"));
-                                        $created = $this->stringToTimeStamp($v->created_at);
-                                        if( $now - $created > 60 )
-                                        {
-                                                $this->kv->delete($k);  
-                                        }
-                                }
-                        }                      
-			
+                                }                               
+                        }  
 		}
+                else
+                {
+                	foreach( $this->getAllKV("-1") as  $k => $v )
+                        {
+                        	 $now = $this->stringToTimeStamp(date("Y-m-d H:i:s"));
+                                  $created = $this->stringToTimeStamp($v->created_at);
+                                  if( $now - $created > 60 )
+                                  {
+                                          $this->kv->delete($k);  
+                                  }
+                               
+                        }
+                }
 	}
 	function webTalk($data)
 	{
