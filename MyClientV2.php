@@ -1,5 +1,5 @@
 <?php
-include_once( $_SERVER[DOCUMENT_ROOT].'/config.php' );
+include_once( dirname(__file__).'/../config.php' );
 include_once( 'saetv2.ex.class.php' );
 /**
  * date 2011年5月14日 17:08:17

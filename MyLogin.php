@@ -18,6 +18,7 @@ class MyLogin
 	}
 	
 	public function printSQL($b){$this->model->printSQL = $b;}
+	
 	public function login($callback = '')
 	{
 		$user = null;
@@ -65,13 +66,13 @@ class MyLogin
 			{
 				$_SESSION ['token'] = $token;
 				$this->updateClientInfo ();
-				
 				// print_r ( $token );
 			} else
 			{
 				exit ();
 			}
-		} else
+		}
+		else
 		{
 			$code_url = $o->getAuthorizeURL ( $_SERVER ['SCRIPT_URI'] );
 			header ( "refresh:1;url=" . $code_url );
@@ -104,10 +105,11 @@ class MyLogin
 		return $callbackUrl;
 	}
 	
+	/*
 	
+	*/
 	public function initUser( $user )
 	{
-		
 		if( !isset($_SESSION['user']) )
 		{
 			$sql = "SELECT *  FROM `users` WHERE `mail` LIKE '".$user['user_email']."' AND `password` LIKE '".md5($user['password'])."' ";
@@ -121,8 +123,7 @@ class MyLogin
 			{
 				return $user ;
 			}
-		}
-		
+		}		
 		return $this->updateClientInfo();
 	}
 	
