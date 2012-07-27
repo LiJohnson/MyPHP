@@ -4,15 +4,15 @@
  * 
  * @author Elmer Zhang <freeboy6716@gmail.com>
  */
-
+ 
 /**
  * @ignore
  */
 class OAuthException extends Exception {
 	// pass
 }
-
-
+ 
+ 
 /**
  * 新浪微博 OAuth 认证类(OAuth2)
  *
@@ -40,7 +40,7 @@ class SaeTOAuthV2 {
 	 */
 	public $refresh_token;
 	/**
-	 * Contains the last HTTP status code returned. 
+	 * Contains the last HTTP status code returned.
 	 *
 	 * @ignore
 	 */
@@ -99,20 +99,20 @@ class SaeTOAuthV2 {
 	 * @ignore
 	 */
 	public $useragent = 'Sae T OAuth2 v0.1';
-
+ 
 	/**
 	 * print the debug info
 	 *
 	 * @ignore
 	 */
 	public $debug = FALSE;
-
+ 
 	/**
 	 * boundary of multipart
 	 * @ignore
 	 */
 	public static $boundary = '';
-
+ 
 	/**
 	 * Set API URLS
 	 */
@@ -124,7 +124,7 @@ class SaeTOAuthV2 {
 	 * @ignore
 	 */
 	function authorizeURL()    { return 'https://api.weibo.com/oauth2/authorize'; }
-
+ 
 	/**
 	 * construct WeiboOAuth object
 	 */
@@ -134,7 +134,7 @@ class SaeTOAuthV2 {
 		$this->access_token = $access_token;
 		$this->refresh_token = $refresh_token;
 	}
-
+ 
 	/**
 	 * authorize接口
 	 *
@@ -143,15 +143,15 @@ class SaeTOAuthV2 {
 	 * @param string $url 授权后的回调地址,站外应用需与回调地址一致,站内应用需要填写canvas page的地址
 	 * @param string $response_type 支持的值包括 code 和token 默认值为code
 	 * @param string $state 用于保持请求和回调的状态。在回调时,会在Query Parameter中回传该参数
-	 * @param string $display 授权页面类型 可选范围: 
-	 *  - default		默认授权页面		
-	 *  - mobile		支持html5的手机		
-	 *  - popup			弹窗授权页		
-	 *  - wap1.2		wap1.2页面		
-	 *  - wap2.0		wap2.0页面		
-	 *  - js			js-sdk 专用 授权页面是弹窗，返回结果为js-sdk回掉函数		
-	 *  - apponweibo	站内应用专用,站内应用不传display参数,并且response_type为token时,默认使用改display.授权后不会返回access_token，只是输出js刷新站内应用父框架
-	 * @return array
+	 * @param string $display 授权页面类型 可选范围:
+	 *   - default        默认授权页面
+	 *   - mobile        支持html5的手机
+	 *   - popup            弹窗授权页
+	 *   - wap1.2        wap1.2页面
+	 *   - wap2.0        wap2.0页面
+	 *   - js            js-sdk 专用 授权页面是弹窗，返回结果为js-sdk回掉函数
+	 *   - apponweibo    站内应用专用,站内应用不传display参数,并且response_type为token时,默认使用改display.授权后不会返回access_token，只是输出js刷新站内应用父框架
+	 * @return array 
 	 */
 	function getAuthorizeURL( $url, $response_type = 'code', $state = NULL, $display = NULL ) {
 		$params = array();
@@ -162,7 +162,7 @@ class SaeTOAuthV2 {
 		$params['display'] = $display;
 		return $this->authorizeURL() . "?" . http_build_query($params);
 	}
-
+ 
 	/**
 	 * access_token接口
 	 *
@@ -170,10 +170,10 @@ class SaeTOAuthV2 {
 	 *
 	 * @param string $type 请求的类型,可以为:code, password, token
 	 * @param array $keys 其他参数：
-	 *  - 当$type为code时： array('code'=>..., 'redirect_uri'=>...)
-	 *  - 当$type为password时： array('username'=>..., 'password'=>...)
-	 *  - 当$type为token时： array('refresh_token'=>...)
-	 * @return array
+	 *   - 当$type为code时： array('code'=>..., 'redirect_uri'=>...)
+	 *   - 当$type为password时： array('username'=>..., 'password'=>...)
+	 *   - 当$type为token时： array('refresh_token'=>...)
+	 * @return array 
 	 */
 	function getAccessToken( $type = 'code', $keys ) {
 		$params = array();
@@ -193,7 +193,7 @@ class SaeTOAuthV2 {
 		} else {
 			throw new OAuthException("wrong auth type");
 		}
-
+ 
 		$response = $this->oAuthRequest($this->accessTokenURL(), 'POST', $params);
 		$token = json_decode($response, true);
 		if ( is_array($token) && !isset($token['error']) ) {
@@ -204,13 +204,13 @@ class SaeTOAuthV2 {
 		}
 		return $token;
 	}
-
+ 
 	/**
 	 * 解析 signed_request
 	 *
 	 * @param string $signed_request 应用框架在加载iframe时会通过向Canvas URL post的参数signed_request
 	 *
-	 * @return array
+	 * @return array 
 	 */
 	function parseSignedRequest($signed_request) {
 		list($encoded_sig, $payload) = explode('.', $signed_request, 2); 
@@ -220,14 +220,14 @@ class SaeTOAuthV2 {
 		$expected_sig = hash_hmac('sha256', $payload, $this->client_secret, true);
 		return ($sig !== $expected_sig)? '-2':$data;
 	}
-
+ 
 	/**
 	 * @ignore
 	 */
 	function base64decode($str) {
 		return base64_decode(strtr($str.str_repeat('=', (4 - strlen($str) % 4)), '-_', '+/'));
 	}
-
+ 
 	/**
 	 * 读取jssdk授权信息，用于和jssdk的同步登录
 	 *
@@ -248,7 +248,7 @@ class SaeTOAuthV2 {
 			return false;
 		}
 	}
-
+ 
 	/**
 	 * 从数组中读取access_token和refresh_token
 	 * 常用于从Session或Cookie中读取token，或通过Session/Cookie中是否存有token判断登录状态。
@@ -263,17 +263,17 @@ class SaeTOAuthV2 {
 			if (isset($arr['refresh_token']) && $arr['refresh_token']) {
 				$this->refresh_token = $token['refresh_token'] = $arr['refresh_token'];
 			}
-
+ 
 			return $token;
 		} else {
 			return false;
 		}
 	}
-
+ 
 	/**
 	 * GET wrappwer for oAuthRequest.
 	 *
-	 * @return mixed
+	 * @return mixed 
 	 */
 	function get($url, $parameters = array()) {
 		$response = $this->oAuthRequest($url, 'GET', $parameters);
@@ -282,11 +282,11 @@ class SaeTOAuthV2 {
 		}
 		return $response;
 	}
-
+ 
 	/**
 	 * POST wreapper for oAuthRequest.
 	 *
-	 * @return mixed
+	 * @return mixed 
 	 */
 	function post($url, $parameters = array(), $multi = false) {
 		$response = $this->oAuthRequest($url, 'POST', $parameters, $multi );
@@ -295,11 +295,11 @@ class SaeTOAuthV2 {
 		}
 		return $response;
 	}
-
+ 
 	/**
 	 * DELTE wrapper for oAuthReqeust.
 	 *
-	 * @return mixed
+	 * @return mixed 
 	 */
 	function delete($url, $parameters = array()) {
 		$response = $this->oAuthRequest($url, 'DELETE', $parameters);
@@ -308,19 +308,19 @@ class SaeTOAuthV2 {
 		}
 		return $response;
 	}
-
+ 
 	/**
 	 * Format and sign an OAuth / API request
 	 *
-	 * @return string
+	 * @return string 
 	 * @ignore
 	 */
 	function oAuthRequest($url, $method, $parameters, $multi = false) {
-
-		if (strrpos($url, 'https://') !== 0 && strrpos($url, 'https://') !== 0) {
+ 
+		if (strrpos($url, 'http://') !== 0 && strrpos($url, 'https://') !== 0) {
 			$url = "{$this->host}{$url}.{$this->format}";
 	}
-
+ 
 	switch ($method) {
 		case 'GET':
 			$url = $url . '?' . http_build_query($parameters);
@@ -336,7 +336,7 @@ class SaeTOAuthV2 {
 			return $this->http($url, $method, $body, $headers);
 	}
 	}
-
+ 
 	/**
 	 * Make an HTTP request
 	 *
@@ -354,9 +354,10 @@ class SaeTOAuthV2 {
 		curl_setopt($ci, CURLOPT_RETURNTRANSFER, TRUE);
 		curl_setopt($ci, CURLOPT_ENCODING, "");
 		curl_setopt($ci, CURLOPT_SSL_VERIFYPEER, $this->ssl_verifypeer);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 1);
 		curl_setopt($ci, CURLOPT_HEADERFUNCTION, array($this, 'getHeader'));
 		curl_setopt($ci, CURLOPT_HEADER, FALSE);
-
+ 
 		switch ($method) {
 			case 'POST':
 				curl_setopt($ci, CURLOPT_POST, TRUE);
@@ -371,34 +372,47 @@ class SaeTOAuthV2 {
 					$url = "{$url}?{$postfields}";
 				}
 		}
-
+ 
 		if ( isset($this->access_token) && $this->access_token )
 			$headers[] = "Authorization: OAuth2 ".$this->access_token;
-
-		$headers[] = "API-RemoteIP: " . $_SERVER['REMOTE_ADDR'];
+ 
+		if ( !empty($this->remote_ip) ) {
+			if ( defined('SAE_ACCESSKEY') ) {
+				$headers[] = "SaeRemoteIP: " . $this->remote_ip;
+			} else {
+				$headers[] = "API-RemoteIP: " . $this->remote_ip;
+			}
+		} else {
+			if ( !defined('SAE_ACCESSKEY') ) {
+				$headers[] = "API-RemoteIP: " . $_SERVER['REMOTE_ADDR'];
+			}
+		}
 		curl_setopt($ci, CURLOPT_URL, $url );
 		curl_setopt($ci, CURLOPT_HTTPHEADER, $headers );
 		curl_setopt($ci, CURLINFO_HEADER_OUT, TRUE );
-
+ 
 		$response = curl_exec($ci);
 		$this->http_code = curl_getinfo($ci, CURLINFO_HTTP_CODE);
 		$this->http_info = array_merge($this->http_info, curl_getinfo($ci));
 		$this->url = $url;
-
+ 
 		if ($this->debug) {
 			echo "=====post data======\r\n";
 			var_dump($postfields);
-
-			echo '=====info====='."\r\n";
+ 
+			echo "=====headers======\r\n";
+			print_r($headers);
+ 
+			echo '=====request info====='."\r\n";
 			print_r( curl_getinfo($ci) );
-
-			echo '=====$response====='."\r\n";
+ 
+			echo '=====response====='."\r\n";
 			print_r( $response );
 		}
 		curl_close ($ci);
 		return $response;
 	}
-
+ 
 	/**
 	 * Get the header info to store.
 	 *
@@ -414,30 +428,30 @@ class SaeTOAuthV2 {
 		}
 		return strlen($header);
 	}
-
+ 
 	/**
 	 * @ignore
 	 */
 	public static function build_http_query_multi($params) {
 		if (!$params) return '';
-
+ 
 		uksort($params, 'strcmp');
-
+ 
 		$pairs = array();
-
+ 
 		self::$boundary = $boundary = uniqid('------------------');
 		$MPboundary = '--'.$boundary;
 		$endMPboundary = $MPboundary. '--';
 		$multipartbody = '';
-
+ 
 		foreach ($params as $parameter => $value) {
-
+ 
 			if( in_array($parameter, array('pic', 'image')) && $value{0} == '@' ) {
 				$url = ltrim( $value, '@' );
 				$content = file_get_contents( $url );
 				$array = explode( '?', basename( $url ) );
 				$filename = $array[0];
-
+ 
 				$multipartbody .= $MPboundary . "\r\n";
 				$multipartbody .= 'Content-Disposition: form-data; name="' . $parameter . '"; filename="' . $filename . '"'. "\r\n";
 				$multipartbody .= "Content-Type: image/unknown\r\n\r\n";
@@ -447,15 +461,15 @@ class SaeTOAuthV2 {
 				$multipartbody .= 'content-disposition: form-data; name="' . $parameter . "\"\r\n\r\n";
 				$multipartbody .= $value."\r\n";
 			}
-
+ 
 		}
-
+ 
 		$multipartbody .= $endMPboundary;
 		return $multipartbody;
 	}
 }
-
-
+ 
+ 
 /**
  * 新浪微博操作类V2
  *
@@ -481,7 +495,40 @@ class SaeTClientV2
 	{
 		$this->oauth = new SaeTOAuthV2( $akey, $skey, $access_token, $refresh_token );
 	}
-
+ 
+	/**
+	 * 开启调试信息
+	 *
+	 * 开启调试信息后，SDK会将每次请求微博API所发送的POST Data、Headers以及请求信息、返回内容输出出来。
+	 *
+	 * @access public
+	 * @param bool $enable 是否开启调试信息
+	 * @return void
+	 */
+	function set_debug( $enable )
+	{
+		$this->oauth->debug = $enable;
+	}
+ 
+	/**
+	 * 设置用户IP
+	 *
+	 * SDK默认将会通过$_SERVER['REMOTE_ADDR']获取用户IP，在请求微博API时将用户IP附加到Request Header中。但某些情况下$_SERVER['REMOTE_ADDR']取到的IP并非用户IP，而是一个固定的IP（例如使用SAE的Cron或TaskQueue服务时），此时就有可能会造成该固定IP达到微博API调用频率限额，导致API调用失败。此时可使用本方法设置用户IP，以避免此问题。
+	 *
+	 * @access public
+	 * @param string $ip 用户IP
+	 * @return bool IP为非法IP字符串时，返回false，否则返回true
+	 */
+	function set_remote_ip( $ip )
+	{
+		if ( ip2long($ip) !== false ) {
+			$this->oauth->remote_ip = $ip;
+			return true;
+		} else {
+			return false;
+		}
+	}
+ 
 	/**
 	 * 获取最新的公共微博消息
 	 *
@@ -501,7 +548,7 @@ class SaeTClientV2
 		$params['base_app'] = intval($base_app);
 		return $this->oauth->get('statuses/public_timeline', $params);//可能是接口的bug不能补全
 	}
-
+ 
 	/**
 	 * 获取当前登录用户及其所关注用户的最新微博消息。
 	 *
@@ -532,10 +579,10 @@ class SaeTClientV2
 		$params['page'] = intval($page);
 		$params['base_app'] = intval($base_app);
 		$params['feature'] = intval($feature);
-
+ 
 		return $this->oauth->get('statuses/home_timeline', $params);
 	}
-
+ 
 	/**
 	 * 获取当前登录用户及其所关注用户的最新微博消息。
 	 *
@@ -555,7 +602,7 @@ class SaeTClientV2
 	{
 		return $this->home_timeline( $since_id, $max_id, $count, $page, $base_app, $feature);
 	}
-
+ 
 	/**
 	 * 获取用户发布的微博信息列表
 	 *
@@ -590,7 +637,7 @@ class SaeTClientV2
 		$params['count'] = intval($count);
 		$params['page'] = intval($page);
 		$params['trim_user'] = intval($trim_user);
-
+ 
 		return $this->oauth->get( 'statuses/user_timeline', $params );
 	}
 	
@@ -629,7 +676,7 @@ class SaeTClientV2
 		$params['count'] = intval($count);
 		$params['page'] = intval($page);
 		$params['trim_user'] = intval($trim_user);
-
+ 
 		return $this->oauth->get( 'statuses/user_timeline', $params );
 	}
 	
@@ -661,7 +708,7 @@ class SaeTClientV2
 		$params['feature'] = intval($feature);
 		return $this->oauth->get('statuses/timeline_batch', $params);
 	}
-
+ 
 	/**
 	 * 批量获取指定的一批用户的timeline
 	 *
@@ -691,8 +738,8 @@ class SaeTClientV2
 		$params['feature'] = intval($feature);
 		return $this->oauth->get('statuses/timeline_batch', $params);
 	}
-
-
+ 
+ 
 	/**
 	 * 返回一条原创微博消息的最新n条转发微博消息。本接口无法对非原创微博进行查询。 
 	 *
@@ -710,7 +757,7 @@ class SaeTClientV2
 	function repost_timeline( $sid, $page = 1, $count = 50, $since_id = 0, $max_id = 0, $filter_by_author = 0 )
 	{
 		$this->id_format($sid);
-
+ 
 		$params = array();
 		$params['id'] = $sid;
 		if ($since_id) {
@@ -722,10 +769,10 @@ class SaeTClientV2
 			$params['max_id'] = $max_id;
 		}
 		$params['filter_by_author'] = intval($filter_by_author);
-
+ 
 		return $this->request_with_pager( 'statuses/repost_timeline', $page, $count, $params );
 	}
-
+ 
 	/**
 	 * 获取当前用户最新转发的n条微博消息
 	 *
@@ -749,10 +796,10 @@ class SaeTClientV2
 			$this->id_format($max_id);
 			$params['max_id'] = $max_id;
 		}
-
+ 
 		return $this->request_with_pager('statuses/repost_by_me', $page, $count, $params );
 	}
-
+ 
 	/**
 	 * 获取@当前用户的微博列表
 	 *
@@ -783,11 +830,11 @@ class SaeTClientV2
 		$params['filter_by_author'] = $filter_by_author;
 		$params['filter_by_source'] = $filter_by_source;
 		$params['filter_by_type'] = $filter_by_type;
-
+ 
 		return $this->request_with_pager( 'statuses/mentions', $page, $count, $params );
 	}
-
-
+ 
+ 
 	/**
 	 * 根据ID获取单条微博信息内容
 	 *
@@ -805,7 +852,7 @@ class SaeTClientV2
 		$params['id'] = $id;
 		return $this->oauth->get('statuses/show', $params);
 	}
-
+ 
 	/**
 	 * 根据微博id号获取微博的信息
 	 *
@@ -814,7 +861,7 @@ class SaeTClientV2
 	 * @param string $ids 需要查询的微博ID，用半角逗号分隔，最多不超过50个。
 	 * @return array
 	 */
-    function show_batch( $ids )
+	function show_batch( $ids )
 	{
 		$params=array();
 		if (is_array($ids) && !empty($ids)) {
@@ -827,7 +874,7 @@ class SaeTClientV2
 		}
 		return $this->oauth->get('statuses/show_batch', $params);
 	}
-
+ 
 	/**
 	 * 通过微博（评论、私信）ID获取其MID
 	 *
@@ -846,7 +893,7 @@ class SaeTClientV2
 		$params['is_batch'] = intval($is_batch);
 		return $this->oauth->get( 'statuses/querymid',  $params);
 	}
-
+ 
 	/**
 	 * 通过微博（评论、私信）MID获取其ID
 	 *
@@ -869,7 +916,7 @@ class SaeTClientV2
 		$params['isBase62'] = intval($isBase62);
 		return $this->oauth->get('statuses/queryid', $params);
 	}
-
+ 
 	/**
 	 * 按天返回热门微博转发榜的微博列表
 	 *
@@ -886,7 +933,7 @@ class SaeTClientV2
 		$params['base_app'] = intval($base_app);
 		return $this->oauth->get('statuses/hot/repost_daily',  $params);
 	}
-
+ 
 	/**
 	 * 按周返回热门微博转发榜的微博列表
 	 *
@@ -903,7 +950,7 @@ class SaeTClientV2
 		$params['base_app'] = intval($base_app);
 		return $this->oauth->get( 'statuses/hot/repost_weekly',  $params);
 	}
-
+ 
 	/**
 	 * 按天返回热门微博评论榜的微博列表
 	 *
@@ -920,7 +967,7 @@ class SaeTClientV2
 		$params['base_app'] = intval($base_app);
 		return $this->oauth->get( 'statuses/hot/comments_daily',  $params);
 	}
-
+ 
 	/**
 	 * 按周返回热门微博评论榜的微博列表
 	 *
@@ -937,8 +984,8 @@ class SaeTClientV2
 		$params['base_app'] = intval($base_app);
 		return $this->oauth->get( 'statuses/hot/comments_weekly', $params);
 	}
-
-
+ 
+ 
 	/**
 	 * 转发一条微博信息。
 	 *
@@ -954,15 +1001,15 @@ class SaeTClientV2
 	function repost( $sid, $text = NULL, $is_comment = 0 )
 	{
 		$this->id_format($sid);
-
+ 
 		$params = array();
 		$params['id'] = $sid;
 		$params['is_comment'] = $is_comment;
 		if( $text ) $params['status'] = $text;
-
+ 
 		return $this->oauth->post( 'statuses/repost', $params  );
 	}
-
+ 
 	/**
 	 * 删除一条微博
 	 * 
@@ -977,7 +1024,7 @@ class SaeTClientV2
 	{
 		return $this->destroy( $id );
 	}
-
+ 
 	/**
 	 * 删除一条微博
 	 *
@@ -995,7 +1042,7 @@ class SaeTClientV2
 		$params['id'] = $id;
 		return $this->oauth->post( 'statuses/destroy',  $params );
 	}
-
+ 
 	
 	/**
 	 * 发表微博
@@ -1027,10 +1074,10 @@ class SaeTClientV2
 		} elseif (is_array($annotations)) {
 			$params['annotations'] = json_encode($annotations);
 		}
-
+ 
 		return $this->oauth->post( 'statuses/update', $params );
 	}
-
+ 
 	/**
 	 * 发表图片微博
 	 *
@@ -1056,11 +1103,11 @@ class SaeTClientV2
 		if ($long) {
 			$params['long'] = floatval($long);
 		}
-
+ 
 		return $this->oauth->post( 'statuses/upload', $params, true );
 	}
-
-
+ 
+ 
 	/**
 	 * 指定一个图片URL地址抓取后上传并同时发布一条新微博
 	 *
@@ -1077,8 +1124,8 @@ class SaeTClientV2
 		$params['url'] = $url;
 		return $this->oauth->post( 'statuses/upload', $params, true );
 	}
-
-
+ 
+ 
 	/**
 	 * 获取表情列表
 	 *
@@ -1097,8 +1144,8 @@ class SaeTClientV2
 		$params['language'] = $language;
 		return $this->oauth->get( 'emotions', $params );
 	}
-
-
+ 
+ 
 	/**
 	 * 根据微博ID返回某条微博的评论列表
 	 *
@@ -1130,8 +1177,8 @@ class SaeTClientV2
 		$params['filter_by_author'] = $filter_by_author;
 		return $this->oauth->get( 'comments/show',  $params );
 	}
-
-
+ 
+ 
 	/**
 	 * 获取当前登录用户所发出的评论列表
 	 *
@@ -1160,7 +1207,7 @@ class SaeTClientV2
 		$params['filter_by_source'] = $filter_by_source;
 		return $this->oauth->get( 'comments/by_me', $params );
 	}
-
+ 
 	/**
 	 * 获取当前登录用户所接收到的评论列表
 	 *
@@ -1191,7 +1238,7 @@ class SaeTClientV2
 		$params['filter_by_source'] = $filter_by_source;
 		return $this->oauth->get( 'comments/to_me', $params );
 	}
-
+ 
 	/**
 	 * 最新评论(按时间)
 	 *
@@ -1216,11 +1263,11 @@ class SaeTClientV2
 			$this->id_format($max_id);
 			$params['max_id'] = $max_id;
 		}
-
+ 
 		return $this->request_with_pager( 'comments/timeline', $page, $count, $params );
 	}
-
-
+ 
+ 
 	/**
 	 * 获取最新的提到当前登录用户的评论，即@我的评论
 	 *
@@ -1245,8 +1292,8 @@ class SaeTClientV2
 		$params['filter_by_source'] = $filter_by_source;
 		return $this->oauth->get( 'comments/mentions', $params );
 	}
-
-
+ 
+ 
 	/**
 	 * 根据评论ID批量返回评论信息
 	 *
@@ -1268,8 +1315,8 @@ class SaeTClientV2
 		}
 		return $this->oauth->get( 'comments/show_batch', $params );
 	}
-
-
+ 
+ 
 	/**
 	 * 对一条微博进行评论
 	 *
@@ -1289,7 +1336,7 @@ class SaeTClientV2
 		$params['comment_ori'] = $comment_ori;
 		return $this->oauth->post( 'comments/create', $params );
 	}
-
+ 
 	/**
 	 * 删除当前用户的微博评论信息。
 	 *
@@ -1306,8 +1353,8 @@ class SaeTClientV2
 		$params['cid'] = $cid;
 		return $this->oauth->post( 'comments/destroy', $params);
 	}
-
-
+ 
+ 
 	/**
 	 * 根据评论ID批量删除评论
 	 *
@@ -1331,8 +1378,8 @@ class SaeTClientV2
 		}
 		return $this->oauth->post( 'comments/destroy_batch', $params);
 	}
-
-
+ 
+ 
 	/**
 	 * 回复一条评论
 	 *
@@ -1344,7 +1391,7 @@ class SaeTClientV2
 	 * @param string $text 评论内容。
 	 * @param int $cid 评论id
 	 * @param int $without_mention 1：回复中不自动加入“回复@用户名”，0：回复中自动加入“回复@用户名”.默认为0.
-     * @param int $comment_ori	  当评论转发微博时，是否评论给原微博，0：否、1：是，默认为0。
+	 * @param int $comment_ori      当评论转发微博时，是否评论给原微博，0：否、1：是，默认为0。
 	 * @return array
 	 */
 	function reply( $sid, $text, $cid, $without_mention = 0, $comment_ori = 0 )
@@ -1357,11 +1404,11 @@ class SaeTClientV2
 		$params['cid'] = $cid;
 		$params['without_mention'] = $without_mention;
 		$params['comment_ori'] = $comment_ori;
-
+ 
 		return $this->oauth->post( 'comments/reply', $params );
-
+ 
 	}
-
+ 
 	/**
 	 * 根据用户UID或昵称获取用户资料
 	 *
@@ -1379,7 +1426,7 @@ class SaeTClientV2
 			$this->id_format($uid);
 			$params['uid'] = $uid;
 		}
-
+ 
 		return $this->oauth->get('users/show', $params );
 	}
 	
@@ -1397,10 +1444,10 @@ class SaeTClientV2
 	{
 		$params = array();
 		$params['screen_name'] = $screen_name;
-
+ 
 		return $this->oauth->get( 'users/show', $params );
 	}
-
+ 
 	/**
 	 * 通过个性化域名获取用户资料以及用户最新的一条微博
 	 *
@@ -1416,7 +1463,7 @@ class SaeTClientV2
 		$params['domain'] = $domain;
 		return $this->oauth->get( 'users/domain_show', $params );
 	}
-
+ 
 	 /**
 	 * 批量获取用户信息按uids
 	 *
@@ -1457,8 +1504,8 @@ class SaeTClientV2
 		}
 		return $this->oauth->get( 'users/show_batch', $params );
 	}
-
-
+ 
+ 
 	/**
 	 * 获取用户的关注列表
 	 *
@@ -1477,7 +1524,7 @@ class SaeTClientV2
 		$params['cursor'] = $cursor;
 		$params['count'] = $count;
 		$params['uid'] = $uid;
-
+ 
 		return $this->oauth->get( 'friendships/friends', $params );
 	}
 	
@@ -1502,8 +1549,8 @@ class SaeTClientV2
 		$params['screen_name'] = $screen_name;
 		return $this->oauth->get( 'friendships/friends', $params );
 	}
-
-
+ 
+ 
 	/**
 	 * 获取两个用户之间的共同关注人列表
 	 *
@@ -1524,7 +1571,7 @@ class SaeTClientV2
 		$params['page'] = $page;
 		return $this->oauth->get( 'friendships/friends/in_common', $params  );
 	}
-
+ 
 	/**
 	 * 获取用户的双向关注列表，即互粉列表
 	 *
@@ -1545,7 +1592,7 @@ class SaeTClientV2
 		$params['sort'] = $sort;
 		return $this->oauth->get( 'friendships/friends/bilateral', $params  );
 	}
-
+ 
 	/**
 	 * 获取用户的双向关注uid列表
 	 *
@@ -1566,7 +1613,7 @@ class SaeTClientV2
 		$params['sort'] = $sort;
 		return $this->oauth->get( 'friendships/friends/bilateral/ids',  $params  );
 	}
-
+ 
 	/**
 	 * 获取用户的关注列表uid
 	 *
@@ -1609,8 +1656,8 @@ class SaeTClientV2
 		$params['screen_name'] = $screen_name;
 		return $this->oauth->get( 'friendships/friends/ids', $params );
 	}
-
-
+ 
+ 
 	/**
 	 * 批量获取当前登录用户的关注人的备注信息
 	 *
@@ -1632,7 +1679,7 @@ class SaeTClientV2
 		}
 		return $this->oauth->get( 'friendships/friends/remark_batch', $params  );
 	}
-
+ 
 	/**
 	 * 获取用户的粉丝列表
 	 *
@@ -1671,7 +1718,7 @@ class SaeTClientV2
 		$params['cursor'] = $cursor;
 		return $this->oauth->get( 'friendships/followers', $params  );
 	}
-
+ 
 	/**
 	 * 获取用户的粉丝列表uid
 	 *
@@ -1710,7 +1757,7 @@ class SaeTClientV2
 		$params['cursor'] = $cursor;
 		return $this->oauth->get( 'friendships/followers/ids', $params  );
 	}
-
+ 
 	/**
 	 * 获取优质粉丝
 	 *
@@ -1718,7 +1765,7 @@ class SaeTClientV2
 	 *
 	 * @param int $uid 需要查询的用户UID。
 	 * @param int $count 返回的记录条数，默认为20，最大不超过200。
-     * @return array
+	 * @return array
 	 **/
 	function followers_active( $uid,  $count = 20)
 	{
@@ -1728,8 +1775,8 @@ class SaeTClientV2
 		$param['count'] = $count;
 		return $this->oauth->get( 'friendships/followers/active', $param);
 	}
-
-
+ 
+ 
 	/**
 	 * 获取当前登录用户的关注人中又关注了指定用户的用户列表
 	 *
@@ -1749,7 +1796,7 @@ class SaeTClientV2
 		$params['page'] = $page;
 		return $this->oauth->get( 'friendships/friends_chain/followers',  $params );
 	}
-
+ 
 	/**
 	 * 返回两个用户关系的详细情况
 	 *
@@ -1766,15 +1813,15 @@ class SaeTClientV2
 		$params = array();
 		$this->id_format($target_id);
 		$params['target_id'] = $target_id;
-
+ 
 		if ( $source_id != NULL ) {
 			$this->id_format($source_id);
 			$params['source_id'] = $source_id;
 		}
-
+ 
 		return $this->oauth->get( 'friendships/show', $params );
 	}
-
+ 
 	/**
 	 * 返回两个用户关系的详细情况
 	 *
@@ -1790,14 +1837,14 @@ class SaeTClientV2
 	{
 		$params = array();
 		$params['target_screen_name'] = $target_name;
-
+ 
 		if ( $source_name != NULL ) {
 			$params['source_screen_name'] = $source_name;
 		}
-
+ 
 		return $this->oauth->get( 'friendships/show', $params );
 	}
-
+ 
 	/**
 	 * 关注一个用户。
 	 *
@@ -1832,8 +1879,8 @@ class SaeTClientV2
 		$params['screen_name'] = $screen_name;
 		return $this->oauth->post( 'friendships/create', $params);
 	}
-
-
+ 
+ 
 	/**
 	 * 根据用户UID批量关注用户
 	 *
@@ -1855,7 +1902,7 @@ class SaeTClientV2
 		}
 		return $this->oauth->post( 'friendships/create_batch', $params);
 	}
-
+ 
 	/**
 	 * 取消关注某用户
 	 *
@@ -1890,7 +1937,7 @@ class SaeTClientV2
 		$params['screen_name'] = $screen_name;
 		return $this->oauth->post( 'friendships/destroy', $params);
 	}
-
+ 
 	/**
 	 * 更新当前登录用户所关注的某个好友的备注信息
 	 *
@@ -1910,7 +1957,7 @@ class SaeTClientV2
 		$params['remark'] = $remark;
 		return $this->oauth->post( 'friendships/remark/update', $params);
 	}
-
+ 
 	/**
 	 * 获取当前用户最新私信列表
 	 *
@@ -1935,10 +1982,10 @@ class SaeTClientV2
 			$this->id_format($max_id);
 			$params['max_id'] = $max_id;
 		}
-
+ 
 		return $this->request_with_pager( 'direct_messages', $page, $count, $params );
 	}
-
+ 
 	/**
 	 * 获取当前用户发送的最新私信列表
 	 *
@@ -1963,11 +2010,11 @@ class SaeTClientV2
 			$this->id_format($max_id);
 			$params['max_id'] = $max_id;
 		}
-
+ 
 		return $this->request_with_pager( 'direct_messages/sent', $page, $count, $params );
 	}
-
-
+ 
+ 
 	/**
 	 * 获取与当前登录用户有私信往来的用户列表，与该用户往来的最新私信
 	 *
@@ -1984,7 +2031,7 @@ class SaeTClientV2
 		$params['cursor'] = $cursor;
 		return $this->oauth->get( 'direct_messages/user_list', $params );
 	} 
-
+ 
 	/**
 	 * 获取与指定用户的往来私信列表
 	 *
@@ -2014,7 +2061,7 @@ class SaeTClientV2
 		$params['page'] = $page;
 		return $this->oauth->get( 'direct_messages/conversation', $params );
 	}
-
+ 
 	/**
 	 * 根据私信ID批量获取私信内容
 	 *
@@ -2036,7 +2083,7 @@ class SaeTClientV2
 		}
 		return $this->oauth->get( 'direct_messages/show_batch',  $params );
 	}
-
+ 
 	/**
 	 * 发送私信
 	 *
@@ -2085,7 +2132,7 @@ class SaeTClientV2
 		}
 		return $this->oauth->post( 'direct_messages/new', $params);
 	}
-
+ 
 	/**
 	 * 删除一条私信
 	 *
@@ -2103,7 +2150,7 @@ class SaeTClientV2
 		$params['id'] = $did;
 		return $this->oauth->post('direct_messages/destroy', $params);
 	}
-
+ 
 	/**
 	 * 批量删除私信
 	 *
@@ -2125,12 +2172,12 @@ class SaeTClientV2
 		} else {
 			$params['ids'] = $dids;
 		}
-
+ 
 		return $this->oauth->post( 'direct_messages/destroy_batch', $params);
 	}
 	
-
-
+ 
+ 
 	/**
 	 * 获取用户基本信息
 	 *
@@ -2148,7 +2195,7 @@ class SaeTClientV2
 		}
 		return $this->oauth->get( 'account/profile/basic', $params );
 	}
-
+ 
 	/**
 	 * 获取用户的教育信息
 	 *
@@ -2166,7 +2213,7 @@ class SaeTClientV2
 		}
 		return $this->oauth->get( 'account/profile/education', $params );
 	}
-
+ 
 	/**
 	 * 批量获取用户的教育信息
 	 *
@@ -2186,11 +2233,11 @@ class SaeTClientV2
 		} else {
 			$params['uids'] = $uids;
 		}
-
+ 
 		return $this->oauth->get( 'account/profile/education_batch', $params );
 	}
-
-
+ 
+ 
 	/**
 	 * 获取用户的职业信息
 	 *
@@ -2208,7 +2255,7 @@ class SaeTClientV2
 		}
 		return $this->oauth->get( 'account/profile/career', $params );
 	}
-
+ 
 	/**
 	 * 批量获取用户的职业信息
 	 *
@@ -2221,17 +2268,17 @@ class SaeTClientV2
 	{
 		$params = array();
 		if (is_array($uids) && !empty($uids)) {
-			foreach($dids as $k => $v) {
+			foreach($uids as $k => $v) {
 				$this->id_format($uids[$k]);
 			}
 			$params['uids'] = join(',', $uids);
 		} else {
 			$params['uids'] = $uids;
 		}
-
+ 
 		return $this->oauth->get( 'account/profile/career_batch', $params );
 	}
-
+ 
 	/**
 	 * 获取隐私信息设置情况
 	 *
@@ -2244,20 +2291,20 @@ class SaeTClientV2
 	{
 		return $this->oauth->get('account/get_privacy');
 	}
-
+ 
 	/**
 	 * 获取所有的学校列表
 	 *
 	 * 对应API：{@link http://open.weibo.com/wiki/2/account/profile/school_list account/profile/school_list}
 	 *
 	 * @param array $query 搜索选项。格式：array('key0'=>'value0', 'key1'=>'value1', ....)。支持的key:
-	 *  - province	int		省份范围，省份ID。
-	 *  - city		int		城市范围，城市ID。
-	 *  - area		int		区域范围，区ID。
-	 *  - type		int		学校类型，1：大学、2：高中、3：中专技校、4：初中、5：小学，默认为1。
-	 *  - capital	string	学校首字母，默认为A。
-	 *  - keyword	string	学校名称关键字。
-	 *  - count		int		返回的记录条数，默认为10。
+	 *  - province    int        省份范围，省份ID。
+	 *  - city        int        城市范围，城市ID。
+	 *  - area        int        区域范围，区ID。
+	 *  - type        int        学校类型，1：大学、2：高中、3：中专技校、4：初中、5：小学，默认为1。
+	 *  - capital    string    学校首字母，默认为A。
+	 *  - keyword    string    学校名称关键字。
+	 *  - count        int        返回的记录条数，默认为10。
 	 * 参数keyword与capital二者必选其一，且只能选其一。按首字母capital查询时，必须提供province参数。
 	 * @access public
 	 * @return array
@@ -2265,10 +2312,10 @@ class SaeTClientV2
 	function school_list( $query )
 	{
 		$params = $query;
-
+ 
 		return $this->oauth->get( 'account/profile/school_list', $params );
 	}
-
+ 
 	/**
 	 * 获取当前登录用户的API访问频率限制情况
 	 *
@@ -2281,7 +2328,7 @@ class SaeTClientV2
 	{
 		return $this->oauth->get( 'account/rate_limit_status' );
 	}
-
+ 
 	/**
 	 * OAuth授权之后，获取授权用户的UID
 	 *
@@ -2294,8 +2341,8 @@ class SaeTClientV2
 	{
 		return $this->oauth->get( 'account/get_uid' );
 	}
-
-
+ 
+ 
 	/**
 	 * 更改用户资料
 	 *
@@ -2304,26 +2351,26 @@ class SaeTClientV2
 	 * @access public
 	 * @param array $profile 要修改的资料。格式：array('key1'=>'value1', 'key2'=>'value2', .....)。
 	 * 支持修改的项：
-	 *  - screen_name		string	用户昵称，不可为空。
-	 *  - gender	i		string	用户性别，m：男、f：女，不可为空。
-	 *  - real_name			string	用户真实姓名。
-	 *  - real_name_visible	int		真实姓名可见范围，0：自己可见、1：关注人可见、2：所有人可见。
-	 *  - province	true	int		省份代码ID，不可为空。
-	 *  - city	true		int		城市代码ID，不可为空。
-	 *  - birthday			string	用户生日，格式：yyyy-mm-dd。
-	 *  - birthday_visible	int		生日可见范围，0：保密、1：只显示月日、2：只显示星座、3：所有人可见。
-	 *  - qq				string	用户QQ号码。
-	 *  - qq_visible		int		用户QQ可见范围，0：自己可见、1：关注人可见、2：所有人可见。
-	 *  - msn				string	用户MSN。
-	 *  - msn_visible		int		用户MSN可见范围，0：自己可见、1：关注人可见、2：所有人可见。
-	 *  - url				string	用户博客地址。
-	 *  - url_visible		int		用户博客地址可见范围，0：自己可见、1：关注人可见、2：所有人可见。
-	 *  - credentials_type	int		证件类型，1：身份证、2：学生证、3：军官证、4：护照。
-	 *  - credentials_num	string	证件号码。
-	 *  - email				string	用户常用邮箱地址。
-	 *  - email_visible		int		用户常用邮箱地址可见范围，0：自己可见、1：关注人可见、2：所有人可见。
-	 *  - lang				string	语言版本，zh_cn：简体中文、zh_tw：繁体中文。
-	 *  - description		string	用户描述，最长不超过70个汉字。
+	 *  - screen_name        string    用户昵称，不可为空。
+	 *  - gender    i        string    用户性别，m：男、f：女，不可为空。
+	 *  - real_name            string    用户真实姓名。
+	 *  - real_name_visible    int        真实姓名可见范围，0：自己可见、1：关注人可见、2：所有人可见。
+	 *  - province    true    int        省份代码ID，不可为空。
+	 *  - city    true        int        城市代码ID，不可为空。
+	 *  - birthday            string    用户生日，格式：yyyy-mm-dd。
+	 *  - birthday_visible    int        生日可见范围，0：保密、1：只显示月日、2：只显示星座、3：所有人可见。
+	 *  - qq                string    用户QQ号码。
+	 *  - qq_visible        int        用户QQ可见范围，0：自己可见、1：关注人可见、2：所有人可见。
+	 *  - msn                string    用户MSN。
+	 *  - msn_visible        int        用户MSN可见范围，0：自己可见、1：关注人可见、2：所有人可见。
+	 *  - url                string    用户博客地址。
+	 *  - url_visible        int        用户博客地址可见范围，0：自己可见、1：关注人可见、2：所有人可见。
+	 *  - credentials_type    int        证件类型，1：身份证、2：学生证、3：军官证、4：护照。
+	 *  - credentials_num    string    证件号码。
+	 *  - email                string    用户常用邮箱地址。
+	 *  - email_visible        int        用户常用邮箱地址可见范围，0：自己可见、1：关注人可见、2：所有人可见。
+	 *  - lang                string    语言版本，zh_cn：简体中文、zh_tw：繁体中文。
+	 *  - description        string    用户描述，最长不超过70个汉字。
 	 * 填写birthday参数时，做如下约定：
 	 *  - 只填年份时，采用1986-00-00格式；
 	 *  - 只填月份时，采用0000-08-00格式；
@@ -2334,8 +2381,8 @@ class SaeTClientV2
 	{
 		return $this->oauth->post( 'account/profile/basic_update',  $profile);
 	}
-
-
+ 
+ 
 	/**
 	 * 设置教育信息
 	 *
@@ -2344,19 +2391,19 @@ class SaeTClientV2
 	 * @access public
 	 * @param array $edu_update 要修改的学校信息。格式：array('key1'=>'value1', 'key2'=>'value2', .....)。
 	 * 支持设置的项：
-	 *  - type			int		学校类型，1：大学、2：高中、3：中专技校、4：初中、5：小学，默认为1。必填参数
-	 *  - school_id	`	int		学校代码，必填参数
-	 *  - id			string	需要修改的教育信息ID，不传则为新建，传则为更新。
-	 *  - year			int		入学年份，最小为1900，最大不超过当前年份
-	 *  - department	string	院系或者班别。
-	 *  - visible		int		开放等级，0：仅自己可见、1：关注的人可见、2：所有人可见。
+	 *  - type            int        学校类型，1：大学、2：高中、3：中专技校、4：初中、5：小学，默认为1。必填参数
+	 *  - school_id    `    int        学校代码，必填参数
+	 *  - id            string    需要修改的教育信息ID，不传则为新建，传则为更新。
+	 *  - year            int        入学年份，最小为1900，最大不超过当前年份
+	 *  - department    string    院系或者班别。
+	 *  - visible        int        开放等级，0：仅自己可见、1：关注的人可见、2：所有人可见。
 	 * @return array
 	 */
 	function edu_update( $edu_update )
 	{
 		return $this->oauth->post( 'account/profile/edu_update',  $edu_update);
 	}
-
+ 
 	/**
 	 * 根据学校ID删除用户的教育信息
 	 *
@@ -2372,7 +2419,7 @@ class SaeTClientV2
 		$params['id'] = $id;
 		return $this->oauth->post( 'account/profile/edu_destroy', $params);
 	}
-
+ 
 	/**
 	 * 设置职业信息
 	 *
@@ -2380,14 +2427,14 @@ class SaeTClientV2
 	 * 
 	 * @param array $car_update 要修改的职业信息。格式：array('key1'=>'value1', 'key2'=>'value2', .....)。
 	 * 支持设置的项：
-	 *  - id			string	需要更新的职业信息ID。
-	 *  - start			int		进入公司年份，最小为1900，最大为当年年份。
-	 *  - end			int		离开公司年份，至今填0。
-	 *  - department	string	工作部门。
-	 *  - visible		int		可见范围，0：自己可见、1：关注人可见、2：所有人可见。
-	 *  - province		int		省份代码ID，不可为空值。
-	 *  - city			int		城市代码ID，不可为空值。
-	 *  - company		string	公司名称，不可为空值。
+	 *  - id            string    需要更新的职业信息ID。
+	 *  - start            int        进入公司年份，最小为1900，最大为当年年份。
+	 *  - end            int        离开公司年份，至今填0。
+	 *  - department    string    工作部门。
+	 *  - visible        int        可见范围，0：自己可见、1：关注人可见、2：所有人可见。
+	 *  - province        int        省份代码ID，不可为空值。
+	 *  - city            int        城市代码ID，不可为空值。
+	 *  - company        string    公司名称，不可为空值。
 	 * 参数province与city二者必选其一<br />
 	 * 参数id为空，则为新建职业信息，参数company变为必填项，参数id非空，则为更新，参数company可选
 	 * @return array
@@ -2396,7 +2443,7 @@ class SaeTClientV2
 	{
 		return $this->oauth->post( 'account/profile/car_update', $car_update);
 	}
-
+ 
 	/**
 	 * 根据公司ID删除用户的职业信息
 	 *
@@ -2413,7 +2460,7 @@ class SaeTClientV2
 		$params['id'] = $id;
 		return $this->oauth->post( 'account/profile/car_destroy', $params);
 	}
-
+ 
 	/**
 	 * 更改头像
 	 *
@@ -2426,10 +2473,10 @@ class SaeTClientV2
 	{
 		$params = array();
 		$params['image'] = "@{$image_path}";
-
+ 
 		return $this->oauth->post('account/avatar/upload', $params);
 	}
-
+ 
 	/**
 	 * 设置隐私信息
 	 *
@@ -2437,12 +2484,12 @@ class SaeTClientV2
 	 * 
 	 * @param array $privacy_settings 要修改的隐私设置。格式：array('key1'=>'value1', 'key2'=>'value2', .....)。
 	 * 支持设置的项：
-	 *  - comment	int	是否可以评论我的微博，0：所有人、1：关注的人，默认为0。
-	 *  - geo		int	是否开启地理信息，0：不开启、1：开启，默认为1。
-	 *  - message	int	是否可以给我发私信，0：所有人、1：关注的人，默认为0。
-	 *  - realname	int	是否可以通过真名搜索到我，0：不可以、1：可以，默认为0。
-	 *  - badge		int	勋章是否可见，0：不可见、1：可见，默认为1。
-	 *  - mobile	int	是否可以通过手机号码搜索到我，0：不可以、1：可以，默认为0。
+	 *  - comment    int    是否可以评论我的微博，0：所有人、1：关注的人，默认为0。
+	 *  - geo        int    是否开启地理信息，0：不开启、1：开启，默认为1。
+	 *  - message    int    是否可以给我发私信，0：所有人、1：关注的人，默认为0。
+	 *  - realname    int    是否可以通过真名搜索到我，0：不可以、1：可以，默认为0。
+	 *  - badge        int    勋章是否可见，0：不可见、1：可见，默认为1。
+	 *  - mobile    int    是否可以通过手机号码搜索到我，0：不可以、1：可以，默认为0。
 	 * 以上参数全部选填
 	 * @return array
 	 */
@@ -2450,8 +2497,8 @@ class SaeTClientV2
 	{
 		return $this->oauth->post( 'account/update_privacy', $privacy_settings);
 	}
-
-
+ 
+ 
 	/**
 	 * 获取当前用户的收藏列表
 	 *
@@ -2468,11 +2515,11 @@ class SaeTClientV2
 		$params = array();
 		$params['page'] = intval($page);
 		$params['count'] = intval($count);
-
+ 
 		return $this->oauth->get( 'favorites', $params );
 	}
-
-
+ 
+ 
 	/**
 	 * 根据收藏ID获取指定的收藏信息
 	 *
@@ -2490,8 +2537,8 @@ class SaeTClientV2
 		$params['id'] = $id;
 		return $this->oauth->get( 'favorites/show', $params );
 	}
-
-
+ 
+ 
 	/**
 	 * 根据标签获取当前登录用户该标签下的收藏列表
 	 *
@@ -2511,8 +2558,8 @@ class SaeTClientV2
 		$params['page'] = $page;
 		return $this->oauth->get( 'favorites/by_tags', $params );
 	}
-
-
+ 
+ 
 	/**
 	 * 获取当前登录用户的收藏标签列表
 	 *
@@ -2530,8 +2577,8 @@ class SaeTClientV2
 		$params['page'] = $page;
 		return $this->oauth->get( 'favorites/tags', $params );
 	}
-
-
+ 
+ 
 	/**
 	 * 收藏一条微博信息
 	 *
@@ -2546,10 +2593,10 @@ class SaeTClientV2
 		$this->id_format($sid);
 		$params = array();
 		$params['id'] = $sid;
-
+ 
 		return $this->oauth->post( 'favorites/create', $params );
 	}
-
+ 
 	/**
 	 * 删除微博收藏。
 	 *
@@ -2566,8 +2613,8 @@ class SaeTClientV2
 		$params['id'] = $id;
 		return $this->oauth->post( 'favorites/destroy', $params);
 	}
-
-
+ 
+ 
 	/**
 	 * 批量删除微博收藏。
 	 *
@@ -2589,11 +2636,11 @@ class SaeTClientV2
 		} else {
 			$params['ids'] = $fids;
 		}
-
+ 
 		return $this->oauth->post( 'favorites/destroy_batch', $params);
 	}
-
-
+ 
+ 
 	/**
 	 * 更新一条收藏的收藏标签
 	 *
@@ -2618,7 +2665,7 @@ class SaeTClientV2
 		}
 		return $this->oauth->post( 'favorites/tags/update', $params );
 	}
-
+ 
 	/**
 	 * 更新当前登录用户所有收藏下的指定标签
 	 *
@@ -2635,7 +2682,7 @@ class SaeTClientV2
 		$params['tag'] = $tag;
 		return $this->oauth->post( 'favorites/tags/update_batch', $params);
 	}
-
+ 
 	/**
 	 * 删除当前登录用户所有收藏下的指定标签
 	 *
@@ -2651,7 +2698,7 @@ class SaeTClientV2
 		$params['tid'] = $tid;
 		return $this->oauth->post( 'favorites/tags/destroy_batch', $params);
 	}
-
+ 
 	/**
 	 * 获取某用户的话题
 	 *
@@ -2676,8 +2723,8 @@ class SaeTClientV2
 		$params['count'] = $count;
 		return $this->oauth->get( 'trends', $params );
 	}
-
-
+ 
+ 
 	/**
 	 * 判断当前用户是否关注某话题
 	 *
@@ -2693,7 +2740,7 @@ class SaeTClientV2
 		$params['trend_name'] = $trend_name;
 		return $this->oauth->get( 'trends/is_follow', $params );
 	}
-
+ 
 	/**
 	 * 返回最近一小时内的热门话题
 	 *
@@ -2706,10 +2753,10 @@ class SaeTClientV2
 	{
 		$params = array();
 		$params['base_app'] = $base_app;
-
+ 
 		return $this->oauth->get( 'trends/hourly', $params );
 	}
-
+ 
 	/**
 	 * 返回最近一天内的热门话题
 	 *
@@ -2722,10 +2769,10 @@ class SaeTClientV2
 	{
 		$params = array();
 		$params['base_app'] = $base_app;
-
+ 
 		return $this->oauth->get( 'trends/daily', $params );
 	}
-
+ 
 	/**
 	 * 返回最近一周内的热门话题
 	 *
@@ -2739,10 +2786,10 @@ class SaeTClientV2
 	{
 		$params = array();
 		$params['base_app'] = $base_app;
-
+ 
 		return $this->oauth->get( 'trends/weekly', $params );
 	}
-
+ 
 	/**
 	 * 关注某话题
 	 *
@@ -2758,7 +2805,7 @@ class SaeTClientV2
 		$params['trend_name'] = $trend_name;
 		return $this->oauth->post( 'trends/follow', $params );
 	}
-
+ 
 	/**
 	 * 取消对某话题的关注
 	 *
@@ -2771,13 +2818,13 @@ class SaeTClientV2
 	function unfollow_trends( $tid )
 	{
 		$this->id_format($tid);
-
+ 
 		$params = array();
 		$params['trend_id'] = $tid;
-
+ 
 		return $this->oauth->post( 'trends/destroy', $params );
 	}
-
+ 
 	/**
 	 * 返回指定用户的标签列表
 	 *
@@ -2802,7 +2849,7 @@ class SaeTClientV2
 		$params['count'] = $count;
 		return $this->oauth->get( 'tags', $params );
 	}
-
+ 
 	/**
 	 * 批量获取用户的标签列表
 	 *
@@ -2824,7 +2871,7 @@ class SaeTClientV2
 		}
 		return $this->oauth->get( 'tags/tags_batch', $params );
 	}
-
+ 
 	/**
 	 * 返回用户感兴趣的标签
 	 *
@@ -2840,7 +2887,7 @@ class SaeTClientV2
 		$params['count'] = intval($count);
 		return $this->oauth->get( 'tags/suggestions', $params );
 	}
-
+ 
 	/**
 	 * 为当前登录用户添加新的用户标签
 	 *
@@ -2860,7 +2907,7 @@ class SaeTClientV2
 		}
 		return $this->oauth->post( 'tags/create', $params);
 	}
-
+ 
 	/**
 	 * 删除标签
 	 *
@@ -2876,7 +2923,7 @@ class SaeTClientV2
 		$params['tag_id'] = $tag_id;
 		return $this->oauth->post( 'tags/destroy', $params );
 	}
-
+ 
 	/**
 	 * 批量删除标签
 	 *
@@ -2896,8 +2943,8 @@ class SaeTClientV2
 		}
 		return $this->oauth->post( 'tags/destroy_batch', $params );
 	}
-
-
+ 
+ 
 	/**
 	 * 验证昵称是否可用，并给予建议昵称
 	 *
@@ -2912,9 +2959,9 @@ class SaeTClientV2
 		$params['nickname'] = $nickname;
 		return $this->oauth->get( 'register/verify_nickname', $params );
 	}
-
-
-
+ 
+ 
+ 
 	/**
 	 * 搜索用户时的联想搜索建议
 	 *
@@ -2931,8 +2978,8 @@ class SaeTClientV2
 		$params['count'] = $count;
 		return $this->oauth->get( 'search/suggestions/users',  $params );
 	}
-
-
+ 
+ 
 	/**
 	 * 搜索微博时的联想搜索建议
 	 *
@@ -2949,8 +2996,8 @@ class SaeTClientV2
 		$params['count'] = $count;
 		return $this->oauth->get( 'search/suggestions/statuses', $params );
 	}
-
-
+ 
+ 
 	/**
 	 * 搜索学校时的联想搜索建议
 	 *
@@ -2969,7 +3016,7 @@ class SaeTClientV2
 		$params['type'] = $type;
 		return $this->oauth->get( 'search/suggestions/schools', $params );
 	}
-
+ 
 	/**
 	 * 搜索公司时的联想搜索建议
 	 *
@@ -2986,8 +3033,8 @@ class SaeTClientV2
 		$params['count'] = $count;
 		return $this->oauth->get( 'search/suggestions/companies', $params );
 	}
-
-
+ 
+ 
 	/**
 	 * ＠用户时的联想建议
 	 *
@@ -3008,29 +3055,29 @@ class SaeTClientV2
 		$params['range'] = $range;
 		return $this->oauth->get( 'search/suggestions/at_users', $params );
 	}
-
-
+ 
+ 
 	
-
-
+ 
+ 
 	/**
 	 * 搜索与指定的一个或多个条件相匹配的微博
 	 *
 	 * 对应API：{@link http://open.weibo.com/wiki/2/search/statuses search/statuses}
 	 *
 	 * @param array $query 搜索选项。格式：array('key0'=>'value0', 'key1'=>'value1', ....)。支持的key:
-	 *  - q				string	搜索的关键字，必须进行URLencode。
-	 *  - filter_ori	int		过滤器，是否为原创，0：全部、1：原创、2：转发，默认为0。
-	 *  - filter_pic	int		过滤器。是否包含图片，0：全部、1：包含、2：不包含，默认为0。
-	 *  - fuid			int		搜索的微博作者的用户UID。
-	 *  - province		int		搜索的省份范围，省份ID。
-	 *  - city			int		搜索的城市范围，城市ID。
-	 *  - starttime		int		开始时间，Unix时间戳。
-	 *  - endtime		int		结束时间，Unix时间戳。
-	 *  - count			int		单页返回的记录条数，默认为10。
-	 *  - page			int		返回结果的页码，默认为1。
-	 *  - needcount		boolean	返回结果中是否包含返回记录数，true：返回、false：不返回，默认为false。
-	 *  - base_app		int		是否只获取当前应用的数据。0为否（所有数据），1为是（仅当前应用），默认为0。
+	 *  - q                string    搜索的关键字，必须进行URLencode。
+	 *  - filter_ori    int        过滤器，是否为原创，0：全部、1：原创、2：转发，默认为0。
+	 *  - filter_pic    int        过滤器。是否包含图片，0：全部、1：包含、2：不包含，默认为0。
+	 *  - fuid            int        搜索的微博作者的用户UID。
+	 *  - province        int        搜索的省份范围，省份ID。
+	 *  - city            int        搜索的城市范围，城市ID。
+	 *  - starttime        int        开始时间，Unix时间戳。
+	 *  - endtime        int        结束时间，Unix时间戳。
+	 *  - count            int        单页返回的记录条数，默认为10。
+	 *  - page            int        返回结果的页码，默认为1。
+	 *  - needcount        boolean    返回结果中是否包含返回记录数，true：返回、false：不返回，默认为false。
+	 *  - base_app        int        是否只获取当前应用的数据。0为否（所有数据），1为是（仅当前应用），默认为0。
 	 * needcount参数不同，会导致相应的返回值结构不同
 	 * 以上参数全部选填
 	 * @return array
@@ -3039,28 +3086,28 @@ class SaeTClientV2
 	{
 		return $this->oauth->get( 'search/statuses', $query );
 	}
-
-
-
+ 
+ 
+ 
 	/**
 	 * 通过关键词搜索用户
 	 *
 	 * 对应API：{@link http://open.weibo.com/wiki/2/search/users search/users}
 	 *
 	 * @param array $query 搜索选项。格式：array('key0'=>'value0', 'key1'=>'value1', ....)。支持的key:
-	 *  - q			string	搜索的关键字，必须进行URLencode。
-	 *  - snick		int		搜索范围是否包含昵称，0：不包含、1：包含。
-	 *  - sdomain	int		搜索范围是否包含个性域名，0：不包含、1：包含。
-	 *  - sintro	int		搜索范围是否包含简介，0：不包含、1：包含。
-	 *  - stag		int		搜索范围是否包含标签，0：不包含、1：包含。
-	 *  - province	int		搜索的省份范围，省份ID。
-	 *  - city		int		搜索的城市范围，城市ID。
-	 *  - gender	string	搜索的性别范围，m：男、f：女。
-	 *  - comorsch	string	搜索的公司学校名称。
-	 *  - sort		int		排序方式，1：按更新时间、2：按粉丝数，默认为1。
-	 *  - count		int		单页返回的记录条数，默认为10。
-	 *  - page		int		返回结果的页码，默认为1。
-	 *  - base_app	int		是否只获取当前应用的数据。0为否（所有数据），1为是（仅当前应用），默认为0。
+	 *  - q            string    搜索的关键字，必须进行URLencode。
+	 *  - snick        int        搜索范围是否包含昵称，0：不包含、1：包含。
+	 *  - sdomain    int        搜索范围是否包含个性域名，0：不包含、1：包含。
+	 *  - sintro    int        搜索范围是否包含简介，0：不包含、1：包含。
+	 *  - stag        int        搜索范围是否包含标签，0：不包含、1：包含。
+	 *  - province    int        搜索的省份范围，省份ID。
+	 *  - city        int        搜索的城市范围，城市ID。
+	 *  - gender    string    搜索的性别范围，m：男、f：女。
+	 *  - comorsch    string    搜索的公司学校名称。
+	 *  - sort        int        排序方式，1：按更新时间、2：按粉丝数，默认为1。
+	 *  - count        int        单页返回的记录条数，默认为10。
+	 *  - page        int        返回结果的页码，默认为1。
+	 *  - base_app    int        是否只获取当前应用的数据。0为否（所有数据），1为是（仅当前应用），默认为0。
 	 * 以上所有参数全部选填
 	 * @return array
 	 */
@@ -3068,9 +3115,9 @@ class SaeTClientV2
 	{
 		return $this->oauth->get( 'search/users', $query );
 	}
-
-
-
+ 
+ 
+ 
 	/**
 	 * 获取系统推荐用户
 	 *
@@ -3098,10 +3145,10 @@ class SaeTClientV2
 	{
 		$params = array();
 		$params['category'] = $category;
-
+ 
 		return $this->oauth->get( 'suggestions/users/hot', $params );
 	}
-
+ 
 	/**
 	 * 获取用户可能感兴趣的人
 	 *
@@ -3120,7 +3167,7 @@ class SaeTClientV2
 		$params['count'] = $count;
 		return $this->oauth->get( 'suggestions/users/may_interested', $params);
 	}
-
+ 
 	/**
 	 * 根据一段微博正文推荐相关微博用户。 
 	 *
@@ -3138,7 +3185,7 @@ class SaeTClientV2
 		$params['num'] = $num;
 		return $this->oauth->get( 'suggestions/users/by_status', $params);
 	}
-
+ 
 	/**
 	 * 热门收藏
 	 *
@@ -3155,7 +3202,7 @@ class SaeTClientV2
 		$params['page'] = $page;
 		return $this->oauth->get( 'suggestions/favorites/hot', $params);
 	}
-
+ 
 	/**
 	 * 把某人标识为不感兴趣的人
 	 *
@@ -3170,11 +3217,10 @@ class SaeTClientV2
 		$params['uid'] = $uid;
 		return $this->oauth->post( 'suggestions/users/not_interested', $params);
 	}
-
-
-
+ 
+ 
+ 
 	// =========================================
-
 	/**
 	 * @ignore
 	 */
@@ -3182,10 +3228,10 @@ class SaeTClientV2
 	{
 		if( $page ) $params['page'] = $page;
 		if( $count ) $params['count'] = $count;
-
+ 
 		return $this->oauth->get($url, $params );
 	}
-
+ 
 	/**
 	 * @ignore
 	 */
@@ -3194,19 +3240,19 @@ class SaeTClientV2
 		if( $page ) $params['page'] = $page;
 		if( $count ) $params['count'] = $count;
 		if( $cursor )$params['cursor'] =  $cursor;
-
+ 
 		if( $post ) $method = 'post';
 		else $method = 'get';
-
+ 
 		if ( $uid_or_name !== NULL ) {
 			$this->id_format($uid_or_name);
 			$params['id'] = $uid_or_name;
 		}
-
+ 
 		return $this->oauth->$method($url, $params );
-
+ 
 	}
-
+ 
 	/**
 	 * @ignore
 	 */
@@ -3217,5 +3263,4 @@ class SaeTClientV2
 			$id = trim($id);
 		}
 	}
-
 }

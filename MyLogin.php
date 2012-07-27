@@ -1,16 +1,13 @@
 <?php
-include_once dirname(__FILE__)."/MySql.php";
 include_once dirname(__FILE__)."/BaseModel.php";
 include_once dirname(__FILE__)."/MyTable.php";
 
 class MyLogin
 {
 	private $callbackUrl;
-	private $mysql ;
 	private $model ;
 	public function __construct($callback = "", $uid = null)
 	{
-		$this->mysql = new MySql("gelivable");
 		$this->model = new BaseModel("gelivable");
 		if (! $_SERVER ['SCRIPT_URI'])
 			$_SERVER ['SCRIPT_URI'] = "http://" . $_SERVER ['HTTP_HOST'] . $_SERVER ['REQUEST_URI'];
@@ -41,8 +38,16 @@ class MyLogin
 	}
 	public function logout()
 	{
-		$this->getClient ()->end_session ();
-		session_destroy ();
+		try
+		{
+			$client = $this->getClient();
+			if(method_exists($client , "end_session"))
+			{
+				$client->end_session();
+			}
+			session_destroy();
+		}
+		catch(Exception1 $e){}
 	}
 	function initWeiboV2($callback = '')
 	{
@@ -59,14 +64,12 @@ class MyLogin
 			try
 			{
 				$token = $o->getAccessToken ( 'code', $keys );
-			} catch ( OAuthException $e )
-			{
 			}
+			catch ( OAuthException $e ){}
 			if ($token)
 			{
 				$_SESSION ['token'] = $token;
-				$this->updateClientInfo ();
-				// print_r ( $token );
+				$this->updateClientInfo();
 			} else
 			{
 				exit ();
@@ -92,7 +95,8 @@ class MyLogin
                  	$aurl = $o->getAuthorizeURL ( $keys ['oauth_token'], false, $callbackUrl );//echo 0;
 			header("refresh:0;url=".$aurl);
 			return $aurl;
-		} elseif (! isset ( $_SESSION ['last_key'] ))
+		} 
+		elseif (! isset ( $_SESSION ['last_key'] ))
 		{
 			$o = new SaeT ( WB_AKEY, WB_SKEY, $_SESSION ['keys'] ['oauth_token'], $_SESSION ['keys'] ['oauth_token_secret'] );//print_r($o);
 			$last_key = $o->getAccessToken ( $_REQUEST ['oauth_verifier'] );
@@ -112,9 +116,10 @@ class MyLogin
 	{
 		if( !isset($_SESSION['user']) )
 		{
-			$sql = "SELECT *  FROM `users` WHERE `mail` LIKE '".$user['user_email']."' AND `password` LIKE '".md5($user['password'])."' ";
-			//echo $sql;
-			$user = $this->mysql->getLine($sql);
+			$user = new Users();
+			$user->mail = $user['user_email'] ;
+			$user->password = md5($user['password']) ;
+			$user = $this->model->getOneModel( $user );
 			if($user)
 			{
 				$_SESSION['user'] = $user ;
@@ -155,7 +160,7 @@ class MyLogin
 			$cip = $_SERVER ["REMOTE_ADDR"];
 		} else
 		{
-			$cip = "未知IP";
+			$cip = "unknow IP";
 		}
 		return $cip;
 	
@@ -163,31 +168,49 @@ class MyLogin
 	
 	function updateClientInfo()
 	{
-		
-		$table = "users";
 		$userInfo = $this->getUserInfo ();
-		
 		if( $userInfo == null || isset($userInfo['error']) )
 		{
 			$userInfo = $_SESSION['user'];
 		}
 		
-		$sql = " select `id`,`count` from `" . $table . "` where id = '" . $userInfo ['id'] . "' ";
+		$user = new Users();
+		$user->id = $userInfo ['id'] ;
 		
-		$msg = $this->mysql->getLine( $sql );
-		// print_r($msg);
+		$ret = $this->model->getOneModel( $user );
 		
-		if (isset ( $msg ['id'] ))
+		if(ret == false)
 		{
+		
+		$_k = '(';
+			$_v = '(';
+			
+			foreach ( $userInfo as $k => $v )
+			{
+				if (! is_array ( $v ))
+				{
+					$_k .= ('`' . $k . '`' . ',');
+					$_v .= ("'" . $v . "'" . ',');
+				}
+			}
+			
+			$_k .= "`last_date` , `ip` ,`add_date` ,`access_token` ) ";
+			$_v .= "'" . date ( "Y-m-d H:i:s" ) . "' , '" . $this->getClientIp () . "','" . date ( "Y-m-d H:i:s" ) . "' , '" . $_SESSION ['token'] ['access_token'] . "' )";
+			$sql = "INSERT INTO `" . $table . "` " . $_k . " VALUES " . $_v;
+			/************/
 			$sql = "";
+			
+		} else
+		{
 			if( is_array($userInfo) )
 			{
-				foreach ( $userInfo as $k => $v ):
+				foreach ( $userInfo as $k => $v )
+				{
 					if ( $v && !is_array ( $v ) && $k != 'id' && $k != 'users_id')
 					{
 						$sql .= ("`" . $k . "` =  '" . $v . "' , ");
 					}
-				endforeach;
+				}
 			}
 			
 			$sql .= "`count` = " . ($msg ['count'] + 1) . ", ";
@@ -203,22 +226,6 @@ class MyLogin
 			}
 			
 			$sql = "UPDATE `" . $table . "` SET  " . $sql . " WHERE  `" . $table . "`.`id` =  '" . $userInfo ['id'] . "';";
-		} else
-		{
-			$_k = '(';
-			$_v = '(';
-			
-			foreach ( $userInfo as $k => $v ):
-				if (! is_array ( $v ))
-				{
-					$_k .= ('`' . $k . '`' . ',');
-					$_v .= ("'" . $v . "'" . ',');
-				}
-			endforeach;
-			
-			$_k .= "`last_date` , `ip` ,`add_date` ,`access_token` ) ";
-			$_v .= "'" . date ( DATE_COOKIE ) . "' , '" . $this->getClientIp () . "','" . date ( "Y-m-d H:i:s" ) . "' , '" . $_SESSION ['token'] ['access_token'] . "' )";
-			$sql = "INSERT INTO `" . $table . "` " . $_k . " VALUES " . $_v;
 		
 		}
 		//echo $sql;
@@ -243,10 +250,9 @@ class MyLogin
 	}
 	function getClient()
 	{
-		if (class_exists ( "MyClient" ))
+		if (class_exists( "MyClient" ))
 		{
 			return new MyClient ();
-			// return $c->verify_credentials();
 		} else if (class_exists ( "MyClientV2" ))
 		{
 			return new MyClientV2 ();

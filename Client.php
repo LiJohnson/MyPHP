@@ -42,6 +42,5 @@ class Client{
 	var $online_status;
 	var $bi_followers_count;
 	var $lang;
-
 }
 ?>

@@ -17,39 +17,21 @@ class MyClientV2 extends SaeTClientV2
   
 	public function __construct( $token=null )
 	{
-          	if( $token == null )//
-          	{
+		if( $token == null )//
+		{
 			$token['access_token']= $_SESSION['token']['access_token'] ;
-          	}
-                if( $token['access_token'] )
-                {
+		}
+		if( $token['access_token'] )
+		{
 			parent::__construct( WB_AKEY , WB_SKEY , $token['access_token'] );
-                }
-                else
-                {
-                	
-                }
-                if( $token != null && $token['ip'] )
-                {
-                  $this->set_remote_ip($token['ip']);                  
-                }
+		}
+		else{}
+		if( $token != null && $token['ip'] )
+		{
+		  $this->set_remote_ip($token['ip']);                  
+		}
 	}
-  /*
-        public function __construct( $token=null )
-	{
-        	if( $token == null )
-                {
-                	$token['oauth_token'] = $_SESSION['last_key']['oauth_token'] ;
-                        $token['oauth_token_secret'] = $_SESSION['last_key']['oauth_token_secret'] ;
-                }
-		parent::__construct( WB_AKEY , WB_SKEY , $token['oauth_token'] , $token['oauth_token_secret'] );
-	}
-*/
-  /*public function __construct( $oauth_token , $oauth_token_secret )
-	{
-		parent::__construct( WB_AKEY , WB_SKEY , $oauth_token , $oauth_token_secret );
-	}
-*/
+ 
 	/**
 	 * 随便找几个微博用户 , 并根据 $isFollw 是否对其进行关注
 	 * @param unknown_type $n

@@ -20,11 +20,16 @@ class BaseModel {
 		$keyString = "";
 		$valueString = "";
 		$dot = "";
-		foreach ( $model as $k => $v ) {
-			if ($v != null) {
-				if ($k === 'table_name') {
+		foreach ( $model as $k => $v )
+		{
+			if ($v != null) 
+			{
+				if ($k === 'table_name') 
+				{
 					$tableName = $v;
-				} else {
+				} 
+				else
+				{
 					$keyString .= $dot . "`" . $k . "`";
 					$valueString .= $dot . "'" . $v . "'";
 					$dot = ",";
@@ -33,7 +38,6 @@ class BaseModel {
 		}
 		
 		$sql = "insert into `" . $tableName . "`(" . $keyString . ") values(" . $valueString . ")";
-		
 		
 		$ret = $this->runsql( $sql ) ;
 		if( $ret && $idName != null )
@@ -48,12 +52,22 @@ class BaseModel {
 		$tableName = '';
 		$condition = '';
 		
-		foreach ( $model as $k => $v ) {
-			if ($v != null) {
-				if ($k === 'table_name') {
+		foreach ( $model as $k => $v ) 
+		{
+			if ($v != null) 
+			{
+				if ($k === 'table_name')
+				{
 					$tableName = $v;
-				} else {
-					$condition .= " and `" . $k . "` = '" . $v."'";
+				} 
+				else 
+				{
+					if( is_null($v) || trim($v) == "" )
+						continue;
+					if( is_integer($v) )
+						$condition .= " and `" . $k . "` = " . $v." ";
+					else
+						$condition .= " and `" . $k . "` like '" . $v."' ";
 				}
 			}
 		}
