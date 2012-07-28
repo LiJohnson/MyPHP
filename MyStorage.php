@@ -1,7 +1,7 @@
 <?php
 
 /**
- * SAEÊı¾İ´æ´¢·şÎñ
+ * SAEæ•°æ®å­˜å‚¨æœåŠ¡
  *
  * @author quanjun
  * @version $Id$
@@ -11,7 +11,7 @@
  
 /**
  * SaeStorage class
- * Storage·şÎñÊÊºÏÓÃÀ´´æ´¢ÓÃ»§ÉÏ´«µÄÎÄ¼ş£¬±ÈÈçÍ·Ïñ¡¢¸½¼şµÈ¡£²»ÊÊºÏ´æ´¢´úÂëÀàÎÄ¼ş£¬±ÈÈçÒ³ÃæÄÚµ÷ÓÃµÄJS¡¢CSSµÈ£¬ÓÈÆä²»ÊÊºÏ´æ´¢×·¼ÓĞ´µÄÈÕÖ¾¡£Ê¹ÓÃStorage·şÎñÀ´±£´æJS¡¢CSS»òÕßÈÕÖ¾£¬»áÑÏÖØÓ°ÏìÒ³ÃæÏìÓ¦ËÙ¶È¡£½¨ÒéJS¡¢CSSÖ±½Ó±£´æµ½´úÂëÄ¿Â¼£¬ÈÕÖ¾Ê¹ÓÃsae_debug()·½·¨¼ÇÂ¼¡£
+ * StorageæœåŠ¡é€‚åˆç”¨æ¥å­˜å‚¨ç”¨æˆ·ä¸Šä¼ çš„æ–‡ä»¶ï¼Œæ¯”å¦‚å¤´åƒã€é™„ä»¶ç­‰ã€‚ä¸é€‚åˆå­˜å‚¨ä»£ç ç±»æ–‡ä»¶ï¼Œæ¯”å¦‚é¡µé¢å†…è°ƒç”¨çš„JSã€CSSç­‰ï¼Œå°¤å…¶ä¸é€‚åˆå­˜å‚¨è¿½åŠ å†™çš„æ—¥å¿—ã€‚ä½¿ç”¨StorageæœåŠ¡æ¥ä¿å­˜JSã€CSSæˆ–è€…æ—¥å¿—ï¼Œä¼šä¸¥é‡å½±å“é¡µé¢å“åº”é€Ÿåº¦ã€‚å»ºè®®JSã€CSSç›´æ¥ä¿å­˜åˆ°ä»£ç ç›®å½•ï¼Œæ—¥å¿—ä½¿ç”¨sae_debug()æ–¹æ³•è®°å½•ã€‚
  *
  * <code>
  * <?php
@@ -27,16 +27,16 @@
  * ?>
  * </code>
  *
- * ³£¼û´íÎóÂë²Î¿¼£º
- *  - errno: 0         ³É¹¦
- *  - errno: -2        Åä¶îÍ³¼Æ´íÎó
- *  - errno: -3        È¨ÏŞ²»×ã
- *  - errno: -7        Domain²»´æÔÚ
- *  - errno: -12    ´æ´¢·şÎñÆ÷·µ»Ø´íÎó
- *  - errno: -18     ÎÄ¼ş²»´æÔÚ
- *  - errno: -101    ²ÎÊı´íÎó
- *  - errno: -102    ´æ´¢·şÎñÆ÷Á¬½ÓÊ§°Ü
- * ×¢£º¿ÉÊ¹ÓÃSaeStorage::errmsg()·½·¨»ñµÃµ±Ç°´íÎóĞÅÏ¢¡£
+ * å¸¸è§é”™è¯¯ç å‚è€ƒï¼š
+ *  - errno: 0         æˆåŠŸ
+ *  - errno: -2        é…é¢ç»Ÿè®¡é”™è¯¯
+ *  - errno: -3        æƒé™ä¸è¶³
+ *  - errno: -7        Domainä¸å­˜åœ¨
+ *  - errno: -12    å­˜å‚¨æœåŠ¡å™¨è¿”å›é”™è¯¯
+ *  - errno: -18     æ–‡ä»¶ä¸å­˜åœ¨
+ *  - errno: -101    å‚æ•°é”™è¯¯
+ *  - errno: -102    å­˜å‚¨æœåŠ¡å™¨è¿æ¥å¤±è´¥
+ * æ³¨ï¼šå¯ä½¿ç”¨SaeStorage::errmsg()æ–¹æ³•è·å¾—å½“å‰é”™è¯¯ä¿¡æ¯ã€‚
  * 
  * @package sae
  * @author  quanjun
@@ -47,17 +47,17 @@ class LocalStorage
 {
     private $domain ;
 	 /**
-     * ÔËĞĞ¹ı³ÌÖĞµÄ´íÎóĞÅÏ¢
+     * è¿è¡Œè¿‡ç¨‹ä¸­çš„é”™è¯¯ä¿¡æ¯
      * @var string 
      */
     private $errMsg = 'success';
     /**
-     * ÔËĞĞ¹ı³ÌÖĞµÄ´íÎó´úÂë
+     * è¿è¡Œè¿‡ç¨‹ä¸­çš„é”™è¯¯ä»£ç 
      * @var int 
      */
     private $errNum = 0;
     /**
-     * Ó¦ÓÃÃû
+     * åº”ç”¨å
      * @var string 
      */
     private $appName = '';
@@ -78,7 +78,7 @@ class LocalStorage
    
  
     /**
-     * ·µ»ØÔËĞĞ¹ı³ÌÖĞµÄ´íÎóĞÅÏ¢
+     * è¿”å›è¿è¡Œè¿‡ç¨‹ä¸­çš„é”™è¯¯ä¿¡æ¯
      *
      * @return string 
      * @author Elmer Zhang
@@ -92,7 +92,7 @@ class LocalStorage
     }
  
     /**
-     * ·µ»ØÔËĞĞ¹ı³ÌÖĞµÄ´íÎó´úÂë
+     * è¿”å›è¿è¡Œè¿‡ç¨‹ä¸­çš„é”™è¯¯ä»£ç 
      *
      * @return int 
      * @author Elmer Zhang
@@ -105,7 +105,7 @@ class LocalStorage
     }
  
     /**
-     * È¡µÃÍ¨¹ıCDN·ÃÎÊ´æ´¢ÎÄ¼şµÄurl
+     * å–å¾—é€šè¿‡CDNè®¿é—®å­˜å‚¨æ–‡ä»¶çš„url
      *
      * @param string $domain 
      * @param string $filename 
@@ -128,7 +128,7 @@ class LocalStorage
     }
  
     /**
-     * È¡µÃ·ÃÎÊ´æ´¢ÎÄ¼şµÄurl
+     * å–å¾—è®¿é—®å­˜å‚¨æ–‡ä»¶çš„url
      *
      * @param string $domain 
      * @param string $filename 
@@ -155,17 +155,17 @@ class LocalStorage
     }
  
     /**
-     * ½«Êı¾İĞ´Èë´æ´¢
+     * å°†æ•°æ®å†™å…¥å­˜å‚¨
      *
-     * ×¢Òâ£ºÎÄ¼şÃû×ó²àËùÓĞµÄ'/'¶¼»á±»¹ıÂËµô¡£
+     * æ³¨æ„ï¼šæ–‡ä»¶åå·¦ä¾§æ‰€æœ‰çš„'/'éƒ½ä¼šè¢«è¿‡æ»¤æ‰ã€‚
      *
-     * @param string $domain ´æ´¢Óò,ÔÚÔÚÏß¹ÜÀíÆ½Ì¨.storageÒ³Ãæ¿É½øĞĞ¹ÜÀí
-     * @param string $destFileName ÎÄ¼şÃû
-     * @param string $content ÎÄ¼şÄÚÈİ,Ö§³Ö¶ş½øÖÆÊı¾İ
-     * @param int $size Ğ´Èë³¤¶È,Ä¬ÈÏÎª²»ÏŞÖÆ
-     * @param array $attr ÎÄ¼şÊôĞÔ£¬¿ÉÉèÖÃµÄÊôĞÔÇë²Î¿¼ SaeStorage::setFileAttr() ·½·¨
-     * @param bool $compress ÊÇ·ñgzipÑ¹Ëõ¡£Èç¹ûÉèÎªtrue£¬ÔòÎÄ¼ş»á¾­¹ıgzipÑ¹ËõºóÔÙ´æÈëStorage£¬³£Óë$attr=array('encoding'=>'gzip')ÁªºÏÊ¹ÓÃ
-     * @return string Ğ´Èë³É¹¦Ê±·µ»Ø¸ÃÎÄ¼şµÄÏÂÔØµØÖ·£¬·ñÔò·µ»Øfalse
+     * @param string $domain å­˜å‚¨åŸŸ,åœ¨åœ¨çº¿ç®¡ç†å¹³å°.storageé¡µé¢å¯è¿›è¡Œç®¡ç†
+     * @param string $destFileName æ–‡ä»¶å
+     * @param string $content æ–‡ä»¶å†…å®¹,æ”¯æŒäºŒè¿›åˆ¶æ•°æ®
+     * @param int $size å†™å…¥é•¿åº¦,é»˜è®¤ä¸ºä¸é™åˆ¶
+     * @param array $attr æ–‡ä»¶å±æ€§ï¼Œå¯è®¾ç½®çš„å±æ€§è¯·å‚è€ƒ SaeStorage::setFileAttr() æ–¹æ³•
+     * @param bool $compress æ˜¯å¦gzipå‹ç¼©ã€‚å¦‚æœè®¾ä¸ºtrueï¼Œåˆ™æ–‡ä»¶ä¼šç»è¿‡gzipå‹ç¼©åå†å­˜å…¥Storageï¼Œå¸¸ä¸$attr=array('encoding'=>'gzip')è”åˆä½¿ç”¨
+     * @return string å†™å…¥æˆåŠŸæ—¶è¿”å›è¯¥æ–‡ä»¶çš„ä¸‹è½½åœ°å€ï¼Œå¦åˆ™è¿”å›false
      * @author Elmer Zhang
      */
     public function write(  $destFileName, $content, $size=-1, $attr=array(), $compress = false )
@@ -195,16 +195,16 @@ class LocalStorage
     }
  
     /**
-     * ½«ÎÄ¼şÉÏ´«Èë´æ´¢
+     * å°†æ–‡ä»¶ä¸Šä¼ å…¥å­˜å‚¨
      *
-     * ×¢Òâ£ºÎÄ¼şÃû×ó²àËùÓĞµÄ'/'¶¼»á±»¹ıÂËµô¡£
+     * æ³¨æ„ï¼šæ–‡ä»¶åå·¦ä¾§æ‰€æœ‰çš„'/'éƒ½ä¼šè¢«è¿‡æ»¤æ‰ã€‚
      *
-     * @param string $domain ´æ´¢Óò,ÔÚÔÚÏß¹ÜÀíÆ½Ì¨.storageÒ³Ãæ¿É½øĞĞ¹ÜÀí
-     * @param string $destFileName Ä¿±êÎÄ¼şÃû
-     * @param string $srcFileName Ô´ÎÄ¼şÃû
-     * @param array $attr ÎÄ¼şÊôĞÔ£¬¿ÉÉèÖÃµÄÊôĞÔÇë²Î¿¼ SaeStorage::setFileAttr() ·½·¨
-     * @param bool $compress ÊÇ·ñgzipÑ¹Ëõ¡£Èç¹ûÉèÎªtrue£¬ÔòÎÄ¼ş»á¾­¹ıgzipÑ¹ËõºóÔÙ´æÈëStorage£¬³£Óë$attr=array('encoding'=>'gzip')ÁªºÏÊ¹ÓÃ
-     * @return string Ğ´Èë³É¹¦Ê±·µ»Ø¸ÃÎÄ¼şµÄÏÂÔØµØÖ·£¬·ñÔò·µ»Øfalse
+     * @param string $domain å­˜å‚¨åŸŸ,åœ¨åœ¨çº¿ç®¡ç†å¹³å°.storageé¡µé¢å¯è¿›è¡Œç®¡ç†
+     * @param string $destFileName ç›®æ ‡æ–‡ä»¶å
+     * @param string $srcFileName æºæ–‡ä»¶å
+     * @param array $attr æ–‡ä»¶å±æ€§ï¼Œå¯è®¾ç½®çš„å±æ€§è¯·å‚è€ƒ SaeStorage::setFileAttr() æ–¹æ³•
+     * @param bool $compress æ˜¯å¦gzipå‹ç¼©ã€‚å¦‚æœè®¾ä¸ºtrueï¼Œåˆ™æ–‡ä»¶ä¼šç»è¿‡gzipå‹ç¼©åå†å­˜å…¥Storageï¼Œå¸¸ä¸$attr=array('encoding'=>'gzip')è”åˆä½¿ç”¨
+     * @return string å†™å…¥æˆåŠŸæ—¶è¿”å›è¯¥æ–‡ä»¶çš„ä¸‹è½½åœ°å€ï¼Œå¦åˆ™è¿”å›false
      * @author Elmer Zhang
      */
     public function upload( $destFileName, $srcFileName, $attr = array(), $compress = false )
@@ -214,11 +214,11 @@ class LocalStorage
  
  
     /**
-     * »ñÈ¡Ö¸¶¨domainÏÂµÄÎÄ¼şÃûÁĞ±í
+     * è·å–æŒ‡å®šdomainä¸‹çš„æ–‡ä»¶ååˆ—è¡¨
      *
      * <code>
      * <?php
-     * //±éÀúDomainÏÂËùÓĞÎÄ¼ş
+     * //éå†Domainä¸‹æ‰€æœ‰æ–‡ä»¶
      * $stor = new SaeStorage();
      *
      * $num = 0;
@@ -233,11 +233,11 @@ class LocalStorage
      * ?>
      * </code>
      *
-     * @param string $domain    ´æ´¢Óò,ÔÚÔÚÏß¹ÜÀíÆ½Ì¨.storageÒ³Ãæ¿É½øĞĞ¹ÜÀí
-     * @param string $prefix    Èç *,abc*,*.txt
-     * @param int $limit        ·µ»ØÌõÊı,×î´ó100Ìõ,Ä¬ÈÏ10Ìõ
-     * @param int $offset            ÆğÊ¼ÌõÊı¡£
-     * @return array Ö´ĞĞ³É¹¦Ê±·µ»ØÎÄ¼şÁĞ±íÊı×é£¬·ñÔò·µ»Øfalse
+     * @param string $domain    å­˜å‚¨åŸŸ,åœ¨åœ¨çº¿ç®¡ç†å¹³å°.storageé¡µé¢å¯è¿›è¡Œç®¡ç†
+     * @param string $prefix    å¦‚ *,abc*,*.txt
+     * @param int $limit        è¿”å›æ¡æ•°,æœ€å¤§100æ¡,é»˜è®¤10æ¡
+     * @param int $offset            èµ·å§‹æ¡æ•°ã€‚
+     * @return array æ‰§è¡ŒæˆåŠŸæ—¶è¿”å›æ–‡ä»¶åˆ—è¡¨æ•°ç»„ï¼Œå¦åˆ™è¿”å›false
      * @author Elmer Zhang
      */
     public function getList( $domain, $prefix='*', $limit=10, $offset = 0 )
@@ -246,14 +246,14 @@ class LocalStorage
     }
  
     /**
-     * »ñÈ¡Ö¸¶¨Domain¡¢Ö¸¶¨Ä¿Â¼ÏÂµÄÎÄ¼şÁĞ±í
+     * è·å–æŒ‡å®šDomainã€æŒ‡å®šç›®å½•ä¸‹çš„æ–‡ä»¶åˆ—è¡¨
      *
-     * @param string $domain    ´æ´¢Óò
-     * @param string $path        Ä¿Â¼µØÖ·
-     * @param int $limit        µ¥´Î·µ»ØÊıÁ¿ÏŞÖÆ£¬Ä¬ÈÏ100£¬×î´ó1000
-     * @param int $offset        ÆğÊ¼ÌõÊı
-     * @param int $fold            ÊÇ·ñÕÛµşÄ¿Â¼
-     * @return array Ö´ĞĞ³É¹¦Ê±·µ»ØÁĞ±í£¬·ñÔò·µ»Øfalse
+     * @param string $domain    å­˜å‚¨åŸŸ
+     * @param string $path        ç›®å½•åœ°å€
+     * @param int $limit        å•æ¬¡è¿”å›æ•°é‡é™åˆ¶ï¼Œé»˜è®¤100ï¼Œæœ€å¤§1000
+     * @param int $offset        èµ·å§‹æ¡æ•°
+     * @param int $fold            æ˜¯å¦æŠ˜å ç›®å½•
+     * @return array æ‰§è¡ŒæˆåŠŸæ—¶è¿”å›åˆ—è¡¨ï¼Œå¦åˆ™è¿”å›false
      * @author Elmer Zhang
      */
     public function getListByPath( $domain, $path = NULL, $limit = 100, $offset = 0, $fold = true )
@@ -262,12 +262,12 @@ class LocalStorage
     }
  
     /**
-     * »ñÈ¡Ö¸¶¨domainÏÂµÄÎÄ¼şÊıÁ¿
+     * è·å–æŒ‡å®šdomainä¸‹çš„æ–‡ä»¶æ•°é‡
      *
      *
-     * @param string $domain    ´æ´¢Óò,ÔÚÔÚÏß¹ÜÀíÆ½Ì¨.storageÒ³Ãæ¿É½øĞĞ¹ÜÀí
-     * @param string $path        Ä¿Â¼
-     * @return array Ö´ĞĞ³É¹¦Ê±·µ»ØÎÄ¼şÊı£¬·ñÔò·µ»Øfalse
+     * @param string $domain    å­˜å‚¨åŸŸ,åœ¨åœ¨çº¿ç®¡ç†å¹³å°.storageé¡µé¢å¯è¿›è¡Œç®¡ç†
+     * @param string $path        ç›®å½•
+     * @return array æ‰§è¡ŒæˆåŠŸæ—¶è¿”å›æ–‡ä»¶æ•°ï¼Œå¦åˆ™è¿”å›false
      * @author Elmer Zhang
      */
     public function getFilesNum( $domain, $path = NULL )
@@ -276,12 +276,12 @@ class LocalStorage
     }
  
     /**
-     * »ñÈ¡ÎÄ¼şÊôĞÔ
+     * è·å–æ–‡ä»¶å±æ€§
      *
-     * @param string $domain     ´æ´¢Óò
-     * @param string $filename    ÎÄ¼şµØÖ·
-     * @param array $attrKey    ÊôĞÔÖµ,Èç array("fileName", "length")£¬µ±attrKeyÎª¿ÕÊ±£¬ÒÔ¹ØÁªÊı×é·½Ê½·µ»Ø¸ÃÎÄ¼şµÄËùÓĞÊôĞÔ¡£
-     * @return array Ö´ĞĞ³É¹¦ÒÔÊı×é·½Ê½·µ»ØÎÄ¼şÊôĞÔ£¬·ñÔò·µ»Øfalse
+     * @param string $domain     å­˜å‚¨åŸŸ
+     * @param string $filename    æ–‡ä»¶åœ°å€
+     * @param array $attrKey    å±æ€§å€¼,å¦‚ array("fileName", "length")ï¼Œå½“attrKeyä¸ºç©ºæ—¶ï¼Œä»¥å…³è”æ•°ç»„æ–¹å¼è¿”å›è¯¥æ–‡ä»¶çš„æ‰€æœ‰å±æ€§ã€‚
+     * @return array æ‰§è¡ŒæˆåŠŸä»¥æ•°ç»„æ–¹å¼è¿”å›æ–‡ä»¶å±æ€§ï¼Œå¦åˆ™è¿”å›false
      * @author Elmer Zhang
      */
     public function getAttr( $domain, $filename, $attrKey=array() )
@@ -290,10 +290,10 @@ class LocalStorage
     }
  
     /**
-     * ¼ì²éÎÄ¼şÊÇ·ñ´æÔÚ
+     * æ£€æŸ¥æ–‡ä»¶æ˜¯å¦å­˜åœ¨
      *
-     * @param string $domain     ´æ´¢Óò
-     * @param string $filename     ÎÄ¼şµØÖ·
+     * @param string $domain     å­˜å‚¨åŸŸ
+     * @param string $filename     æ–‡ä»¶åœ°å€
      * @return bool 
      * @author Elmer Zhang
      */
@@ -303,11 +303,11 @@ class LocalStorage
     }
  
     /**
-     * »ñÈ¡ÎÄ¼şµÄÄÚÈİ
+     * è·å–æ–‡ä»¶çš„å†…å®¹
      *
      * @param string $domain 
      * @param string $filename 
-     * @return string ³É¹¦Ê±·µ»ØÎÄ¼şÄÚÈİ£¬·ñÔò·µ»Øfalse
+     * @return string æˆåŠŸæ—¶è¿”å›æ–‡ä»¶å†…å®¹ï¼Œå¦åˆ™è¿”å›false
      * @author Elmer Zhang
      */
     public function read( $domain, $filename )
@@ -315,10 +315,10 @@ class LocalStorage
     }
  
     /**
-     * É¾³ıÄ¿Â¼
+     * åˆ é™¤ç›®å½•
      *
-     * @param string $domain    ´æ´¢Óò
-     * @param string $path        Ä¿Â¼µØÖ·
+     * @param string $domain    å­˜å‚¨åŸŸ
+     * @param string $path        ç›®å½•åœ°å€
      * @return bool 
      * @author Elmer Zhang
      */
@@ -329,7 +329,7 @@ class LocalStorage
  
  
     /**
-     * É¾³ıÎÄ¼ş
+     * åˆ é™¤æ–‡ä»¶
      *
      * @param string $domain 
      * @param string $filename 
@@ -342,13 +342,13 @@ class LocalStorage
  
  
     /**
-     * ÉèÖÃÎÄ¼şÊôĞÔ
+     * è®¾ç½®æ–‡ä»¶å±æ€§
      *
-     * Ä¿Ç°Ö§³ÖµÄÎÄ¼şÊôĞÔ
-     *  - expires: ä¯ÀÀÆ÷»º´æ³¬Ê±£¬¹¦ÄÜÓëApacheµÄExpiresÅäÖÃÏàÍ¬
-     *  - encoding: ÉèÖÃÍ¨¹ıWebÖ±½Ó·ÃÎÊÎÄ¼şÊ±£¬HeaderÖĞµÄContent-Encoding¡£
-     *  - type: ÉèÖÃÍ¨¹ıWebÖ±½Ó·ÃÎÊÎÄ¼şÊ±£¬HeaderÖĞµÄContent-Type¡£
-     *  - private: ÉèÖÃÎÄ¼şÎªË½ÓĞ£¬ÔòÎÄ¼ş²»¿É±»ÏÂÔØ¡£
+     * ç›®å‰æ”¯æŒçš„æ–‡ä»¶å±æ€§
+     *  - expires: æµè§ˆå™¨ç¼“å­˜è¶…æ—¶ï¼ŒåŠŸèƒ½ä¸Apacheçš„Expiresé…ç½®ç›¸åŒ
+     *  - encoding: è®¾ç½®é€šè¿‡Webç›´æ¥è®¿é—®æ–‡ä»¶æ—¶ï¼ŒHeaderä¸­çš„Content-Encodingã€‚
+     *  - type: è®¾ç½®é€šè¿‡Webç›´æ¥è®¿é—®æ–‡ä»¶æ—¶ï¼ŒHeaderä¸­çš„Content-Typeã€‚
+     *  - private: è®¾ç½®æ–‡ä»¶ä¸ºç§æœ‰ï¼Œåˆ™æ–‡ä»¶ä¸å¯è¢«ä¸‹è½½ã€‚
      *
      * <code>
      * <?php
@@ -369,8 +369,8 @@ class LocalStorage
      * </code>
      *
      * @param string $domain 
-     * @param string $filename     ÎÄ¼şÃû£¬¿ÉÒÔÊ¹ÓÃÍ¨Åä·û"*"ºÍ"?"
-     * @param array $attr         ÎÄ¼şÊôĞÔ¡£¸ñÊ½£ºarray('attr0'=>'value0', 'attr1'=>'value1', ......);
+     * @param string $filename     æ–‡ä»¶åï¼Œå¯ä»¥ä½¿ç”¨é€šé…ç¬¦"*"å’Œ"?"
+     * @param array $attr         æ–‡ä»¶å±æ€§ã€‚æ ¼å¼ï¼šarray('attr0'=>'value0', 'attr1'=>'value1', ......);
      * @return bool 
      * @author Elmer Zhang
      */
@@ -380,7 +380,7 @@ class LocalStorage
     }
  
     /**
-     * ÉèÖÃDomainÊôĞÔ
+     * è®¾ç½®Domainå±æ€§
      */
     public function setDomainAttr( $domain, $attr = array() )
     {
@@ -388,7 +388,7 @@ class LocalStorage
     }
  
     /**
-     * »ñÈ¡domainËùÕ¼´æ´¢µÄ´óĞ¡
+     * è·å–domainæ‰€å å­˜å‚¨çš„å¤§å°
      *
      * @param string $domain 
      * @return int 
@@ -455,7 +455,7 @@ class LocalStorage
        
     }
     /**
-     * ¹¹Ôìº¯ÊıÔËĞĞÊ±Ìæ»»ËùÓĞ$this->optUrlListÖµÀïµÄaccessKeyÓësecretKey
+     * æ„é€ å‡½æ•°è¿è¡Œæ—¶æ›¿æ¢æ‰€æœ‰$this->optUrlListå€¼é‡Œçš„accessKeyä¸secretKey
      * @param string $_accessKey 
      * @param string $_secretKey 
      * @return void 
@@ -466,16 +466,16 @@ class LocalStorage
     }
  
     /**
-     * ×îÖÕµ÷ÓÃserver¶Ë·½·¨µÄrestº¯Êı·â×°
+     * æœ€ç»ˆè°ƒç”¨serverç«¯æ–¹æ³•çš„restå‡½æ•°å°è£…
      * @ignore
      */
-    protected function getJsonContentsAndDecode( $url, $postData = array(), $decode = true ) //»ñÈ¡¶ÔÓ¦URLµÄJSON¸ñÊ½Êı¾İ²¢½âÂë
+    protected function getJsonContentsAndDecode( $url, $postData = array(), $decode = true ) //è·å–å¯¹åº”URLçš„JSONæ ¼å¼æ•°æ®å¹¶è§£ç 
     {
        
     }
  
     /**
-     * ½âÎö²¢ÑéÖ¤server¶Ë·µ»ØµÄÊı¾İ½á¹¹
+     * è§£æå¹¶éªŒè¯serverç«¯è¿”å›çš„æ•°æ®ç»“æ„
      * @ignore
      */
     public function parseRetData( $retData = array() )
@@ -484,7 +484,7 @@ class LocalStorage
     }
  
     /**
-     * domainÆ´½Ó
+     * domainæ‹¼æ¥
      * @param string $domain 
      * @param bool $concat 
      * @return string 

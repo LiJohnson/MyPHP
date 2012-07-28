@@ -1,4 +1,4 @@
-<?php
+<?php 
 class Message{ 
 	var $table_name = 'message';
 	var $message_id;
