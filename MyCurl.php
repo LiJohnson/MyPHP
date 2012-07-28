@@ -1,7 +1,7 @@
 <?php
 
 class MyCurl{ 
-	public $curlHandle ;	
+	public $curlHandle ;
 	function __construct( $url = null ) {
 		 $this->curlHandle = curl_init($url);
 		 $this->setOption(CURLOPT_RETURNTRANSFER, 1);

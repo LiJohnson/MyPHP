@@ -1,9 +1,6 @@
 ﻿<?php
 session_start();
-include $_SERVER[DOCUMENT_ROOT]."/class/MyClient.php";
-include $_SERVER[DOCUMENT_ROOT]."/class/MyLogin.php";
-
-include $_SERVER[DOCUMENT_ROOT]."/class/MySql.php";
+include dirname(__file__)."/../MySql.php";
 
 $m = new Mysql();
 echo "<pre>";
@@ -13,4 +10,5 @@ foreach( $fields as $field )
 {
 	echo "\tvar $".$field["Field"].";\n";
 }
-print_r($fileds);
+echo "</pre>";
+var_dump($fields);

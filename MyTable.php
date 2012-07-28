@@ -14,6 +14,7 @@ class Message{
 class Users
 {
 	var $table_name = 'users';
+	var $users_id ;
     var $id;
 	var $name;
 	var $screen_name;

@@ -2,8 +2,8 @@
 
 if(file_exists(dirname(__FILE__)."/MyTable.php") )
 	include_once dirname(__FILE__)."/MyTable.php";
-if(file_exists(dirname(__FILE__)."/BaseModel.php") )	
-	include_once dirname(__FILE__)."/BaseModel.php";
+if(file_exists(dirname(__FILE__)."/BaseDao.php") )	
+	include_once dirname(__FILE__)."/BaseDao.php";
 	
 interface IIM
 {
@@ -52,7 +52,7 @@ class MySqlIM implements IIM
 	
 	function MySqlIM()
 	{
-		$this->model = new BaseModel("gelivable");
+		$this->model = new BaseDao("gelivable");
 		//$this->model->printSQL = 1==1;
 	}
 	
@@ -132,7 +132,7 @@ class KVIM implements IIM
 	{
 		$this->kv = new SaeKV();
 		$this->kv->init();
-		$this->model = new BaseModel("gelivable");
+		$this->model = new BaseDao("gelivable");
 	}
 	
 	private function arrayToMessage( $arr )
@@ -172,10 +172,10 @@ class KVIM implements IIM
 		$json ;
 		if( isset($data['senderId']) )
 		{
-                  	$messages = $this->kv->pkrget($data['senderId'],100); 
+			$messages = $this->kv->pkrget($data['senderId'],100); 
 			foreach( $messages as $k => $v )
 			{
-                        	if(!is_object($v))continue;
+				if(!is_object($v))continue;
 				if( $v->is_read == 0)
 				{
 					$json[] = $v ;
@@ -186,38 +186,37 @@ class KVIM implements IIM
 			$user->last_date = date ( "Y-m-d H:i:s" ) ;
 			$this->model->update($user , " and id = " .$data['senderId']);
 		}
-                
-                $messages = $this->kv->pkrget("-1",100);
-                foreach( $messages as $k => $v )
-                {         
-                        if( ($messageId > 0) && ($v->message_id >  $messageId)  && ($v->recipient_id == -1) )
-                        {
-                                $json[] = $v ;
-                        }
-                }
 		
+		$messages = $this->kv->pkrget("-1",100);
+		foreach( $messages as $k => $v )
+		{
+				if( ($messageId > 0) && ($v->message_id >  $messageId)  && ($v->recipient_id == -1) )
+				{
+					$json[] = $v ;
+				}
+		}
+
 		return $json;
 	}
 	function update($data)
 	{
-            $arr = is_array($data['message_id']) ? $data['message_id'] : array();
-            $now = $this->stringToTimeStamp(date("Y-m-d H:i:s"));
-                  
-                  
-            foreach( $this->getAllKV() as  $k => $v )
-            {  
-            	   if( !is_object($v) )continue ;
-                   $created = $this->stringToTimeStamp($v->created_at);
-                   $messageId = $v->message_id . "";
-                   var_dump( $now );
-                   var_dump($created);
-                  if( $now - $created > 60 || in_array($messageId , $arr ) )
-                  {
-                          $this->kv->delete($k);  
-                  }
-                   
-            }
-               
+		$arr = is_array($data['message_id']) ? $data['message_id'] : array();
+		$now = $this->stringToTimeStamp(date("Y-m-d H:i:s"));
+			  
+			  
+		foreach( $this->getAllKV() as  $k => $v )
+		{  
+				if( !is_object($v) )continue ;
+				$created = $this->stringToTimeStamp($v->created_at);
+				$messageId = $v->message_id . "";
+				var_dump( $now );
+				var_dump($created);
+				if( $now - $created > 60 || in_array($messageId , $arr ) )
+				{
+					$this->kv->delete($k);  
+				}
+			   
+		}
 	}
 	function webTalk($data)
 	{
@@ -234,44 +233,43 @@ class KVIM implements IIM
 		else 
 			return  json_encode($tmp);
 	}
-        
-       private function stringToTimeStamp( $str )
-       {
-              //日期格式 Y-m-d H:i:s
-              $a = explode(" " , $str ) ; // [Y-m-d] , [H:i:s]
-              
-               $b = $a[1];
-               $a = $a[0];
-               
-               $a = explode("-",$a);
-               $b = explode(":",$b);
-               
-               $t[h] = (int)$b[0];
-               $t[m] = (int)$b[1];
-               $t[s] = (int)$b[2];
-               
-               $t[y] = (int)$a[0];
-               $t[M] = (int)$a[1];
-               $t[d] = (int)$a[2];
-               
-              return  mktime($t[h] , $t[m] , $t[s] , $t[d] , $t[M] , $t[y]);
-       }
+		private function stringToTimeStamp( $str )
+		{
+			//日期格式 Y-m-d H:i:s
+			$a = explode(" " , $str ) ; // [Y-m-d] , [H:i:s]
+
+			$b = $a[1];
+			$a = $a[0];
+
+			$a = explode("-",$a);
+			$b = explode(":",$b);
+
+			$t[h] = (int)$b[0];
+			$t[m] = (int)$b[1];
+			$t[s] = (int)$b[2];
+
+			$t[y] = (int)$a[0];
+			$t[M] = (int)$a[1];
+			$t[d] = (int)$a[2];
+
+			return  mktime($t[h] , $t[m] , $t[s] , $t[d] , $t[M] , $t[y]);
+		}
        
-       private function getAllKV($pkr = "")
-      {
-              $kv = new SaeKV();
-              $ret = $kv->init();
-              $start_key = "";
-              $tmp = array() ;
-              while (true){
-                      $ret = $kv->pkrget($pkr, 100 , $start_key);  
-                      end($ret);                                
-                      $start_key = key($ret);
-                      $tmp = array_merge($tmp , $ret);
-                      if (count($ret) < 100) break;
-              }
-              return $tmp ;
-      }
+		private function getAllKV($pkr = "")
+		{
+			$kv = new SaeKV();
+			$ret = $kv->init();
+			$start_key = "";
+			$tmp = array() ;
+			while (true){
+				$ret = $kv->pkrget($pkr, 100 , $start_key);  
+				end($ret);                                
+				$start_key = key($ret);
+				$tmp = array_merge($tmp , $ret);
+				if (count($ret) < 100) break;
+			}
+			return $tmp ;
+	  }
 }
 endif;
 

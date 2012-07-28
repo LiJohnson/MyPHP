@@ -22,7 +22,7 @@ class MyClientV2 extends SaeTClientV2
 			$token['access_token']= $_SESSION['token']['access_token'] ;
 		}
 		if( $token['access_token'] )
-		{
+		{	
 			parent::__construct( WB_AKEY , WB_SKEY , $token['access_token'] );
 		}
 		else{}
