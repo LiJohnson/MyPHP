@@ -235,11 +235,11 @@ class MyLogin
 	{
 		$c = null;
 		try{
-			if (class_exists ( "MyClient" ))
+			if (class_exists ( "MyClient" ) && isset($_SESSION['last_key']))
 			{
 				$c = new MyClient ();
 				return $c->verify_credentials ();
-			} else if (class_exists ( "MyClientV2" ))
+			} else if (class_exists ( "MyClientV2" ) && isset($_SESSION['token']))
 			{
 				$c = new MyClientV2 ();
 				$uid_get = $c->get_uid ();
