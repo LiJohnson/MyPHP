@@ -234,15 +234,23 @@ class MyLogin
 	function getUserInfo()
 	{
 		$c = null;
-		if (class_exists ( "MyClient" ))
+		try{
+			if (class_exists ( "MyClient" ))
+			{
+				$c = new MyClient ();
+				return $c->verify_credentials ();
+			} else if (class_exists ( "MyClientV2" ))
+			{
+				$c = new MyClientV2 ();
+				$uid_get = $c->get_uid ();
+				return $c->show_user_by_id ( $uid_get ['uid'] );
+			}
+		}catch(Exception $e)
 		{
-			$c = new MyClient ();
-			return $c->verify_credentials ();
-		} else if (class_exists ( "MyClientV2" ))
-		{
-			$c = new MyClientV2 ();
-			$uid_get = $c->get_uid ();
-			return $c->show_user_by_id ( $uid_get ['uid'] );
+			if( $this->debug )
+			{
+				var_dump($e);
+			}
 		}
 		return null;
 	}
