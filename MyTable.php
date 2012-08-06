@@ -58,5 +58,15 @@ class Users
 	var $mail;
 	var $password;
 }
+
+class Robot
+{
+	var $table_name = 'robot';
+	var $robot_id;
+	var $question;
+	var $answer;
+	var $add_date;
+	var $teacher;
+}
         
 ?>
