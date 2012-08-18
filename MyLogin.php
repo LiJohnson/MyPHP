@@ -84,7 +84,7 @@ class MyLogin
 				$_SESSION['user'] = $this->updateClientInfo();
 				return $_SESSION['user'];
 			}
-			}catch(OAuthException $e){}
+			}catch(OAuthException $e){$_SESSION['error']=$e}
 		}
 	}
 	
