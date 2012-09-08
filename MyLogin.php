@@ -10,7 +10,7 @@ class MyLogin
 	private $debug  = false ;
 	public function __construct($callback = "", $uid = null)
 	{
-		$this->dao = new BaseDao();
+		$this->dao = new BaseDao("gelivable");
 		if (! $_SERVER ['SCRIPT_URI'])
 			$_SERVER ['SCRIPT_URI'] = "http://" . $_SERVER ['HTTP_HOST'] . $_SERVER ['REQUEST_URI'];
 		$this->callbackUrl = $_GET ['callback'] ? $_GET ['callback'] : $callback;
