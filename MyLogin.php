@@ -1,4 +1,5 @@
 <?php 
+include_once dirname(__FILE__)."/MyClientV2.php";
 include_once dirname(__FILE__)."/BaseDao.php";
 include_once dirname(__FILE__)."/MyTable.php";
 
@@ -9,7 +10,7 @@ class MyLogin
 	private $debug  = false ;
 	public function __construct($callback = "", $uid = null)
 	{
-		$this->dao = new BaseDao("gelivable");
+		$this->dao = new BaseDao();
 		if (! $_SERVER ['SCRIPT_URI'])
 			$_SERVER ['SCRIPT_URI'] = "http://" . $_SERVER ['HTTP_HOST'] . $_SERVER ['REQUEST_URI'];
 		$this->callbackUrl = $_GET ['callback'] ? $_GET ['callback'] : $callback;
@@ -54,6 +55,7 @@ class MyLogin
 			{
 				$client->end_session();
 			}
+			unset($_SESSION);
 			session_destroy();
 		}
 		catch(Exception1 $e){}
@@ -68,8 +70,8 @@ class MyLogin
 		if(!isset ( $_REQUEST ['code'] ))
 		{
 			$code_url = $o->getAuthorizeURL ( $_SERVER ['SCRIPT_URI'] );
-			header ( "refresh:1;url=" . $code_url );
-			exit ();
+			header( "refresh:1;url=" . $code_url );
+			exit();
 		}
 		else
 		{
@@ -84,7 +86,14 @@ class MyLogin
 				$_SESSION['user'] = $this->updateClientInfo();
 				return $_SESSION['user'];
 			}
-			}catch(OAuthException $e){$_SESSION['error']=$e;}
+			}catch(OAuthException $e)
+			{
+				if( $this->debug )
+				{
+					var_dump($e);
+					echo $e->xdebug_message;
+				}
+			}
 		}
 	}
 	
@@ -217,7 +226,7 @@ class MyLogin
 			$user->access_token = $_SESSION ['token'] ['access_token'] ;
 		}
 		
-		if(ret == false)
+		if($ret == false)
 		{
 			$user->id = $userInfo['id'];
 			$user->add_date = date ( "Y-m-d H:i:s" ) ;
@@ -250,6 +259,7 @@ class MyLogin
 			if( $this->debug )
 			{
 				var_dump($e);
+				echo $e->xdebug_message;
 			}
 		}
 		return null;
