@@ -166,15 +166,15 @@ class MyLogin
 	function getClientIp()
 	{
 		$cip = '';
-		if (! empty ( $_SERVER ["HTTP_CLIENT_IP"] ))
+		if (! empty ( $_SERVER ["HTTP_CLIENT_IP"] ))REMOTE_ADDR
 		{
 			$cip = $_SERVER ["HTTP_CLIENT_IP"];
-		} else if (! empty ( $_SERVER ["HTTP_X_FORWARDED_FOR"] ))
-		{
-			$cip = $_SERVER ["HTTP_X_FORWARDED_FOR"];
 		} else if (! empty ( $_SERVER ["REMOTE_ADDR"] ))
 		{
 			$cip = $_SERVER ["REMOTE_ADDR"];
+		} else if (! empty ( $_SERVER ["HTTP_X_FORWARDED_FOR"] ))
+		{
+			$cip = $_SERVER ["HTTP_X_FORWARDED_FOR"];
 		} else
 		{
 			$cip = "unknow IP";
