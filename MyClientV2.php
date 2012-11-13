@@ -187,7 +187,7 @@ class MyClientV2 extends SaeTClientV2
 	function getMyInfo()
 	{
 		$uid_get = $this->get_uid();
-	return $this->show_user_by_id( $uid_get['uid']);
+		return $this->show_user_by_id( $uid_get['uid']);
 	}
 	
 	function get( $api , $params = array() )
