@@ -184,10 +184,20 @@ class MyClientV2 extends SaeTClientV2
 		return resendWeibo($this->show_status ($id));
 	}
         
-        function getMyInfo()
-        {
-        	$uid_get = $this->get_uid();
-		return $this->show_user_by_id( $uid_get['uid']);
-        }
+	function getMyInfo()
+	{
+		$uid_get = $this->get_uid();
+	return $this->show_user_by_id( $uid_get['uid']);
+	}
+	
+	function get( $api , $params )
+	{
+		return $this->oauth->get( $api, $params );	
+	}
+	
+	function post( $api , $params )
+	{
+		return $this->oauth->post( $api, $params );	
+	}
 	
 }
