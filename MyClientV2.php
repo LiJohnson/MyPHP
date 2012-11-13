@@ -190,12 +190,12 @@ class MyClientV2 extends SaeTClientV2
 	return $this->show_user_by_id( $uid_get['uid']);
 	}
 	
-	function get( $api , $params )
+	function get( $api , $params = array() )
 	{
 		return $this->oauth->get( $api, $params );	
 	}
 	
-	function post( $api , $params )
+	function post( $api , $params = array() )
 	{
 		return $this->oauth->post( $api, $params );	
 	}
