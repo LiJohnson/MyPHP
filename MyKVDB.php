@@ -2,6 +2,7 @@
 if( class_exists("SaeKV") ){
 	class MyKVDB extends SaeKV{
 		public function MyKVDB(){
+			echo "test";
 			$this->init();
 		}
 	}
