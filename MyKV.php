@@ -1,31 +1,92 @@
 <?php
 if( class_exists("SaeKV") ){
-	class MyKVDB extends SaeKV{
+	class MyKV extends SaeKV implements IKvDB{
 		public function MyKVDB(){
 			echo "test";
 			$this->init();
 		}
+		
+		public function autoFlush( $auto){}
+		public function flush(){}
 	}
 }
 else{
-	class MyKVDB implements IKvDB{
-		public function MyKVDB(){echo "test";}
-		public function init(){}
-		public function get($key) {}
-		public function set($key, $value){}
-		public function add($key, $value){}
-		public function replace($key, $value){}
-		public function delete($key){}
-		public function mget($ary){}
-		public function pkrget($prefix_key, $count, $start_key){}
-		public function errno(){}
-		public function errmsg(){}
-		public function get_info(){}
-		public function get_options(){}
-		public function set_options($options){}
+	define(PATH,"g:/sae/KV/");
+	define(FILE,"KVDB.KV");
+	class MyKV implements IKvDB{
+		private $file;
+		private $KVData;
+		private $isAuto ;
+		public function MyKVDB( $file=false  ){
+			$this->init( $file );
+		}
+		
+		private function serialize($data){
+			return base64_encode( serialize( $data ));
+		}
+		private function unSerialize ($str){
+			return unserialize( base64_decode( $str ) );
+		}
+		
+		private function save(){
+			return $this->isAuto ? file_put_contents( $this->file , $this->serialize( $this->KVData )) : false;
+		}
+		
+		public function init( $file=false ){
+			$this->file = PATH . ($file ? $file : FILE);
+			$this->isAuto = true;
+			$this->KVData = $this->unSerialize(file_get_contents( $this->file ));
+			if( !is_array($this->KVData) ){
+				$this->KVData = array();
+			}
+		}
+		public function get($key) {
+			return $this->KVData[$key];
+		}
+		public function set($key, $value){
+			$this->KVData[$key] = $value;
+			return $this->save();
+		}
+		public function add($key, $value){
+			if( isset( $this->KVData[$key] ) )return false;
+			
+			return $this->set( $key , $value );
+		}
+		public function replace($key, $value){
+			if( !isset( $this->KVData[$key] ) )return false;
+			
+			return $this->set( $key , $value );
+		}
+		public function delete($key){
+			if( isset( $this->KVData[$key] ) ){
+				unset( $this->KVData[$key] );
+				return $this->save();
+			}
+			return true;
+		}
+		
+		public function mget($ary){throw new Exception(" 哥很忙，等有空再实现吧 ");}
+		public function pkrget($prefix_key, $count, $start_key){throw new Exception(" 哥很忙，等有空再实现吧 ");}
+		public function errno(){throw new Exception(" 哥很忙，等有空再实现吧 ");}
+		public function errmsg(){throw new Exception(" 哥很忙，等有空再实现吧 ");}
+		public function get_info(){throw new Exception(" 哥很忙，等有空再实现吧 ");}
+		public function get_options(){throw new Exception(" 哥很忙，等有空再实现吧 ");}
+		public function set_options($options){throw new Exception(" 哥很忙，等有空再实现吧 ");}
+		
+		public function autoFlush( $auto ){
+			$this->isAuto = $auto;
+		}
+		public function flush(){
+			$tmp = $this->isAuto;
+			$this->isAuto = true;
+			$res = $this->save();
+			$this->isAuto = $tmp;
+			return $res;
+		}
+		
 	}
 }
-$kv = new MyKVDB();
+
 ?>
 
 <?php 
@@ -231,5 +292,8 @@ interface IKvDB
 	 * @return bool 成功返回true，失败返回false
 	 */
 	public function set_options($options);
+	
+	public function autoFlush($auto);
+	public function flush();
 }
 ?>
