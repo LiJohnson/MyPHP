@@ -1,8 +1,8 @@
 <?php
 if( class_exists("SaeKV") ){
 	class MyKV extends SaeKV implements IKvDB{
-		public function MyKVDB(){
-			echo "test";
+		public function MyKV (){
+			parent::__construct();
 			$this->init();
 		}
 		
@@ -17,7 +17,7 @@ else{
 		private $file;
 		private $KVData;
 		private $isAuto ;
-		public function MyKVDB( $file=false  ){
+		public function MyKV( $file=false  ){
 			$this->init( $file );
 		}
 		
@@ -65,13 +65,13 @@ else{
 			return true;
 		}
 		
-		public function mget($ary){throw new Exception(" ¸çºÜÃ¦£¬µÈÓĞ¿ÕÔÙÊµÏÖ°É ");}
-		public function pkrget($prefix_key, $count, $start_key){throw new Exception(" ¸çºÜÃ¦£¬µÈÓĞ¿ÕÔÙÊµÏÖ°É ");}
-		public function errno(){throw new Exception(" ¸çºÜÃ¦£¬µÈÓĞ¿ÕÔÙÊµÏÖ°É ");}
-		public function errmsg(){throw new Exception(" ¸çºÜÃ¦£¬µÈÓĞ¿ÕÔÙÊµÏÖ°É ");}
-		public function get_info(){throw new Exception(" ¸çºÜÃ¦£¬µÈÓĞ¿ÕÔÙÊµÏÖ°É ");}
-		public function get_options(){throw new Exception(" ¸çºÜÃ¦£¬µÈÓĞ¿ÕÔÙÊµÏÖ°É ");}
-		public function set_options($options){throw new Exception(" ¸çºÜÃ¦£¬µÈÓĞ¿ÕÔÙÊµÏÖ°É ");}
+		public function mget($ary){throw new Exception(" å“¥å¾ˆå¿™ï¼Œç­‰æœ‰ç©ºå†å®ç°å§ ");}
+		public function pkrget($prefix_key, $count, $start_key){throw new Exception(" å“¥å¾ˆå¿™ï¼Œç­‰æœ‰ç©ºå†å®ç°å§ ");}
+		public function errno(){throw new Exception(" å“¥å¾ˆå¿™ï¼Œç­‰æœ‰ç©ºå†å®ç°å§ ");}
+		public function errmsg(){throw new Exception(" å“¥å¾ˆå¿™ï¼Œç­‰æœ‰ç©ºå†å®ç°å§ ");}
+		public function get_info(){throw new Exception(" å“¥å¾ˆå¿™ï¼Œç­‰æœ‰ç©ºå†å®ç°å§ ");}
+		public function get_options(){throw new Exception(" å“¥å¾ˆå¿™ï¼Œç­‰æœ‰ç©ºå†å®ç°å§ ");}
+		public function set_options($options){throw new Exception(" å“¥å¾ˆå¿™ï¼Œç­‰æœ‰ç©ºå†å®ç°å§ ");}
 		
 		public function autoFlush( $auto ){
 			$this->isAuto = $auto;
@@ -87,11 +87,9 @@ else{
 	}
 }
 
-?>
 
-<?php 
  /*
- *  	´íÎó´úÂë¼°´íÎóÌáÊ¾ÏûÏ¢£º
+ *  	é”™è¯¯ä»£ç åŠé”™è¯¯æç¤ºæ¶ˆæ¯ï¼š
  *
  *  - 0  "Success"
  *
@@ -143,125 +141,125 @@ else{
 interface IKvDB
 {
 	/**
-	 * ¿ÕKEYÇ°×º
+	 * ç©ºKEYå‰ç¼€
 	 */
-	const EMPTY_PREFIXKEY  = '';
+	//const EMPTY_PREFIXKEY  = '';
  
 	/**
-	 * mget»ñÈ¡µÄ×î´óKEY¸öÊı
+	 * mgetè·å–çš„æœ€å¤§KEYä¸ªæ•°
 	 */
-	const MAX_MGET_SIZE  = 32;
+	//const MAX_MGET_SIZE  = 32;
 	
 	/**
-	 * pkrget»ñÈ¡µÄ×î´óKEY¸öÊı
+	 * pkrgetè·å–çš„æœ€å¤§KEYä¸ªæ•°
 	 */
-	const MAX_PKRGET_SIZE  = 100;
+	//const MAX_PKRGET_SIZE  = 100;
  
 	/**
-	 * KEYµÄ×î´ó³¤¶È
+	 * KEYçš„æœ€å¤§é•¿åº¦
 	 */
-	const MAX_KEY_LENGTH   = 200;
+	//const MAX_KEY_LENGTH   = 200;
  
 	/**
-	 * VALUEµÄ×î´ó³¤¶È (4 * 1024 * 1024)
+	 * VALUEçš„æœ€å¤§é•¿åº¦ (4 * 1024 * 1024)
 	 */
-	const MAX_VALUE_LENGTH = 4194304;
+	//const MAX_VALUE_LENGTH = 4194304;
 	
 
  
 	/**
-	 * ³õÊ¼»¯Sae KV ·şÎñ
+	 * åˆå§‹åŒ–Sae KV æœåŠ¡
 	 *
 	 * @return bool 
 	 */
 	public function init();
  
 	/**
-	 * »ñµÃkey¶ÔÓ¦µÄvalue
+	 * è·å¾—keyå¯¹åº”çš„value
 	 *
-	 * @param string $key ³¤¶ÈĞ¡ÓÚMAX_KEY_LENGTH×Ö½Ú
-	 * @return string|bool³É¹¦·µ»ØvalueÖµ£¬Ê§°Ü·µ»Øfalse
-	 *  Ê±¼ä¸´ÔÓ¶È O(log N)
+	 * @param string $key é•¿åº¦å°äºMAX_KEY_LENGTHå­—èŠ‚
+	 * @return string|boolæˆåŠŸè¿”å›valueå€¼ï¼Œå¤±è´¥è¿”å›false
+	 *  æ—¶é—´å¤æ‚åº¦ O(log N)
 	 */
 	public function get($key) ;
  
 	/**
-	 * ¸üĞÂkey¶ÔÓ¦µÄvalue
+	 * æ›´æ–°keyå¯¹åº”çš„value
 	 *
-	 * @param string $key ³¤¶ÈĞ¡ÓÚMAX_KEY_LENGTH×Ö½Ú£¬µ±²»ÉèÖÃencodekeyÑ¡ÏîÊ±£¬keyÖĞ²»ÔÊĞí³öÏÖ·Ç¿É¼û×Ö·û
-	 * @param string $value ³¤¶ÈĞ¡ÓÚMAX_VALUE_LENGTH
-	 * @return bool ³É¹¦·µ»Øtrue£¬Ê§°Ü·µ»Øfalse
-	 *  Ê±¼ä¸´ÔÓ¶È O(log N)
+	 * @param string $key é•¿åº¦å°äºMAX_KEY_LENGTHå­—èŠ‚ï¼Œå½“ä¸è®¾ç½®encodekeyé€‰é¡¹æ—¶ï¼Œkeyä¸­ä¸å…è®¸å‡ºç°éå¯è§å­—ç¬¦
+	 * @param string $value é•¿åº¦å°äºMAX_VALUE_LENGTH
+	 * @return bool æˆåŠŸè¿”å›trueï¼Œå¤±è´¥è¿”å›false
+	 *  æ—¶é—´å¤æ‚åº¦ O(log N)
 	 */
 	public function set($key, $value);
  
 	/**
-	 * Ôö¼Ókey-value¶Ô£¬Èç¹ûkey´æÔÚÔò·µ»ØÊ§°Ü
+	 * å¢åŠ key-valueå¯¹ï¼Œå¦‚æœkeyå­˜åœ¨åˆ™è¿”å›å¤±è´¥
 	 *
-	 * @param string $key ³¤¶ÈĞ¡ÓÚMAX_KEY_LENGTH×Ö½Ú£¬µ±²»ÉèÖÃencodekeyÑ¡ÏîÊ±£¬keyÖĞ²»ÔÊĞí³öÏÖ·Ç¿É¼û×Ö·û
-	 * @param string $value ³¤¶ÈĞ¡ÓÚMAX_VALUE_LENGTH
-	 * @return bool ³É¹¦·µ»Øtrue£¬Ê§°Ü·µ»Øfalse
-	 *  Ê±¼ä¸´ÔÓ¶È O(log N)
+	 * @param string $key é•¿åº¦å°äºMAX_KEY_LENGTHå­—èŠ‚ï¼Œå½“ä¸è®¾ç½®encodekeyé€‰é¡¹æ—¶ï¼Œkeyä¸­ä¸å…è®¸å‡ºç°éå¯è§å­—ç¬¦
+	 * @param string $value é•¿åº¦å°äºMAX_VALUE_LENGTH
+	 * @return bool æˆåŠŸè¿”å›trueï¼Œå¤±è´¥è¿”å›false
+	 *  æ—¶é—´å¤æ‚åº¦ O(log N)
 	 */
 	public function add($key, $value);
  
 	/**
-	 * Ìæ»»key¶ÔÓ¦µÄvalue£¬Èç¹ûkey²»´æÔÚÔò·µ»ØÊ§°Ü
+	 * æ›¿æ¢keyå¯¹åº”çš„valueï¼Œå¦‚æœkeyä¸å­˜åœ¨åˆ™è¿”å›å¤±è´¥
 	 *
-	 * @param string $key ³¤¶ÈĞ¡ÓÚMAX_KEY_LENGTH×Ö½Ú£¬µ±²»ÉèÖÃencodekeyÑ¡ÏîÊ±£¬keyÖĞ²»ÔÊĞí³öÏÖ·Ç¿É¼û×Ö·û
-	 * @param string $value ³¤¶ÈĞ¡ÓÚMAX_VALUE_LENGTH
-	 * @return bool ³É¹¦·µ»Øtrue£¬Ê§°Ü·µ»Øfalse
-	 *  Ê±¼ä¸´ÔÓ¶È O(log N)
+	 * @param string $key é•¿åº¦å°äºMAX_KEY_LENGTHå­—èŠ‚ï¼Œå½“ä¸è®¾ç½®encodekeyé€‰é¡¹æ—¶ï¼Œkeyä¸­ä¸å…è®¸å‡ºç°éå¯è§å­—ç¬¦
+	 * @param string $value é•¿åº¦å°äºMAX_VALUE_LENGTH
+	 * @return bool æˆåŠŸè¿”å›trueï¼Œå¤±è´¥è¿”å›false
+	 *  æ—¶é—´å¤æ‚åº¦ O(log N)
 	 */
 	public function replace($key, $value);
 	
 	/**
-	 * É¾³ıkey-value
+	 * åˆ é™¤key-value
 	 *
-	 * @param string $key ³¤¶ÈĞ¡ÓÚMAX_KEY_LENGTH×Ö½Ú
-	 * @return bool ³É¹¦·µ»Øtrue£¬Ê§°Ü·µ»Øfalse
-	 *  Ê±¼ä¸´ÔÓ¶È O(log N)
+	 * @param string $key é•¿åº¦å°äºMAX_KEY_LENGTHå­—èŠ‚
+	 * @return bool æˆåŠŸè¿”å›trueï¼Œå¤±è´¥è¿”å›false
+	 *  æ—¶é—´å¤æ‚åº¦ O(log N)
 	 */
 	public function delete($key);
  
 	/**
-	 * ÅúÁ¿»ñµÃkey-values
+	 * æ‰¹é‡è·å¾—key-values
 	 *
-	 * @param array $ary Ò»¸ö°üº¬¶à¸ökeyµÄÊı×é£¬Êı×é³¤¶ÈĞ¡ÓÚµÈÓÚMAX_MGET_SIZE
-	 * @return array|bool³É¹¦·µ»Økey-valueÊı×é£¬Ê§°Ü·µ»Øfalse
-	 *  Ê±¼ä¸´ÔÓ¶È O(m * log N), mÎª»ñÈ¡key-value¶ÔµÄ¸öÊı
+	 * @param array $ary ä¸€ä¸ªåŒ…å«å¤šä¸ªkeyçš„æ•°ç»„ï¼Œæ•°ç»„é•¿åº¦å°äºç­‰äºMAX_MGET_SIZE
+	 * @return array|boolæˆåŠŸè¿”å›key-valueæ•°ç»„ï¼Œå¤±è´¥è¿”å›false
+	 *  æ—¶é—´å¤æ‚åº¦ O(m * log N), mä¸ºè·å–key-valueå¯¹çš„ä¸ªæ•°
 	 */
 	public function mget($ary);
  
 	/**
-	 * Ç°×º·¶Î§²éÕÒkey-values
+	 * å‰ç¼€èŒƒå›´æŸ¥æ‰¾key-values
 	 *
-	 * @param string $prefix_key Ç°×º£¬³¤¶ÈĞ¡ÓÚMAX_KEY_LENGTH×Ö½Ú
-	 * @param int $count Ç°×º²éÕÒ×î´ó·µ»ØµÄkey-values¸öÊı£¬Ğ¡ÓÚµÈÓÚMAX_PKRGET_SIZE
-	 * @param string $start_key ÔÚÖ´ĞĞÇ°×º²éÕÒÊ±£¬·µ»Ø´óÓÚ¸Ã$start_keyµÄkey-values£»Ä¬ÈÏÖµÎª¿Õ×Ö·û´®£¨¼´ºöÂÔ¸Ã²ÎÊı£©
-	 * @return array|bool³É¹¦·µ»Økey-valueÊı×é£¬Ê§°Ü·µ»Øfalse
-	 *  Ê±¼ä¸´ÔÓ¶È O(m + log N), mÎª»ñÈ¡key-value¶ÔµÄ¸öÊı
+	 * @param string $prefix_key å‰ç¼€ï¼Œé•¿åº¦å°äºMAX_KEY_LENGTHå­—èŠ‚
+	 * @param int $count å‰ç¼€æŸ¥æ‰¾æœ€å¤§è¿”å›çš„key-valuesä¸ªæ•°ï¼Œå°äºç­‰äºMAX_PKRGET_SIZE
+	 * @param string $start_key åœ¨æ‰§è¡Œå‰ç¼€æŸ¥æ‰¾æ—¶ï¼Œè¿”å›å¤§äºè¯¥$start_keyçš„key-valuesï¼›é»˜è®¤å€¼ä¸ºç©ºå­—ç¬¦ä¸²ï¼ˆå³å¿½ç•¥è¯¥å‚æ•°ï¼‰
+	 * @return array|boolæˆåŠŸè¿”å›key-valueæ•°ç»„ï¼Œå¤±è´¥è¿”å›false
+	 *  æ—¶é—´å¤æ‚åº¦ O(m + log N), mä¸ºè·å–key-valueå¯¹çš„ä¸ªæ•°
 	 */
-	public function pkrget($prefix_key, $count, $start_key);
+	//public function pkrget($prefix_key, $count, $start_key);
  
 	/**
-	 * »ñµÃ´íÎó´úÂë
+	 * è·å¾—é”™è¯¯ä»£ç 
 	 *
-	 * @return int ·µ»Ø´íÎó´úÂë
+	 * @return int è¿”å›é”™è¯¯ä»£ç 
 	 */
-	public function errno();
+	//public function errno();
  
 	/**
-	 * »ñµÃ´íÎóÌáÊ¾ÏûÏ¢
+	 * è·å¾—é”™è¯¯æç¤ºæ¶ˆæ¯
 	 *
-	 * @return string ·µ»Ø´íÎóÌáÊ¾ÏûÏ¢×Ö·û´®
+	 * @return string è¿”å›é”™è¯¯æç¤ºæ¶ˆæ¯å­—ç¬¦ä¸²
 	 */
-	public function errmsg() ;
+	//public function errmsg() ;
  
 	/**
-	 * »ñµÃkvĞÅÏ¢
+	 * è·å¾—kvä¿¡æ¯
 	 *
-	 * @return array ·µ»ØkvĞÅÏ¢Êı×é
+	 * @return array è¿”å›kvä¿¡æ¯æ•°ç»„
 	 *  array(2) {
 	 *    ["total_size"]=>
 	 *    int(49)
@@ -269,29 +267,29 @@ interface IKvDB
 	 *    int(1)
 	 *  }
 	 */
-	public function get_info() ;
+	//public function get_info() ;
 	
 	/**
-	 * »ñÈ¡Ñ¡ÏîÖµ
+	 * è·å–é€‰é¡¹å€¼
 	 *
-	 * @return array ³É¹¦·µ»ØÑ¡ÏîÊı×é£¬Ê§°Ü·µ»Øfalse
+	 * @return array æˆåŠŸè¿”å›é€‰é¡¹æ•°ç»„ï¼Œå¤±è´¥è¿”å›false
 	 *  array(1) {
-	 *    "encodekey" => 1 // Ä¬ÈÏÎª1
-	 *                     // 1: Ê¹ÓÃurlencode±àÂëkey£»0£º²»Ê¹ÓÃurlencode±àÂëkey
+	 *    "encodekey" => 1 // é»˜è®¤ä¸º1
+	 *                     // 1: ä½¿ç”¨urlencodeç¼–ç keyï¼›0ï¼šä¸ä½¿ç”¨urlencodeç¼–ç key
 	 *  }
 	 */
-	public function get_options() ;
+	//public function get_options() ;
  
 	/**
-	 * ÉèÖÃÑ¡ÏîÖµ
+	 * è®¾ç½®é€‰é¡¹å€¼
 	 *
 	 * @param array $options array (1) {
-	 *    "encodekey" => 1 // Ä¬ÈÏÎª1
-	 *                     // 1: Ê¹ÓÃurlencode±àÂëkey£»0£º²»Ê¹ÓÃurlencode±àÂëkey
+	 *    "encodekey" => 1 // é»˜è®¤ä¸º1
+	 *                     // 1: ä½¿ç”¨urlencodeç¼–ç keyï¼›0ï¼šä¸ä½¿ç”¨urlencodeç¼–ç key
 	 *  }
-	 * @return bool ³É¹¦·µ»Øtrue£¬Ê§°Ü·µ»Øfalse
+	 * @return bool æˆåŠŸè¿”å›trueï¼Œå¤±è´¥è¿”å›false
 	 */
-	public function set_options($options);
+	//public function set_options($options);
 	
 	public function autoFlush($auto);
 	public function flush();
