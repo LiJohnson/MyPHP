@@ -229,7 +229,7 @@ interface IKvDB
 	 * @return array|bool成功返回key-value数组，失败返回false
 	 *  时间复杂度 O(m * log N), m为获取key-value对的个数
 	 */
-	public function mget($ary);
+	//public function mget($ary);
  
 	/**
 	 * 前缀范围查找key-values
