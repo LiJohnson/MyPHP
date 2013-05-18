@@ -27,21 +27,15 @@ class MyLogin
 		if (isset($_SESSION ['user'] ) && $_SESSION ['user'] != false)
 			return $_SESSION ['user'];
 		
-		
 		$user = null;
-		if( is_array($callback) )
-		{
+		if( is_array($callback) ){
 			$user = $this->initUser($callback);
 		}
-		else if (class_exists ( "MyClient" ))
-		{
-			$user = $this->initWeibo ( $callback );
-		} else if (class_exists ( "MyClientV2" ))
-		{
+		else if (class_exists ( "MyClientV2" )){
 			$user = $this->initWeiboV2 ( $callback );
 		}
-		if( $user != null )
-		{
+
+		if( $user != null ){
 			$_SESSION['user'] = $user;
 		}
 		return $user;
@@ -95,35 +89,6 @@ class MyLogin
 				}
 			}
 		}
-	}
-	
-	public function initWeibo($callback = '')
-	{
-		if ($_SESSION ['user'] != false)
-			return $_SESSION ['user'];
-	
-		if (! isset ( $_SESSION ['keys'] ) )
-		{
-			$callbackUrl = $_SERVER ['SCRIPT_URI'] . "?callback=" . $_GET ['callback'];
-			
-			$o = new SaeT ( WB_AKEY, WB_SKEY );
-			$keys = $o->getRequestToken ();
-			$_SESSION ['keys'] = $keys;
-            $aurl = $o->getAuthorizeURL ( $keys ['oauth_token'], false, $callbackUrl );//echo 0;
-			header("refresh:0;url=".$aurl);
-			return null;
-		} 
-		elseif (! isset ( $_SESSION ['last_key'] ))
-		{
-			$o = new SaeT ( WB_AKEY, WB_SKEY, $_SESSION ['keys'] ['oauth_token'], $_SESSION ['keys'] ['oauth_token_secret'] );//print_r($o);
-			$last_key = $o->getAccessToken ( $_REQUEST ['oauth_verifier'] );
-			$_SESSION ['last_key'] = $last_key;
-			$_SESSION['user'] = $this->updateClientInfo();
-			if (strlen ( $this->callbackUrl))
-				header ( "refresh:1;url=" . $this->callbackUrl );
-            return $_SESSION['user'];
-		}
-		return $_SESSION['user'];
 	}
 	
 	/*
@@ -197,8 +162,11 @@ class MyLogin
 		$user = new Users();
 		
 		$user->id = $userInfo ['id'] ;
-		
-		$ret = $this->dao->getOneModel( $user );
+		try{
+			$ret = $this->dao->getOneModel( $user );
+		}catch(Exception $e){
+			return false;
+		}
 		
 		if( ! is_array($userInfo) )
 			$userInfo = array();
@@ -240,39 +208,20 @@ class MyLogin
 		}
 	}
 	
-	function getUserInfo()
-	{
-		$c = null;
-		try{
-			if (class_exists ( "MyClient" ) && isset($_SESSION['last_key']))
-			{
-				$c = new MyClient ();
-				return $c->verify_credentials ();
-			} else if (class_exists ( "MyClientV2" ) && isset($_SESSION['token']))
-			{
-				$c = new MyClientV2 ();
-				$uid_get = $c->get_uid ();
-				return $c->show_user_by_id ( $uid_get ['uid'] );
-			}
-		}catch(Exception $e)
-		{
-			if( $this->debug )
-			{
-				var_dump($e);
-				echo $e->xdebug_message;
-			}
+	function getUserInfo(){	
+		$c = $this->getClient();
+		if( $c ){
+			$uid_get = $c->get_uid ();
+			return $c->show_user_by_id ( $uid_get ['uid'] );
 		}
 		return null;
 	}
-	function getClient()
-	{
-		if (class_exists( "MyClient" ))
-		{
-			return new MyClient ();
-		} else if (class_exists ( "MyClientV2" ))
-		{
+		
+	function getClient(){
+		if( isset($_SESSION['token']) ){
 			return new MyClientV2 ();
 		}
 		return null;
 	}
+
 }

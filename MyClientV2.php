@@ -58,12 +58,12 @@ class MyClientV2 extends SaeTClientV2
 	 * 获取所有关注用户的ID
 	 * @return Array
 	 */
-	function get_all_Friends_ids()
+	function get_all_Friends_ids( $uid = null )
 	{
 		$ids = Array();
 		do
 		{
-			$fr =$this->friends_ids( $fr['next_cursor'] ) ;		
+			$fr =$this->friends_ids_by_id ( $uid ,$fr['next_cursor'] , 200 ) ;		
 			$ids  = array_merge($ids , $fr['ids']);
 		
 		}
@@ -74,12 +74,12 @@ class MyClientV2 extends SaeTClientV2
 	 * 获取所有粉丝的ID
 	 * @return Array
 	 */
-	function get_all_Followers_ids()
+	function get_all_Followers_ids( $uid = null )
 	{
 		$ids = Array();
 		do
 		{
-			$fr =$this->followers_ids( $fr['next_cursor'] ) ;		
+			$fr =$this->followers_ids_by_id( $uid , $fr['next_cursor'] , 200 ) ;		
 			$ids  = array_merge($ids , $fr['ids']);
 		
 		}
