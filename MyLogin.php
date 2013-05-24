@@ -64,7 +64,7 @@ class MyLogin
 		if(!isset ( $_REQUEST ['code'] ))
 		{
 			$code_url = $o->getAuthorizeURL ( $_SERVER ['SCRIPT_URI'] );
-			header( "refresh:1;url=" . $code_url );
+			header( "refresh:0;url=" . $code_url );
 			exit();
 		}
 		else
@@ -73,13 +73,13 @@ class MyLogin
 			$keys ['code'] = $_REQUEST ['code'];
 			$keys ['redirect_uri'] = $callback != "" ? $callback : $_SERVER['SCRIPT_URI'] ;
 			try{
-			$token = $o->getAccessToken ( 'code', $keys );
-			if ($token)
-			{
-				$_SESSION ['token'] = $token;
-				$_SESSION['user'] = $this->updateClientInfo();
-				return $_SESSION['user'];
-			}
+				$token = $o->getAccessToken ( 'code', $keys );
+				if ($token)
+				{
+					$_SESSION ['token'] = $token;
+					$_SESSION['user'] = $this->updateClientInfo();
+					return $_SESSION['user'];
+				}
 			}catch(OAuthException $e)
 			{
 				if( $this->debug )
