@@ -37,17 +37,21 @@ class BaseMysql
 	protected $charset ;
 	protected $port ;
 	protected $debug ;
-	public function __construct()
-	{
+	public function __construct( $dbName){
 		$this->port = 3306;
-		$this->host = $_SERVER['HTTP_HOST'];
-		$this->user = 'lcs';
-		$this->pass = 'lcs';
-		$this->dbName = 'gelivable';
+		$this->host = defined('MY_DB_HOST') ? MY_DB_HOST : 'lcs.com' ;
+		$this->user = defined('MY_DB_USER') ? MY_DB_USER : 'lcs' ;
+		$this->pass = defined('MY_DB_PASS') ? MY_DB_PASS : 'lcs' ;
+		$this->dbName = $dbName ;
 		$this->charset = 'UTF8';
 		$this->debug = false;
 	}
 
+	/**
+	 * 设置调试开关
+	 * @param bool $isOn false/true
+	 * @return void
+	 */
 	public function setDebug( $isOn ){
 		$this->debug = $isOn;
 	}
@@ -66,9 +70,8 @@ class Mysqli2 extends BaseMysql
 	 * 构造函数
 	 * @return void 
 	 */
-	public function __construct()
-	{
-		parent::__construct();
+	public function __construct( $dbName = 'gelivable' , $user = 'lcs' , $pass = 'lcs'){
+		parent::__construct( $dbName , $user , $pass);
 	}
 	
 	/**
@@ -77,8 +80,7 @@ class Mysqli2 extends BaseMysql
 	 * @param string $port 
 	 * @return void 
 	 */
-	public function setPort( $port )
-	{
+	public function setPort( $port ){
 		$this->port = $port; 
 	} 
 	
@@ -88,8 +90,7 @@ class Mysqli2 extends BaseMysql
 	 * @param string $charset 字符集,如GBK,GB2312,UTF8
 	 * @return void 
 	 */
-	public function setCharset( $charset )
-	{
+	public function setCharset( $charset ){
 		return $this->charset = $charset;
 	}
 	
@@ -147,8 +148,11 @@ class Mysqli2 extends BaseMysql
 	 * @param string $sql 
 	 * @return array 成功返回数组，失败时返回false
 	 */
-	public function getLine( $sql )
-	{
+	public function getLine( $sql ){
+		if( !preg_match('/limit/i', $sql) ){
+			$sql .= ' limit 1';
+		}
+
 		$data = $this->getData( $sql );
 		if ($data) {
 			return @reset($data);
@@ -401,8 +405,11 @@ class MysqlPDO extends PDO
 	 * @param string $sql 
 	 * @return array 成功返回数组，失败时返回false
 	 */
-	public function getLine( $sql )
-	{
+	public function getLine( $sql ){	
+		if( !preg_match('/limit/i', $sql) ){
+			$sql .= ' limit 1';
+		}
+
 		$data = $this->getData( $sql );
 		if ($data) {
 			return @reset($data);
