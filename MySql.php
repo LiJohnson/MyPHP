@@ -153,7 +153,7 @@ class Mysqli2 extends BaseMysql
 			$sql .= ' limit 1';
 		}
 
-		$data = $this->getData( $sql );
+		$data = $this->getData( $sql );		
 		if ($data) {
 			return @reset($data);
 		} else {

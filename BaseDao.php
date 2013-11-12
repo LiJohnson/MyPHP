@@ -78,11 +78,11 @@ class BaseDao extends MySql {
 					$condition[] = '`' . $k . '` like \'' . $v .'\'';
 			}
 		}
-		
-		$sql = "select * from " . $tableName ;
-		if( count( $condition ) > 0 ){
-			$sql .= ' where ' . join( $condition , 'and ');
+		if( count( $condition ) == 0 ){
+			$condition[] = '1=1';
 		}
+		$sql = "select * from " . $tableName . ' where ' . join( $condition , ' and ');
+		
 		$sql .= ' ' .$order;
 		return $sql;
 	}
@@ -101,7 +101,7 @@ class BaseDao extends MySql {
 		return $this->getData( $sql );
 	}
 	
-	function getOneModel($model, $order = "") {
+	function getOneModel($model, $order = "") {		
 		return $this->getLine( $this->getSql( $model, $order ) );
 	}
 
