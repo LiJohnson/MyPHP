@@ -63,7 +63,7 @@ class BaseDao extends MySql {
 	 */
 	private function getSql($model, $order = "" , $isCount = false ) {
 		$tableName = '';
-		$condition = array();
+		$condition = array('1=1');
 		
 		foreach ( $model as $k => $v ){
 			if(is_null($v) || trim($v) == "")continue;
@@ -78,9 +78,7 @@ class BaseDao extends MySql {
 					$condition[] = '`' . $k . '` like \'' . $v .'\'';
 			}
 		}
-		if( count( $condition ) == 0 ){
-			$condition[] = '1=1';
-		}
+		
 		$sql = "select * from " . $tableName . ' where ' . join( $condition , ' and ');
 		
 		$sql .= ' ' .$order;
