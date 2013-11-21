@@ -90,7 +90,7 @@ class BaseDao extends MySql {
 		if( $page && $page['pageSize'] > 0 ){
 			$page['page'] = $page['page'] ? $page['page'] : 1;
 			$totalRecord = $this->getVar( preg_replace('/^select[\s\*]+from/', 'select count(1) from', $sql)   );
-			$page['totalRecord'] = $totalRecord
+			$page['totalRecord'] = $totalRecord;
 			$page['total'] = floor( $totalRecord / $page['pageSize'] ) + (  $totalRecord % $page['pageSize'] ? 1 : 0);
 			$page['total'] = !$page['total'] ? 1 :$page['total'] ;
 			$page['page'] = $page['page'] < $page['total'] ?  $page['page'] : $page['total'] ;
