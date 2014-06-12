@@ -19,7 +19,7 @@ class MyLogin
 	public function setDebug( $on = true )
 	{
 		$this->debug = $on ;
-		$this->dao->printSQL = $on;
+		$this->dao->setDebug($on);
 	}
 	
 	public function login($callback = '')
@@ -151,6 +151,7 @@ class MyLogin
 	private function updateClientInfo()
 	{
 		$userInfo = $this->getUserInfo ();
+
 		if( $userInfo == null || isset($userInfo['error']) )
 		{
 			$userInfo = $_SESSION['user'];
@@ -167,15 +168,16 @@ class MyLogin
 		}catch(Exception $e){
 			return false;
 		}
-		
+
 		if( ! is_array($userInfo) )
 			$userInfo = array();
 		
 		unset($user);
 		$user = new Users();
 		
-		foreach ( $userInfo as $k => $v )
+		foreach ( $user as $k => $v )
 		{
+			$v = $userInfo[$k];
 			if ( is_null($v) || is_array ( $v ) || $k == 'users_id')
 				continue;
 			$user->$k = $v ;
