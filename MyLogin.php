@@ -1,28 +1,32 @@
 <?php 
 include_once dirname(__FILE__)."/MyClientV2.php";
 include_once dirname(__FILE__)."/BaseDao.php";
-include_once dirname(__FILE__)."/MyTable.php";
 
-class MyLogin
-{
-	private $callbackUrl;
+class MyLogin{
+
 	private $dao ;
 	private $debug  = false ;
-	public function __construct($callback = "", $uid = null)
-	{
-		$this->dao = new BaseDao("gelivable");		
-		if (! $_SERVER ['SCRIPT_URI'])
-			$_SERVER ['SCRIPT_URI'] = "http://" . $_SERVER ['HTTP_HOST'] . $_SERVER ['REQUEST_URI'];
-		$this->callbackUrl = $_GET ['callback'] ? $_GET ['callback'] : $callback;
+	private $client ;
+	public function MyLogin($callback = false ){
+
+		$this->dao = new BaseDao('gelivable');
+
+		if( !$callback ){
+			if (! $_SERVER ['SCRIPT_URI']){
+				$_SERVER ['SCRIPT_URI'] = "http://" . $_SERVER ['HTTP_HOST'] . $_SERVER ['REQUEST_URI'];
+			}
+			$callback = $_SERVER ['SCRIPT_URI'];
+		}
+		$this->client = new MyClientV2();
+		$this->callbackUrl = $callback;
 	}
 		
-	public function setDebug( $on = true )
-	{
+	public function setDebug( $on = true ){
 		$this->debug = $on ;
 		$this->dao->setDebug($on);
 	}
 	
-	public function login($callback = '')
+	public function login($callback = false )
 	{
 		if (isset($_SESSION ['user'] ) && $_SESSION ['user'] != false)
 			return $_SESSION ['user'];
@@ -31,8 +35,8 @@ class MyLogin
 		if( is_array($callback) ){
 			$user = $this->initUser($callback);
 		}
-		else if (class_exists ( "MyClientV2" )){
-			$user = $this->initWeiboV2 ( $callback );
+		else{
+			$user = $this->initWeiboV2();
 		}
 
 		if( $user != null ){
@@ -40,82 +44,33 @@ class MyLogin
 		}
 		return $user;
 	}
-	public function logout()
-	{
-		try
-		{
-			$client = $this->getClient();
-			if(method_exists($client , "end_session"))
-			{
-				$client->end_session();
-			}
+
+	public function logout(){
+		try{
 			unset($_SESSION);
 			session_destroy();
+			$this->client->end_session();
 		}
 		catch(Exception1 $e){}
 	}
-	function initWeiboV2($callback = '')
-	{
-		if ($_SESSION ['user'] != false)
-			return $_SESSION ['user'];
-		
-		$o = new SaeTOAuthV2 ( WB_AKEY, WB_SKEY );
-		
-		if(!isset ( $_REQUEST ['code'] ))
-		{
-			$code_url = $o->getAuthorizeURL ( $_SERVER ['SCRIPT_URI'] );
-			header( "refresh:0;url=" . $code_url );
-			exit();
+
+	private function initWeiboV2(){
+		$c = new MyClientV2();
+		if( !$c->isOauthed() ){
+			$c->wbOauth();
 		}
-		else
-		{
-			$keys = array ();
-			$keys ['code'] = $_REQUEST ['code'];
-			$keys ['redirect_uri'] = $callback != "" ? $callback : $_SERVER['SCRIPT_URI'] ;
-			try{
-				$token = $o->getAccessToken ( 'code', $keys );
-				if ($token)
-				{
-					$_SESSION ['token'] = $token;
-					$_SESSION['user'] = $this->updateClientInfo();
-					return $_SESSION['user'];
-				}
-			}catch(OAuthException $e)
-			{
-				if( $this->debug )
-				{
-					var_dump($e);
-					echo $e->xdebug_message;
-				}
-			}
-		}
+		return $this->getUserInfo();
 	}
 	
 	/*
 	*
 	*/
-	public function initUser( $user )
-	{
-		if( !isset($_SESSION['user']) )
-		{
-			$u = new Users();
-			$u->mail = $user['user_email'] ;
-			$u->password = md5($user['password']) ;
-			$user = $this->dao->getOneModel( $u );
-			if($user)
-			{
-				$_SESSION['user'] = $user ;
-			}
-			else 
-			{
-				return $user ;
-			}
-		}		
+	private function initUser( $loginData ){
+		//..........
 		return $this->updateClientInfo();
 	}
 	
-	public function register( $user )
-	{
+	public function register( $user ){
 		$u = new Users();
 		$u->mail = $u->name = $u->screen_name = $user['user_email'] ;
 		$u->password = md5($user['password']) ;
@@ -128,24 +83,14 @@ class MyLogin
 		return $this->updateClientInfo();
 	}
 	
-	function getClientIp()
-	{
-		$cip = '';
-		if (! empty ( $_SERVER ["HTTP_CLIENT_IP"] ))
-		{
-			$cip = $_SERVER ["HTTP_CLIENT_IP"];
-		} else if (! empty ( $_SERVER ["REMOTE_ADDR"] ))
-		{
-			$cip = $_SERVER ["REMOTE_ADDR"];
-		} else if (! empty ( $_SERVER ["HTTP_X_FORWARDED_FOR"] ))
-		{
-			$cip = $_SERVER ["HTTP_X_FORWARDED_FOR"];
-		}else
-		{
-			$cip = "unknow IP";
+	function getClientIp(){
+		$names = array('HTTP_CLIENT_IP' , 'REMOTE_ADDR' , 'HTTP_X_FORWARDED_FOR');
+		foreach ($names as $name) {
+			if( $_SERVER [ $name ] ){
+				return $_SERVER [ $name ];
+			}
 		}
-		return $cip;
-	
+		return '0.0.0.0';
 	}
 	
 	private function updateClientInfo()

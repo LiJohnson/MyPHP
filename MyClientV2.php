@@ -1,6 +1,6 @@
 <?php
-include_once( dirname(__file__).'/../config.php' );
-include_once( 'saetv2.ex.class.php' );
+require_once( dirname(__file__).'/config.php' );
+require_once( dirname(__file__).'/lib/saetv2.ex.class.php' );
 /**
  * date 2011年5月14日 17:08:17
  * Enter description here ...
@@ -14,43 +14,65 @@ class MyClientV2 extends SaeTClientV2
 	 * 
 	 * 构造函数
 	 */
-  
-	public function __construct( $token=null )
-	{
-		if( $token == null )//
-		{
+	public function MyClientV2( $token=null ){
+		if( $token == null ){
 			$token['access_token']= $_SESSION['token']['access_token'] ;
 		}
 		
-		if( $token['access_token'] )
-		{	
+		if( $token['access_token'] ){
 			parent::__construct( WB_AKEY , WB_SKEY , $token['access_token'] );
 		}
-		else{}
-		if( $token != null && $token['ip'] )
-		{
-		  $this->set_remote_ip($token['ip']);                  
+		
+		if( $token != null && $token['ip'] ){
+			$this->set_remote_ip($token['ip']);                  
 		}
 	}
- 
+ 	
+ 	function wbOauth(){
+ 		$url =  $_SERVER ['SCRIPT_URI'] ? $_SERVER ['SCRIPT_URI'] :  "http://" . $_SERVER ['HTTP_HOST'] . $_SERVER ['REQUEST_URI'];
+ 		
+ 		$o = new SaeTOAuthV2 ( WB_AKEY, WB_SKEY );
+ 		if(!isset ( $_REQUEST ['code'] )){
+			$code_url = $o->getAuthorizeURL ( $url );
+			header( "refresh:0;url=" . $code_url );
+			exit();
+		}
+		else{
+			$keys = array ();
+			$keys ['code'] = $_REQUEST ['code'];
+			$keys ['redirect_uri'] = $url ;
+			try{
+				$token = $o->getAccessToken ( 'code', $keys );
+				if ($token){
+					$this->oauth = new SaeTOAuthV2( WB_AKEY, WB_SKEY, $token['access_token'], $refresh_token );
+					$_SESSION['token'] = $token;
+					return $token;
+				}
+			}catch(OAuthException $e){
+				var_dump($e);
+				echo $e->xdebug_message;
+			}
+		}
+ 	}
+
+ 	function isOauthed(){
+ 		return !!$this->oauth->access_token;
+ 	}
+
 	/**
 	 * 随便找几个微博用户 , 并根据 $isFollw 是否对其进行关注
 	 * @param unknown_type $n
 	 * @param unknown_type $isFollow
 	 * @return String
 	 */
-	function getPublicUser( $n = 5 , $isFollow = false )
-	{
+	function getPublicUser( $n = 5 , $isFollow = false ){
 		$ms = $this->public_timeline($n);
-	//	print_r($m);
 		$u = "" ;
-		foreach( $ms as $s  ):
+		foreach( $ms as $s  ){
 			$u .= "@".$s['user']['screen_name'] ." ";
 			$re = $isFollow ? $this->follow( $s['user']['id'] ) : Array();
-			//echo "fl:".$s['user']['id'] . ($re['Error'])."<br>";
-			/*print_r($re);
-			echo "<br>";/***/
-		endforeach;
+
+		}
 		return $u ;
 	}
 	
@@ -91,18 +113,16 @@ class MyClientV2 extends SaeTClientV2
 	 * 去除图片下方的水印
 	 * @param unknown_type $img_url
 	 */
-	function changeImg( $img_url , $sy_url = NULL )
-	{
+	function changeImg( $img_url , $sy_url = NULL ){		
 		$base_img_data = file_get_contents($img_url);
 		$img = new SaeImage( $base_img_data );
 		$imgAttr = $img->getImageAttr();   		//var_dump($imgAttr);
-		if( $imgAttr['mime'] == "image/gif" )
-		{
+		if( $imgAttr['mime'] == "image/gif" ){
 			//echo "0<br>";
 			return $img_url ;
 		}
-		if( $imgAttr[0] < 300 || $imgAttr[1] < 300 )
-		{
+
+		if( $imgAttr[0] < 300 || $imgAttr[1] < 300 ){
 			//echo "0<br>";
 			//return $img_url ;
 		}
@@ -117,16 +137,14 @@ class MyClientV2 extends SaeTClientV2
 		 	    ) );
 		$img->composite($imgAttr[0], $imgAttr[1]);
 		$new_data = $img->exec();
-		if( $new_data === false )
-		{
+		if( $new_data === false ){
 			//echo "1<br>";
 			return 	$img_url;
 		}
 		
 		$stor = new SaeStorage();
 		$url  = $stor->write(DOMAIN ,"1.jpg" , $new_data);
-		if( $url == false )
-		{
+		if( $url == false ){
 			//echo $stor->errMsg().$g_domain.$new_data;
 			
 			//	echo "2<br>";
@@ -140,63 +158,50 @@ class MyClientV2 extends SaeTClientV2
 	 * 重新发微博
 	 * @param unknown_type $weibo
 	 */
-	function resendWeibo( $weibo )
-	{
+	function resendWeibo( $weibo ){
 		$text = "";
 		$pic  = "";
-		if(  $weibo['retweeted_status']['text'] )
-		{
+		if(  $weibo['retweeted_status']['text'] ){
 			$text =  $weibo['retweeted_status']['text'] ;
-			if( $weibo['retweeted_status']['original_pic'] )
-			{
+			if( $weibo['retweeted_status']['original_pic'] ){
 				$pic = $weibo['retweeted_status']['original_pic'] ;
 			}
-			else
-			{
+			else{
 				$pic = null;
 			}
 		}
-		else
-		{
+		else{
 			$text =  $weibo['text'];
-			if( $weibo['original_pic'] )
-			{
+			if( $weibo['original_pic'] ){
 				$pic = $weibo['original_pic'] ;
 			}
-			else
-			{
+			else{
 				$pic = null ;
 			}
 		}
-		if( $pic )
-		{
+		if( $pic ){
 			$weibo = $this->upload($text, changeImg($pic));
 		}
-		else
-		{
+		else{
 			$weibo = $this->update($text);
 		}
 		return $weibo ;
 	}
 	
-	function resendWeiboById( $id )
-	{
+	function resendWeiboById( $id ){
 		return resendWeibo($this->show_status ($id));
 	}
         
-	function getMyInfo()
-	{
+	function getMyInfo(){
 		$uid_get = $this->get_uid();
 		return $this->show_user_by_id( $uid_get['uid']);
 	}
 	
-	function get( $api , $params = array() )
-	{
+	function get( $api , $params = array() ){
 		return $this->oauth->get( $api, $params );	
 	}
 	
-	function post( $api , $params = array() )
-	{
+	function post( $api , $params = array() ){
 		return $this->oauth->post( $api, $params );	
 	}
 	
