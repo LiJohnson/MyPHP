@@ -2,6 +2,21 @@
 include_once dirname(__FILE__)."/MyClientV2.php";
 include_once dirname(__FILE__)."/BaseDao.php";
 
+/*
+CREATE TABLE IF NOT EXISTS `users` (
+  `user_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `id` varchar(32) NOT NULL COMMENT '登录Id(股email)',
+  `name` varchar(32) NOT NULL COMMENT '昵称',
+  `ip` varchar(32) NOT NULL COMMENT '登录IP ',
+  `last_date` timestamp NULL  COMMENT '登录时间',
+  `passwoed` varchar(32) NOT NULL COMMENT '密码',
+  `shit` varchar(10) NOT NULL COMMENT '屎',
+  `data` longtext NOT NULL COMMENT '其它数据',
+  `type` int(11) NOT NULL COMMENT '用户类型',
+  `access_token` text NOT NULL COMMENT 'tocken',
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT  AUTO_INCREMENT=1 ;
+*/
 class MyLogin{
 
 	private $dao ;
@@ -93,9 +108,18 @@ class MyLogin{
 		return '0.0.0.0';
 	}
 	
-	private function updateClientInfo()
-	{
-		$userInfo = $this->getUserInfo ();
+	private function updateClientInfo(){
+//user_id
+//id
+//name
+//ip
+//last_date
+//passwoed
+//shit
+//data
+//type
+//token
+		$userInfo = $this->getUserInfo();
 
 		if( $userInfo == null || isset($userInfo['error']) )
 		{
@@ -156,10 +180,8 @@ class MyLogin{
 	}
 	
 	function getUserInfo(){	
-		$c = $this->getClient();
-		if( $c ){
-			$uid_get = $c->get_uid ();
-			return $c->show_user_by_id ( $uid_get ['uid'] );
+		if( $this->client->isAouthed() ){
+			return $this->client->getUserInfo();
 		}
 		return null;
 	}
