@@ -2,4 +2,6 @@
 session_start();
 require("../MyClientV2.php");
 $o = new MyClientV2();
-var_dump($o);
+$o->wbOauth();
+
+var_dump($o->getUserInfo());

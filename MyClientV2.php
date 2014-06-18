@@ -28,6 +28,10 @@ class MyClientV2 extends SaeTClientV2
 		}
 	}
  	
+ 	/**
+ 	 * 授权
+ 	 * @return [type] [description]
+ 	 */
  	function wbOauth(){
  		$url =  $_SERVER ['SCRIPT_URI'] ? $_SERVER ['SCRIPT_URI'] :  "http://" . $_SERVER ['HTTP_HOST'] . $_SERVER ['REQUEST_URI'];
  		
@@ -55,6 +59,10 @@ class MyClientV2 extends SaeTClientV2
 		}
  	}
 
+ 	/**
+ 	 * 是否已经授权
+ 	 * @return boolean [description]
+ 	 */
  	function isOauthed(){
  		return !!$this->oauth->access_token;
  	}
@@ -138,17 +146,12 @@ class MyClientV2 extends SaeTClientV2
 		$img->composite($imgAttr[0], $imgAttr[1]);
 		$new_data = $img->exec();
 		if( $new_data === false ){
-			//echo "1<br>";
 			return 	$img_url;
 		}
 		
 		$stor = new SaeStorage();
 		$url  = $stor->write(DOMAIN ,"1.jpg" , $new_data);
 		if( $url == false ){
-			//echo $stor->errMsg().$g_domain.$new_data;
-			
-			//	echo "2<br>";
-			
 			return 	$img_url;
 		}
 		return $url;	
