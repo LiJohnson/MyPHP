@@ -1,0 +1,458 @@
+/**
+var a = document.createElement("a") , style , less = [];
+var pre = ".pre(@style,@value){\n";
+pre += '\t-webkit-@{style}: @value;\n';
+pre += '\t   -moz-@{style}: @value;\n';
+pre += '\t\t-ms-@{style}: @value;\n';
+pre += '\t\t\t@{style}: @value;\n}';
+
+var tmp = '.style(@value){\n';
+tmp += '\t.pre(style,@value)\n}';
+
+less.push(pre);
+for( var i in a.style ){
+	if( !/^webkit/.test(i) )continue;
+
+	style = i.replace(/[A-Z]/g,function(i){return "-"+i}).replace(/^webkit\-/,'').toLowerCase();
+	less.push(tmp.replace(/style/g,style));
+}
+console.log(less.join('\n'))
+ */
+.pre(@style,@value){
+	-webkit-@{style}: @value;
+	   -moz-@{style}: @value;
+		-ms-@{style}: @value;
+			@{style}: @value;
+}
+.animation(@value){
+	.pre(animation,@value)
+}
+.animation-delay(@value){
+	.pre(animation-delay,@value)
+}
+.animation-direction(@value){
+	.pre(animation-direction,@value)
+}
+.animation-duration(@value){
+	.pre(animation-duration,@value)
+}
+.animation-fill-mode(@value){
+	.pre(animation-fill-mode,@value)
+}
+.animation-iteration-count(@value){
+	.pre(animation-iteration-count,@value)
+}
+.animation-name(@value){
+	.pre(animation-name,@value)
+}
+.animation-play-state(@value){
+	.pre(animation-play-state,@value)
+}
+.animation-timing-function(@value){
+	.pre(animation-timing-function,@value)
+}
+.app-region(@value){
+	.pre(app-region,@value)
+}
+.appearance(@value){
+	.pre(appearance,@value)
+}
+.aspect-ratio(@value){
+	.pre(aspect-ratio,@value)
+}
+.backface-visibility(@value){
+	.pre(backface-visibility,@value)
+}
+.background-clip(@value){
+	.pre(background-clip,@value)
+}
+.background-composite(@value){
+	.pre(background-composite,@value)
+}
+.background-origin(@value){
+	.pre(background-origin,@value)
+}
+.background-size(@value){
+	.pre(background-size,@value)
+}
+.border-after(@value){
+	.pre(border-after,@value)
+}
+.border-after-color(@value){
+	.pre(border-after-color,@value)
+}
+.border-after-style(@value){
+	.pre(border-after-style,@value)
+}
+.border-after-width(@value){
+	.pre(border-after-width,@value)
+}
+.border-before(@value){
+	.pre(border-before,@value)
+}
+.border-before-color(@value){
+	.pre(border-before-color,@value)
+}
+.border-before-style(@value){
+	.pre(border-before-style,@value)
+}
+.border-before-width(@value){
+	.pre(border-before-width,@value)
+}
+.border-end(@value){
+	.pre(border-end,@value)
+}
+.border-end-color(@value){
+	.pre(border-end-color,@value)
+}
+.border-end-style(@value){
+	.pre(border-end-style,@value)
+}
+.border-end-width(@value){
+	.pre(border-end-width,@value)
+}
+.border-fit(@value){
+	.pre(border-fit,@value)
+}
+.border-horizontal-spacing(@value){
+	.pre(border-horizontal-spacing,@value)
+}
+.border-image(@value){
+	.pre(border-image,@value)
+}
+.border-radius(@value){
+	.pre(border-radius,@value)
+}
+.border-start(@value){
+	.pre(border-start,@value)
+}
+.border-start-color(@value){
+	.pre(border-start-color,@value)
+}
+.border-start-style(@value){
+	.pre(border-start-style,@value)
+}
+.border-start-width(@value){
+	.pre(border-start-width,@value)
+}
+.border-vertical-spacing(@value){
+	.pre(border-vertical-spacing,@value)
+}
+.box-align(@value){
+	.pre(box-align,@value)
+}
+.box-decoration-break(@value){
+	.pre(box-decoration-break,@value)
+}
+.box-direction(@value){
+	.pre(box-direction,@value)
+}
+.box-flex(@value){
+	.pre(box-flex,@value)
+}
+.box-flex-group(@value){
+	.pre(box-flex-group,@value)
+}
+.box-lines(@value){
+	.pre(box-lines,@value)
+}
+.box-ordinal-group(@value){
+	.pre(box-ordinal-group,@value)
+}
+.box-orient(@value){
+	.pre(box-orient,@value)
+}
+.box-pack(@value){
+	.pre(box-pack,@value)
+}
+.box-reflect(@value){
+	.pre(box-reflect,@value)
+}
+.box-shadow(@value){
+	.pre(box-shadow,@value)
+}
+.clip-path(@value){
+	.pre(clip-path,@value)
+}
+.column-break-after(@value){
+	.pre(column-break-after,@value)
+}
+.column-break-before(@value){
+	.pre(column-break-before,@value)
+}
+.column-break-inside(@value){
+	.pre(column-break-inside,@value)
+}
+.column-count(@value){
+	.pre(column-count,@value)
+}
+.column-gap(@value){
+	.pre(column-gap,@value)
+}
+.column-rule(@value){
+	.pre(column-rule,@value)
+}
+.column-rule-color(@value){
+	.pre(column-rule-color,@value)
+}
+.column-rule-style(@value){
+	.pre(column-rule-style,@value)
+}
+.column-rule-width(@value){
+	.pre(column-rule-width,@value)
+}
+.column-span(@value){
+	.pre(column-span,@value)
+}
+.column-width(@value){
+	.pre(column-width,@value)
+}
+.columns(@value){
+	.pre(columns,@value)
+}
+.filter(@value){
+	.pre(filter,@value)
+}
+.font-feature-settings(@value){
+	.pre(font-feature-settings,@value)
+}
+.font-size-delta(@value){
+	.pre(font-size-delta,@value)
+}
+.font-smoothing(@value){
+	.pre(font-smoothing,@value)
+}
+.highlight(@value){
+	.pre(highlight,@value)
+}
+.hyphenate-character(@value){
+	.pre(hyphenate-character,@value)
+}
+.line-box-contain(@value){
+	.pre(line-box-contain,@value)
+}
+.line-break(@value){
+	.pre(line-break,@value)
+}
+.line-clamp(@value){
+	.pre(line-clamp,@value)
+}
+.locale(@value){
+	.pre(locale,@value)
+}
+.logical-height(@value){
+	.pre(logical-height,@value)
+}
+.logical-width(@value){
+	.pre(logical-width,@value)
+}
+.margin-after(@value){
+	.pre(margin-after,@value)
+}
+.margin-after-collapse(@value){
+	.pre(margin-after-collapse,@value)
+}
+.margin-before(@value){
+	.pre(margin-before,@value)
+}
+.margin-before-collapse(@value){
+	.pre(margin-before-collapse,@value)
+}
+.margin-bottom-collapse(@value){
+	.pre(margin-bottom-collapse,@value)
+}
+.margin-collapse(@value){
+	.pre(margin-collapse,@value)
+}
+.margin-end(@value){
+	.pre(margin-end,@value)
+}
+.margin-start(@value){
+	.pre(margin-start,@value)
+}
+.margin-top-collapse(@value){
+	.pre(margin-top-collapse,@value)
+}
+.mask(@value){
+	.pre(mask,@value)
+}
+.mask-box-image(@value){
+	.pre(mask-box-image,@value)
+}
+.mask-box-image-outset(@value){
+	.pre(mask-box-image-outset,@value)
+}
+.mask-box-image-repeat(@value){
+	.pre(mask-box-image-repeat,@value)
+}
+.mask-box-image-slice(@value){
+	.pre(mask-box-image-slice,@value)
+}
+.mask-box-image-source(@value){
+	.pre(mask-box-image-source,@value)
+}
+.mask-box-image-width(@value){
+	.pre(mask-box-image-width,@value)
+}
+.mask-clip(@value){
+	.pre(mask-clip,@value)
+}
+.mask-composite(@value){
+	.pre(mask-composite,@value)
+}
+.mask-image(@value){
+	.pre(mask-image,@value)
+}
+.mask-origin(@value){
+	.pre(mask-origin,@value)
+}
+.mask-position(@value){
+	.pre(mask-position,@value)
+}
+.mask-position-x(@value){
+	.pre(mask-position-x,@value)
+}
+.mask-position-y(@value){
+	.pre(mask-position-y,@value)
+}
+.mask-repeat(@value){
+	.pre(mask-repeat,@value)
+}
+.mask-repeat-x(@value){
+	.pre(mask-repeat-x,@value)
+}
+.mask-repeat-y(@value){
+	.pre(mask-repeat-y,@value)
+}
+.mask-size(@value){
+	.pre(mask-size,@value)
+}
+.max-logical-height(@value){
+	.pre(max-logical-height,@value)
+}
+.max-logical-width(@value){
+	.pre(max-logical-width,@value)
+}
+.min-logical-height(@value){
+	.pre(min-logical-height,@value)
+}
+.min-logical-width(@value){
+	.pre(min-logical-width,@value)
+}
+.padding-after(@value){
+	.pre(padding-after,@value)
+}
+.padding-before(@value){
+	.pre(padding-before,@value)
+}
+.padding-end(@value){
+	.pre(padding-end,@value)
+}
+.padding-start(@value){
+	.pre(padding-start,@value)
+}
+.perspective(@value){
+	.pre(perspective,@value)
+}
+.perspective-origin(@value){
+	.pre(perspective-origin,@value)
+}
+.perspective-origin-x(@value){
+	.pre(perspective-origin-x,@value)
+}
+.perspective-origin-y(@value){
+	.pre(perspective-origin-y,@value)
+}
+.print-color-adjust(@value){
+	.pre(print-color-adjust,@value)
+}
+.rtl-ordering(@value){
+	.pre(rtl-ordering,@value)
+}
+.ruby-position(@value){
+	.pre(ruby-position,@value)
+}
+.tap-highlight-color(@value){
+	.pre(tap-highlight-color,@value)
+}
+.text-combine(@value){
+	.pre(text-combine,@value)
+}
+.text-decorations-in-effect(@value){
+	.pre(text-decorations-in-effect,@value)
+}
+.text-emphasis(@value){
+	.pre(text-emphasis,@value)
+}
+.text-emphasis-color(@value){
+	.pre(text-emphasis-color,@value)
+}
+.text-emphasis-position(@value){
+	.pre(text-emphasis-position,@value)
+}
+.text-emphasis-style(@value){
+	.pre(text-emphasis-style,@value)
+}
+.text-fill-color(@value){
+	.pre(text-fill-color,@value)
+}
+.text-orientation(@value){
+	.pre(text-orientation,@value)
+}
+.text-security(@value){
+	.pre(text-security,@value)
+}
+.text-stroke(@value){
+	.pre(text-stroke,@value)
+}
+.text-stroke-color(@value){
+	.pre(text-stroke-color,@value)
+}
+.text-stroke-width(@value){
+	.pre(text-stroke-width,@value)
+}
+.transform(@value){
+	.pre(transform,@value)
+}
+.transform-origin(@value){
+	.pre(transform-origin,@value)
+}
+.transform-origin-x(@value){
+	.pre(transform-origin-x,@value)
+}
+.transform-origin-y(@value){
+	.pre(transform-origin-y,@value)
+}
+.transform-origin-z(@value){
+	.pre(transform-origin-z,@value)
+}
+.transform-style(@value){
+	.pre(transform-style,@value)
+}
+.transition(@value){
+	.pre(transition,@value)
+}
+.transition-delay(@value){
+	.pre(transition-delay,@value)
+}
+.transition-duration(@value){
+	.pre(transition-duration,@value)
+}
+.transition-property(@value){
+	.pre(transition-property,@value)
+}
+.transition-timing-function(@value){
+	.pre(transition-timing-function,@value)
+}
+.user-drag(@value){
+	.pre(user-drag,@value)
+}
+.user-modify(@value){
+	.pre(user-modify,@value)
+}
+.user-select(@value){
+	.pre(user-select,@value)
+}
+.writing-mode(@value){
+	.pre(writing-mode,@value)
+}
