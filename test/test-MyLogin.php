@@ -1,5 +1,6 @@
 <?php
-session_start();
+//session_start();
 require("../MyLogin.php");
 $o = new MyLogin();
+$o->setDebug();
 var_dump($o->login());

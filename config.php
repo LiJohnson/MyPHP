@@ -7,6 +7,7 @@ if( !defined('WB_AKEY') ){
 		define( "WB_AKEY" , '3600693014' );
 		define( "WB_SKEY" , '22325d36c32bc46cb553e87afc1b01be' );
 		define(	"SRC_PATH" , 'http://lcs.com/sae/gtbcode/1/');
+		define('MY_DB_NAME', 'test');
 	}
 	else
 	{
@@ -21,6 +22,9 @@ if( !defined('WB_AKEY') ){
 		define( "WB_SKEY" , '6a957336c809666320421b44307b8a28' );
 		/**/
 		define(	"SRC_PATH" , 'http://1.gtbcode.sinaapp.com/');
-	}	
+		define('MY_DB_NAME', $_SERVER['HTTP_APPNAME']);
+	}
+
+
 }
 
