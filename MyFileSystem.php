@@ -388,7 +388,7 @@ class SaeFileSystem extends AbstractFileSytem implements IWebFileSystem {
 		$file = $this->getFilePath($path) . '/' . '.mkdir';
 		$res = $this->stor->write($this->domain , $file , '.mkdir');
 		if( $res ){
-            //$this->rm($file);
+			//$this->rm($file);
 		}
 		return $res;
 	}
