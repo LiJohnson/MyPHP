@@ -9,13 +9,13 @@ CREATE TABLE IF NOT EXISTS `users` (
   `name` varchar(32) NOT NULL COMMENT '昵称',
   `ip` varchar(32) NOT NULL COMMENT '登录IP ',
   `last_date` timestamp NULL  COMMENT '登录时间',
-  `passwoed` varchar(32) NOT NULL COMMENT '密码',
+  `password` varchar(32) NOT NULL COMMENT '密码',
   `shit` varchar(10) NOT NULL COMMENT '屎',
   `data` longtext NOT NULL COMMENT '其它数据',
-  `type` int(11) NOT NULL COMMENT '用户类型',
+  `type` varchar(10) NOT NULL COMMENT '用户类型',
   `access_token` text NOT NULL COMMENT 'tocken',
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB  AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 */
 /**
  * 登录
@@ -184,7 +184,7 @@ class MyLogin{
 		if( !$ret ){
 			$user['id'] = $userInfo['id'];
 			$user['name'] = $userInfo['name'];
-			$user['type'] = 1;
+			$user['type'] = 'weibo';
 			$this->dao->save($user);
 		}else{
 			$this->dao->update($user,'user_id = ' . $userInfo['user_id']);
