@@ -410,7 +410,13 @@ class SaeFileSystem extends AbstractFileSytem implements IWebFileSystem {
 		return $this->cp($s,$d) && $this->rm($s);
 	}
 	public function rm($file){
-		return $this->stor->delete( $this->domain , $this->getFilePath($file) );
+		$data = $this->ls($file);
+		$count = 0;
+		foreach ($data['files'] as $f) {
+			$count += $this->rm( $f->localtion);
+		}
+		$count += $this->stor->delete( $this->domain , $this->getFilePath($file) ) ? 1 : 0;
+		return $count;
 	}
 	public function find($key){
 		//todo
