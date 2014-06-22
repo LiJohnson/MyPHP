@@ -1,6 +1,7 @@
 <?php
-require_once( dirname(__file__).'/config.php' );
 require_once( dirname(__file__).'/lib/saetv2.ex.class.php' );
+if( !defined('WB_AKEY') )die('"WB_AKEY" not defined' );
+if( !defined('WB_SKEY') )die('"WB_SKEY" not defined' );
 /**
  * date 2011年5月14日 17:08:17
  * Enter description here ...

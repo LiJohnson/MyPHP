@@ -123,8 +123,8 @@ class MyKV implements IKvDB{
 	}
 }
 else{
-	define(PATH,"d:/lcs/sae/");
-	define(FILE,"KVDB.KV");
+
+	if( !defined('MY_KV_FILE') )die('"MY_KV_FILE" not deinfed');
 	class MyKV implements IKvDB{
 		private $file;
 		private $KVData;
@@ -145,12 +145,12 @@ else{
 		}
 		
 		public function init( $file=false ){
-			if( !file_exists(PATH) ){
-				mkdir(PATH, 0777,true);
+			$this->file = $file ? $file : MY_KV_FILE;
+			if( !file_exists(dirname($this->file)) ){
+				mkdir(dirname($this->file), 0777,true);
 			}
-			$this->file = PATH . ($file ? $file : FILE);
 			if( !file_exists($this->file) ){
-				file_put_contents($this->file,"");
+				touch($this->file);
 			}
 			$this->isAuto = true;
 			$this->KVData = $this->unSerialize(file_get_contents( $this->file ));

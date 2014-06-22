@@ -1,7 +1,7 @@
 <?php 
 include_once dirname(__FILE__)."/MyClientV2.php";
 include_once dirname(__FILE__)."/BaseDao.php";
-
+if( !defined('MY_DB_NAME') )die('"MY_DB_NAME" not defined ');
 /*
 CREATE TABLE IF NOT EXISTS `users` (
   `user_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `type` int(11) NOT NULL COMMENT '用户类型',
   `access_token` text NOT NULL COMMENT 'tocken',
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB DEFAULT  AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  AUTO_INCREMENT=1 ;
 */
 /**
  * 登录
@@ -39,21 +39,17 @@ class MyLogin{
 
 	/**
 	 * 构造方法
-	 * @param boolean $callback [description]
 	 */
-	public function MyLogin($callback = false ){
+	public function MyLogin(){
 
 		$this->dao = new BaseDao(MY_DB_NAME);
 		$this->dao->setTable('users');
 
-		if( !$callback ){
-			if (! $_SERVER ['SCRIPT_URI']){
-				$_SERVER ['SCRIPT_URI'] = "http://" . $_SERVER ['HTTP_HOST'] . $_SERVER ['REQUEST_URI'];
-			}
-			$callback = $_SERVER ['SCRIPT_URI'];
+		if (! $_SERVER ['SCRIPT_URI']){
+			$_SERVER ['SCRIPT_URI'] = "http://" . $_SERVER ['HTTP_HOST'] . $_SERVER ['REQUEST_URI'];
 		}
+		$this->callbackUrl = $_SERVER ['SCRIPT_URI'];
 		$this->client = new MyClientV2();
-		$this->callbackUrl = $callback;
 	}
 	/**
 	 * 调试开关
@@ -179,8 +175,6 @@ class MyLogin{
 		
 		if(!isset($userInfo ['id']))
 			return  false;
-		
-		$user->id = $userInfo ['id'] ;
 
 		$ret = $this->dao->getOne( array('id' => $userInfo ['id'] ) );
 		

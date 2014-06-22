@@ -1,19 +1,14 @@
-<?php 
+<?php
 
-if( class_exists('SaeMysql') )
-{
-	class Mysql extends SaeMysql
-	{
-		public function __construct( $appname = null , $do_replication = true  )
-		{
+if( class_exists('SaeMysql') ){
+	class Mysql extends SaeMysql{
+		public function __construct( $appname = null , $do_replication = true  ){
 			parent::__construct($do_replication);
-			if( $appname == '598420668pic' )
-			{
+			if( $appname == '598420668pic' ){
 				$this->setAppname($appname);
 				$this->setAuth("5k0zlkwxy1" , "2zz05ky3250h2wkhmyy1xhxyzmjzwmkl30hwwhlk");
 			}
-			elseif( $appname == 'gelivable' )
-			{
+			elseif( $appname == 'gelivable' ){
 				$this->setAppname($appname);
 				$this->setAuth("4x5zzx0z40" , "1j0j1hwhjhk452y2k22jym55j34j4lh2x4jkhk3h");
 			}
@@ -23,8 +18,11 @@ if( class_exists('SaeMysql') )
 		}  
 	}
 }
-else
-{
+else{
+	if( !defined('MY_DB_HOST') )die('"MY_DB_HOST" not defined' );
+	if( !defined('MY_DB_USER') )die('"MY_DB_USER" not defined' );
+	if( !defined('MY_DB_PASS') )die('"MY_DB_PASS" not defined' );
+
 	class Mysql extends Mysqli2{}
 }
 
@@ -40,9 +38,9 @@ class BaseMysql
 
 	public function __construct( $dbName = false){
 		$this->port = 3306;
-		$this->host = defined('MY_DB_HOST') ? MY_DB_HOST : 'lcs.com' ;
-		$this->user = defined('MY_DB_USER') ? MY_DB_USER : 'lcs' ;
-		$this->pass = defined('MY_DB_PASS') ? MY_DB_PASS : 'lcs' ;
+		$this->host = MY_DB_HOST ;
+		$this->user = MY_DB_USER ;
+		$this->pass = MY_DB_PASS ;
 		$this->dbName = $dbName ? $dbName : (defined('MY_DB_NAME') ? MY_DB_NAME : 'lcs');
 		$this->charset = 'UTF8';
 		$this->debug = false;
