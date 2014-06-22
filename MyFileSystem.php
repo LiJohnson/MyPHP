@@ -367,7 +367,7 @@ class SaeFileSystem extends AbstractFileSytem implements IWebFileSystem {
 	public function __construct($domain){
 		$this->stor = new SaeStorage();
 		$this->domain = $domain;
-		$this->curPath = array();
+		parent::__construct();
 	}
 
 	public function ls($path = NULL ){
