@@ -187,7 +187,7 @@ class MyLogin{
 			$user['type'] = 'weibo';
 			$this->dao->save($user);
 		}else{
-			$this->dao->update($user,'user_id = ' . $userInfo['user_id']);
+			$this->dao->update($user,'user_id = ' . $ret['user_id']);
 		}
 
 		return $this->dao->getOne( array('id' => $userInfo ['id'] ) );
