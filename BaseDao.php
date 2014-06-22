@@ -2,9 +2,9 @@
 include_once dirname(__FILE__)."/MySql.php"; 
 
 class BaseDao extends MySql {
-	private $DB;	
+	private $table;	
 	
-	public function __construct( $app="" ) {		
+	public function __construct( $app = false ) {		
 		parent::__construct( $app );
 	}
 	
@@ -13,80 +13,61 @@ class BaseDao extends MySql {
 	}
 	
 	/**
-	 * 保存一个实体
-	 * @param  object/array $model  [description]
-	 * @param  string $idName 主键列名，如果不为空，则返回一个实体	
-	 * @return array/int         [description]
-	 */
-	public function save($model , $idName = ''){
-		$tableName = false;
-		$key = array();
-		$value = array();
-
-		foreach ( $model as $k => $v ){
-			if ($v == null)continue;
-
-			if ( $this->isTablekey( $k )) {
-				$tableName = $v;
-			} else {
-				$key[] = $k;
-				$value[] = $v;
-			}
-		}
-		if( !$tableName || count($key) == 0 ){
-			return false;
-		}
-
-		$sql = 'insert into `' . $tableName . '` (`'.join($key,'`,`').'`) values (\''.join($value,'\',\'').'\')'  ;// values(" . $valueString . ")";
-		
-		$ret = $this->runsql( $sql ) ;
-		if( $ret && $idName != '' ){
-			return $this->getOneModel($model , ' and ' . $idName . '=' .$this->lastId());
-		}
-		return $ret ;
-	}
-	
-	/**
-	 * 判断key是否用来记录表名
-	 * @param  string  $key
-	 * @return boolean 
-	 */
-	private function isTablekey($key){
-		return ($key === 'table_name' || $key === 'tableName') ;
-	}
-
-	/**
 	 * 生成查询的sql语句
-	 * @param  object/array $model [description]
+	 * @param  object/array $param [description]
 	 * @param  string $order [description]
 	 * @return string        [description]
 	 */
-	private function getSql($model, $order = "" , $isCount = false ) {
+	private function getSql($param, $order = "" , $isCount = false ) {
 		$tableName = '';
 		$condition = array('1=1');
 		
-		foreach ( $model as $k => $v ){
+		foreach ( $param as $k => $v ){
 			if(is_null($v) || trim($v) == "")continue;
 
-			if ($this->isTablekey($k)){
-				$tableName = $v;
-			} 
-			else {
-				if( is_numeric($v) )
-					$condition[] = '`' . $k . '` = ' . $v;
-				else
-					$condition[] = '`' . $k . '` like \'' . $v .'\'';
-			}
+			if( is_numeric($v) )
+				$condition[] = '`' . $k . '` = ' . $v;
+			else
+				$condition[] = '`' . $k . '` like \'' . $v .'\'';
 		}
 		
-		$sql = "select * from " . $tableName . ' where ' . join( $condition , ' and ');
+		$sql = "select * from " . $this->table . ' where ' . join( $condition , ' and ');
 		
 		$sql .= ' ' .$order;
 		return $sql;
 	}
+
+	/**
+	 * 保存一个实体
+	 * @param  object/array $param  [description]
+	 * @param  string $idName 主键列名，如果不为空，则返回一个实体	
+	 * @return array/int         [description]
+	 */
+	public function save($param , $idName = ''){
+
+		$key = array();
+		$value = array();
+
+		foreach ( $param as $k => $v ){
+			if ($v == null)continue;
+			
+			$key[] = $k;
+			$value[] = $v;
+		}
+
+		$sql = 'insert into `' . $this->table . '` (`'.join($key,'`,`').'`) values (\''.join($value,'\',\'').'\')'  ;
+		
+		$ret = $this->runsql( $sql ) ;
+		if( $ret && $idName != '' ){
+			return $this->getOneModel($param , ' and ' . $idName . '=' .$this->lastId());
+		}
+		return $ret ;
+	}
+
 	
-	function getModelList($model, $order = "" , &$page = false) {
-		$sql = $this->getSql( $model, $order );
+	
+	public function getModelList($param, $order = "" , &$page = false) {
+		$sql = $this->getSql( $param, $order );
 		if( $page && $page['pageSize'] > 0 ){
 			$page['page'] = $page['page'] ? $page['page'] : 1;
 			$totalRecord = $this->getVar( preg_replace('/^select[\s\*]+from/', 'select count(1) from', $sql)   );
@@ -100,48 +81,47 @@ class BaseDao extends MySql {
 		return $this->getData( $sql );
 	}
 	
-	function getOneModel($model, $order = "") {		
-		return $this->getLine( $this->getSql( $model, $order ) );
+	public function getOneModel($param, $order = "") {		
+		return $this->getLine( $this->getSql( $param, $order ) );
 	}
 
-	function getList($model, $order = "" , &$page = false) {
-		return $this->getModelList( $model , $order , $page );
+	public function getList($param, $order = "" , &$page = false) {
+		return $this->getModelList( $param , $order , $page );
 	}
-	function getOne($model, $order = "" ) {
-		return $this->getOneModel( $model , $order );
+	public function getOne($param, $order = "" ) {
+		return $this->getOneModel( $param , $order );
 	}
 	
-	function getUpdateSql($model, $condition = "") {
+	public function getUpdateSql($param, $condition = "") {
 		$tableName = false;
 		$sql = array();
 		$dot = "";
-		foreach ( $model as $k => $v ) {
+		foreach ( $param as $k => $v ) {
 			if ($v == null)continue;
-			if( $this->isTablekey($k) ){
-				$tableName = $v;
-			}else{
-				$sql[] = "`$k` = '$v'";
-			}
+			$sql[] = "`$k` = '$v'";
 		}
-		if( !$tableName )return false;
 
-		return "UPDATE `$tableName` SET " . join($sql,",") . " where 1=1 " . $condition;
+		return "UPDATE `$this->table` SET " . join($sql,",") . " where " . $condition;
 	}
 	
-	function executeSql($sql) {
+	public function executeSql($sql) {
 		$res = $this->runSql ( $sql );
-		if( !$res ){
-			echo "<textarea>$sql</textarea>";
-			var_dump($this->error());
-		}
 		return $res;
 	}
 	
-	function update($model, $condition = " and 1=2 ") {
-		return $this->runSql ( $this->getUpdateSql ( $model, $condition ) );
+	public function update($param, $condition = "1=2") {
+		return $this->runSql ( $this->getUpdateSql ( $param, $condition ) );
 	}
 
-	function search() {
+	public function search() {
+	}
+
+	public function setTable($table){
+		$this->table = $table;
+	}
+
+	public function getTable(){
+		return $this->tablel;
 	}
 }
 

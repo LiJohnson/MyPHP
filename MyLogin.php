@@ -1,29 +1,71 @@
 <?php 
 include_once dirname(__FILE__)."/MyClientV2.php";
 include_once dirname(__FILE__)."/BaseDao.php";
-include_once dirname(__FILE__)."/MyTable.php";
-
-class MyLogin
-{
-	private $callbackUrl;
+if( !defined('MY_DB_NAME') )die('"MY_DB_NAME" not defined ');
+/*
+CREATE TABLE IF NOT EXISTS `users` (
+  `user_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `id` varchar(32) NOT NULL COMMENT '登录Id(股email)',
+  `name` varchar(32) NOT NULL COMMENT '昵称',
+  `ip` varchar(32) NOT NULL COMMENT '登录IP ',
+  `last_date` timestamp NULL  COMMENT '登录时间',
+  `password` varchar(32) NOT NULL COMMENT '密码',
+  `shit` varchar(10) NOT NULL COMMENT '屎',
+  `data` longtext NOT NULL COMMENT '其它数据',
+  `type` varchar(10) NOT NULL COMMENT '用户类型',
+  `access_token` text NOT NULL COMMENT 'tocken',
+  PRIMARY KEY (`user_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+*/
+/**
+ * 登录
+ */
+class MyLogin{
+	/**
+	 * dao，数据库操作
+	 * @var [type]
+	 */
 	private $dao ;
+	/**
+	 * 调试开关
+	 * @var boolean
+	 */
 	private $debug  = false ;
-	public function __construct($callback = "", $uid = null)
-	{
-		$this->dao = new BaseDao("gelivable");		
-		if (! $_SERVER ['SCRIPT_URI'])
+	/**
+	 * 微博SDK
+	 * @var [type]
+	 */
+	private $client ;
+
+	/**
+	 * 构造方法
+	 */
+	public function MyLogin(){
+
+		$this->dao = new BaseDao(MY_DB_NAME);
+		$this->dao->setTable('users');
+
+		if (! $_SERVER ['SCRIPT_URI']){
 			$_SERVER ['SCRIPT_URI'] = "http://" . $_SERVER ['HTTP_HOST'] . $_SERVER ['REQUEST_URI'];
-		$this->callbackUrl = $_GET ['callback'] ? $_GET ['callback'] : $callback;
+		}
+		$this->callbackUrl = $_SERVER ['SCRIPT_URI'];
+		$this->client = new MyClientV2();
 	}
-		
-	public function setDebug( $on = true )
-	{
+	/**
+	 * 调试开关
+	 * @param boolean $on [description]
+	 */
+	public function setDebug( $on = true ){
 		$this->debug = $on ;
 		$this->dao->setDebug($on);
 	}
 	
-	public function login($callback = '')
-	{
+	/**
+	 * 登录
+	 * @param  boolean $callback 类型为array时，则通过用户句密码进行登录，否则使用微博授权登录
+	 * @return [type]            [description]
+	 */
+	public function login($callback = false ){
 		if (isset($_SESSION ['user'] ) && $_SESSION ['user'] != false)
 			return $_SESSION ['user'];
 		
@@ -31,8 +73,8 @@ class MyLogin
 		if( is_array($callback) ){
 			$user = $this->initUser($callback);
 		}
-		else if (class_exists ( "MyClientV2" )){
-			$user = $this->initWeiboV2 ( $callback );
+		else{
+			$user = $this->initWeiboV2();
 		}
 
 		if( $user != null ){
@@ -40,82 +82,48 @@ class MyLogin
 		}
 		return $user;
 	}
-	public function logout()
-	{
-		try
-		{
-			$client = $this->getClient();
-			if(method_exists($client , "end_session"))
-			{
-				$client->end_session();
-			}
+
+	/**
+	 * 退出登录
+	 * @return [type] [description]
+	 */
+	public function logout(){
+		try{
 			unset($_SESSION);
 			session_destroy();
+			$this->client->end_session();
 		}
 		catch(Exception1 $e){}
 	}
-	function initWeiboV2($callback = '')
-	{
-		if ($_SESSION ['user'] != false)
-			return $_SESSION ['user'];
-		
-		$o = new SaeTOAuthV2 ( WB_AKEY, WB_SKEY );
-		
-		if(!isset ( $_REQUEST ['code'] ))
-		{
-			$code_url = $o->getAuthorizeURL ( $_SERVER ['SCRIPT_URI'] );
-			header( "refresh:0;url=" . $code_url );
-			exit();
+
+	/**
+	 * 微博授权
+	 * @return [type] [description]
+	 */
+	private function initWeiboV2(){
+		if( !$this->client->isOauthed() ){
+			$this->client->wbOauth();
 		}
-		else
-		{
-			$keys = array ();
-			$keys ['code'] = $_REQUEST ['code'];
-			$keys ['redirect_uri'] = $callback != "" ? $callback : $_SERVER['SCRIPT_URI'] ;
-			try{
-				$token = $o->getAccessToken ( 'code', $keys );
-				if ($token)
-				{
-					$_SESSION ['token'] = $token;
-					$_SESSION['user'] = $this->updateClientInfo();
-					return $_SESSION['user'];
-				}
-			}catch(OAuthException $e)
-			{
-				if( $this->debug )
-				{
-					var_dump($e);
-					echo $e->xdebug_message;
-				}
-			}
-		}
-	}
-	
-	/*
-	*
-	*/
-	public function initUser( $user )
-	{
-		if( !isset($_SESSION['user']) )
-		{
-			$u = new Users();
-			$u->mail = $user['user_email'] ;
-			$u->password = md5($user['password']) ;
-			$user = $this->dao->getOneModel( $u );
-			if($user)
-			{
-				$_SESSION['user'] = $user ;
-			}
-			else 
-			{
-				return $user ;
-			}
-		}		
 		return $this->updateClientInfo();
 	}
 	
-	public function register( $user )
-	{
+	/**
+	 * 用户名密码登录
+	 * @param  array  $loginData [description]
+	 * @return [type]            [description]
+	 */
+	private function initUser( $loginData =array()){
+		//..........
+		//return $this->updateClientInfo();
+	}
+	
+	/**
+	 * 用户注册
+	 * @param  [type] $user [description]
+	 * @return [type]       [description]
+	 */
+	public function register( $user ){
+		/*
 		$u = new Users();
 		$u->mail = $u->name = $u->screen_name = $user['user_email'] ;
 		$u->password = md5($user['password']) ;
@@ -126,104 +134,73 @@ class MyLogin
 		$u->id = $_SESSION['user']['id'] = $_SESSION['user']['users_id'] ; 
 		$this->dao->update($u , " and `users_id`=".$_SESSION['user']['users_id']);
 		return $this->updateClientInfo();
+		*/
 	}
-	
-	function getClientIp()
-	{
-		$cip = '';
-		if (! empty ( $_SERVER ["HTTP_CLIENT_IP"] ))
-		{
-			$cip = $_SERVER ["HTTP_CLIENT_IP"];
-		} else if (! empty ( $_SERVER ["REMOTE_ADDR"] ))
-		{
-			$cip = $_SERVER ["REMOTE_ADDR"];
-		} else if (! empty ( $_SERVER ["HTTP_X_FORWARDED_FOR"] ))
-		{
-			$cip = $_SERVER ["HTTP_X_FORWARDED_FOR"];
-		}else
-		{
-			$cip = "unknow IP";
-		}
-		return $cip;
-	
-	}
-	
-	private function updateClientInfo()
-	{
-		$userInfo = $this->getUserInfo ();
 
-		if( $userInfo == null || isset($userInfo['error']) )
-		{
+	/**
+	 * 获取IP
+	 * @return [type] [description]
+	 */
+	public function getClientIp(){
+		$names = array('HTTP_CLIENT_IP' , 'REMOTE_ADDR' , 'HTTP_X_FORWARDED_FOR');
+		foreach ($names as $name) {
+			if( $_SERVER [ $name ] ){
+				return $_SERVER [ $name ];
+			}
+		}
+		return '0.0.0.0';
+	}
+	
+	/**
+	 * 更新用户信息
+	 * @return [type] [description]
+	 */
+	private function updateClientInfo(){
+		//user_id
+		//id
+		//name
+		//ip
+		//last_date
+		//passwoed
+		//shit
+		//data
+		//type
+		//token
+		//var_dump($this->client->isOauthed());
+		$userInfo = $this->getUserInfo();
+
+		if( $userInfo == null || isset($userInfo['error']) ){
 			$userInfo = $_SESSION['user'];
 		}
 		
 		if(!isset($userInfo ['id']))
 			return  false;
+
+		$ret = $this->dao->getOne( array('id' => $userInfo ['id'] ) );
 		
-		$user = new Users();
-		
-		$user->id = $userInfo ['id'] ;
-		try{
-			$ret = $this->dao->getOneModel( $user );
-		}catch(Exception $e){
-			return false;
+		$user = array( 'last_date'=> date ( "Y-m-d H:i:s" ) , 'ip' => $this->getClientIp() , 'access_token' => $_SESSION ['token'] ? $_SESSION ['token']['access_token'] : null );
+		$user['data'] = json_encode($userInfo);
+
+		if( !$ret ){
+			$user['id'] = $userInfo['id'];
+			$user['name'] = $userInfo['name'];
+			$user['type'] = 'weibo';
+			$this->dao->save($user);
+		}else{
+			$this->dao->update($user,'user_id = ' . $ret['user_id']);
 		}
 
-		if( ! is_array($userInfo) )
-			$userInfo = array();
-		
-		unset($user);
-		$user = new Users();
-		
-		foreach ( $user as $k => $v )
-		{
-			$v = $userInfo[$k];
-			if ( is_null($v) || is_array ( $v ) || $k == 'users_id')
-				continue;
-			$user->$k = $v ;
-		}
-
-		$user->last_date = date ( "Y-m-d H:i:s" ) ;
-		$user->ip = $this->getClientIp () ;
-		
-		if (isset ( $_SESSION ['last_key'] ))
-		{
-			$user->oauth_token = $_SESSION ['last_key'] ['oauth_token'] ;
-			$user->oauth_token_secret = $_SESSION ['last_key'] ['oauth_token_secret'] ;
-		}
-		if (isset ( $_SESSION ['token'] ))
-		{
-			$user->access_token = $_SESSION ['token'] ['access_token'] ;
-		}
-		
-		if($ret == false)
-		{
-			$user->id = $userInfo['id'];
-			$user->add_date = date ( "Y-m-d H:i:s" ) ;
-			return $this->dao->save($user , "users_id");
-		} 
-		else
-		{
-			$user->count = $msg ['count'] + 1 ;
-			$this->dao->update( $user  , " and `id` LIKE  '$userInfo[id]' ");
-			return $this->dao->getOneModel(new Users() , " and `id` LIKE '$userInfo[id]' ");
-		}
+		return $this->dao->getOne( array('id' => $userInfo ['id'] ) );
 	}
 	
+	/**
+	 * 获取用户信息
+	 * @return [type] [description]
+	 */
 	function getUserInfo(){	
-		$c = $this->getClient();
-		if( $c ){
-			$uid_get = $c->get_uid ();
-			return $c->show_user_by_id ( $uid_get ['uid'] );
+		if( $this->client->isOauthed() ){
+			return $this->client->getUserInfo();
 		}
 		return null;
 	}
-		
-	function getClient(){
-		if( isset($_SESSION['token']) ){
-			return new MyClientV2 ();
-		}
-		return null;
-	}
-
 }

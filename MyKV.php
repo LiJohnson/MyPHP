@@ -1,4 +1,15 @@
 <?php
+
+function testMongo(){
+	if( !class_exists('MongoClient') )return false;
+	try{
+		new MongoClient();
+	}catch(Exception $e){
+		return false;
+	}
+	return true;
+}
+
 if( class_exists("SaeKV") ){
 	class MyKV extends SaeKV implements IKvDB{
 		public function MyKV (){
@@ -10,9 +21,110 @@ if( class_exists("SaeKV") ){
 		public function flush(){}
 	}
 }
+else if( testMongo() ){
+
+class MyKV implements IKvDB{
+	private $collection;
+
+	public function MyKV( $db = false ){
+		$this->init(  $db );
+	}
+	
+	/**
+	 * 初始化Sae KV 服务
+	 *
+	 * @return bool 
+	 */
+	public function init( $db = false ){
+		$db =  $db == false ? 'h' : $db;
+		$mongo = new MongoClient();
+		$this->collection = $mongo->$db->kv;
+		$index = $this->collection->getIndexInfo();
+		if( !isset( $index['key']) ){
+			$this->collection->ensureIndex("key",array('uniqure'=>true , 'dropDups'=>true));
+		}
+	}
+ 	
+ 	private function getMonogo($key){
+ 		return $this->collection->findOne(array('key'=>$key));
+ 	}
+
+	/**
+	 * 获得key对应的value
+	 *
+	 * @param string $key 长度小于MAX_KEY_LENGTH字节
+	 * @return string|bool成功返回value值，失败返回false
+	 *  时间复杂度 O(log N)
+	 */
+	public function get($key){
+		$mongo = $this->getMonogo($key);
+		if( $mongo ){
+			return $mongo['value'];
+		}
+	}
+ 
+	/**
+	 * 更新key对应的value
+	 *
+	 * @param string $key 长度小于MAX_KEY_LENGTH字节，当不设置encodekey选项时，key中不允许出现非可见字符
+	 * @param string $value 长度小于MAX_VALUE_LENGTH
+	 * @return bool 成功返回true，失败返回false
+	 *  时间复杂度 O(log N)
+	 */
+	public function set($key, $value){
+		$mongo = $this->getMonogo($key);
+		if( count($mongo)){
+			$mongo['value'] = $value;
+			return !!$this->collection->update(array('key'=>$key),$mongo);
+		}else{
+			return !!$this->collection->insert(array( 'key'=>$key , 'value' => $value ));
+		}
+	}
+ 
+	/**
+	 * 增加key-value对，如果key存在则返回失败
+	 *
+	 * @param string $key 长度小于MAX_KEY_LENGTH字节，当不设置encodekey选项时，key中不允许出现非可见字符
+	 * @param string $value 长度小于MAX_VALUE_LENGTH
+	 * @return bool 成功返回true，失败返回false
+	 *  时间复杂度 O(log N)
+	 */
+	public function add($key, $value){
+		return $this->set($key , $value);
+	}
+ 
+	/**
+	 * 替换key对应的value，如果key不存在则返回失败
+	 *
+	 * @param string $key 长度小于MAX_KEY_LENGTH字节，当不设置encodekey选项时，key中不允许出现非可见字符
+	 * @param string $value 长度小于MAX_VALUE_LENGTH
+	 * @return bool 成功返回true，失败返回false
+	 *  时间复杂度 O(log N)
+	 */
+	public function replace($key, $value){
+		return $this->set($key , $value);
+	}
+	
+	/**
+	 * 删除key-value
+	 *
+	 * @param string $key 长度小于MAX_KEY_LENGTH字节
+	 * @return bool 成功返回true，失败返回false
+	 *  时间复杂度 O(log N)
+	 */
+	public function delete($key){
+		$res = $this->collection->remove(array('key'=>$key));
+		return !!$res['n'];
+	}
+
+	
+	public function autoFlush($auto){}
+	public function flush(){}
+	}
+}
 else{
-	define(PATH,"g:/sae/KV/");
-	define(FILE,"KVDB.KV");
+
+	if( !defined('MY_KV_FILE') )die('"MY_KV_FILE" not deinfed');
 	class MyKV implements IKvDB{
 		private $file;
 		private $KVData;
@@ -33,7 +145,13 @@ else{
 		}
 		
 		public function init( $file=false ){
-			$this->file = PATH . ($file ? $file : FILE);
+			$this->file = $file ? $file : MY_KV_FILE;
+			if( !file_exists(dirname($this->file)) ){
+				mkdir(dirname($this->file), 0777,true);
+			}
+			if( !file_exists($this->file) ){
+				touch($this->file);
+			}
 			$this->isAuto = true;
 			$this->KVData = $this->unSerialize(file_get_contents( $this->file ));
 			if( !is_array($this->KVData) ){
