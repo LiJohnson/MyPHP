@@ -5,7 +5,7 @@ if( defined('SAE_TMP_PATH') ){
 	//exit();
 	$fs = new MyFileSystem('wp');
 }else{
-	$fs = new MyFileSystem('f:/shit' , 'http://lcs.com/github/webFile/testFile');	
+	$fs = new MyFileSystem('f:/sae/shit' , 'http://lcs.com/sae/shit');	
 }
 
 //var_dump($_POST);
