@@ -56,7 +56,7 @@
 			$.each($scope.files.filter(function(f){return f.checked;}),function(){
 				paths.push(this.localtion);
 			});
-			paths.length && $post({cmd:"rm",paths:paths}).success(function(data){
+			paths.length && $post({cmd:"rm", basePath : $scope.basePath, baseUrl : $scope.baseUrl, paths:paths}).success(function(data){
 				load(curPath);
 			});
 		};
@@ -66,7 +66,7 @@
 				html:"<div><input type=text class=form-control name=name placeholder=name... /></div>",
 				ok:function(){
 					var data = $box.getData();
-					data.name && $post({cmd:'mkdir',path:curPath + "/" + data.name}).success(function(){
+					data.name && $post({cmd:'mkdir', basePath : $scope.basePath, baseUrl : $scope.baseUrl, path:curPath + "/" + data.name}).success(function(){
 						load(curPath);
 					});
 				}
@@ -74,6 +74,8 @@
 		};
 
 		$scope.updatePath = function(){
+			localStorage.basePath = $scope.basePath;
+			localStorage.baseUrl = $scope.baseUrl;
 			load("");
 		};
 
@@ -98,7 +100,8 @@
 			$(this).val("");
 		});
 		//$scope.process = {a:{pre:1,name:"asdf"},b:{pre:8,name:"hh"}};
-
+		$scope.basePath = localStorage.basePath;
+		$scope.baseUrl = localStorage.baseUrl;
 		load(sessionStorage.path||"");
 	});
 
