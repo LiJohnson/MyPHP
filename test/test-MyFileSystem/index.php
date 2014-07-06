@@ -10,7 +10,7 @@
 		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
 		<link rel="stylesheet" href="css/fs.css">
 		
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+		<script src="//ajax.useso.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 		<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 		<script src="http://lcs.com/sae/gtbcode/1/js/jquery.plugin.js"></script>
 		<script src="angular.js"></script>
