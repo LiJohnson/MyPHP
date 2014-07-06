@@ -9,7 +9,7 @@
 			return $http.post("fs.php",data,config);
 		};
 		var load = function(path){
-			$post({cmd:'ls',path:path || "/"}).success(function(data){
+			$post({cmd:'ls', basePath : $scope.basePath, baseUrl : $scope.baseUrl, path:path || "/"}).success(function(data){
 				data.files.sort(function(a,b){
 					return (b.isDir - a.isDir)*10 + a.name.localeCompare(b.name);
 				});
@@ -73,11 +73,15 @@
 			});
 		};
 
+		$scope.updatePath = function(){
+			load("");
+		};
+
 		$(":file").change(function(){
 			var u = function(file){
 				var id = fileId ++;
 				$scope.process[id] = {id:id,name:file.name};
-				new $().uploadFile("fs.php",{cmd:"upload",path:curPath,file:file},function(){
+				new $().uploadFile("fs.php",{cmd:"upload",path:curPath,file:file,basePath : $scope.basePath, baseUrl : $scope.baseUrl},function(){
 					delete $scope.process[id];
 					load(curPath);
 				},function(pre){

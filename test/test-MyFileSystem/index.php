@@ -3,7 +3,6 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
-		
 
 		<link  type="image/x-icon" rel="shortcut icon" href="javascript:;">
 
@@ -11,7 +10,7 @@
 		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
 		<link rel="stylesheet" href="css/fs.css">
 		
-		<script src="http://1.gtbcode.sinaapp.com/js/jquery.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 		<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 		<script src="http://lcs.com/sae/gtbcode/1/js/jquery.plugin.js"></script>
 		<script src="angular.js"></script>
@@ -34,8 +33,8 @@
 					</div>
 
 				<div class="collapse navbar-collapse">
+					
 					<ul class="nav navbar-nav">
-						
 						<li> <a href="javascript:;" ng-click="delete()" >delete</a> </li>
 						<li> <a href="javascript:;" ng-click="mkdir()" >mkdir</a> </li>
 					</ul>
@@ -44,6 +43,10 @@
 							<input type="file" class="form-control" multiple value="abs" name="file" >
 							<span class="cover" ></span>
 						</div>
+					</form>
+					<form class="navbar-form navbar-left" >
+						<input type="text" ng-model="basePath" ng-change="updatePath()" class="form-control" style="width:200px;" placeholder="basepath" />
+						<input type="text" ng-model="baseUrl" ng-change="updatePath()" class="form-control" style="width:200px;" placeholder="basepath" />
 					</form>
 					<ul class="nav navbar-nav navbar-left">
 						<li>
