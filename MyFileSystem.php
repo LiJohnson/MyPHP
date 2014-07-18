@@ -259,11 +259,13 @@ class LocalFileSystem extends AbstractFileSytem implements IWebFileSystem {
 	}
 
 	public function mkdir($path,$r=false){
+		echo $path;
 		$file = $this->getFilePath($path);
 
 		if( $this->exsit($file) ){
 			return true;
 		}
+		echo $file;
 		return @mkdir( $file , $r);
 	}
 
