@@ -113,6 +113,10 @@ class BaseDao extends MySql {
 		return $this->runSql ( $this->getUpdateSql ( $param, $condition ) );
 	}
 
+	public function delete( $condition = "1=2") {
+		return $this->runSql ( "DELETE FROM `$this->table` WHERE " . $condition );
+	}
+
 	public function search() {
 	}
 
