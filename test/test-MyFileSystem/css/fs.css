@@ -116,6 +116,9 @@ nav .process {
 .fs .file .gif:before {
   content: "\e060";
 }
+.fs .file .mp3:before {
+  content: "\e002";
+}
 .fs .file .mp4:before,
 .fs .file .flv:before,
 .fs .file .rmvb:before {

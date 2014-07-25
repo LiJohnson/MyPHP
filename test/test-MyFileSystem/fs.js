@@ -9,7 +9,7 @@
 			return $http.post("fs.php",data,config);
 		};
 		var load = function(path){
-			$post({cmd:'ls',path:path || "/"}).success(function(data){
+			$post({cmd:'ls', basePath : $scope.basePath, baseUrl : $scope.baseUrl, path:path || "/"}).success(function(data){
 				data.files.sort(function(a,b){
 					return (b.isDir - a.isDir)*10 + a.name.localeCompare(b.name);
 				});
@@ -41,7 +41,7 @@
 
 
 		$scope.clickFile = function(){
-			this.file.isDir && load(this.file.path + "/" + this.file.name);
+			this.file.isDir ? load(this.file.path + "/" + this.file.name) : window.open(this.file.url ,"_blank");
 			$.log(this.file);
 		}
 
@@ -56,7 +56,7 @@
 			$.each($scope.files.filter(function(f){return f.checked;}),function(){
 				paths.push(this.localtion);
 			});
-			paths.length && $post({cmd:"rm",paths:paths}).success(function(data){
+			paths.length && $post({cmd:"rm", basePath : $scope.basePath, baseUrl : $scope.baseUrl, paths:paths}).success(function(data){
 				load(curPath);
 			});
 		};
@@ -66,18 +66,24 @@
 				html:"<div><input type=text class=form-control name=name placeholder=name... /></div>",
 				ok:function(){
 					var data = $box.getData();
-					data.name && $post({cmd:'mkdir',path:curPath + "/" + data.name}).success(function(){
+					data.name && $post({cmd:'mkdir', basePath : $scope.basePath, baseUrl : $scope.baseUrl, path:curPath + "/" + data.name}).success(function(){
 						load(curPath);
 					});
 				}
 			});
 		};
 
+		$scope.updatePath = function(){
+			localStorage.basePath = $scope.basePath;
+			localStorage.baseUrl = $scope.baseUrl;
+			load("");
+		};
+
 		$(":file").change(function(){
 			var u = function(file){
 				var id = fileId ++;
 				$scope.process[id] = {id:id,name:file.name};
-				new $().uploadFile("fs.php",{cmd:"upload",path:curPath,file:file},function(){
+				new $().uploadFile("fs.php",{cmd:"upload",path:curPath,file:file,basePath : $scope.basePath, baseUrl : $scope.baseUrl},function(){
 					delete $scope.process[id];
 					load(curPath);
 				},function(pre){
@@ -94,7 +100,8 @@
 			$(this).val("");
 		});
 		//$scope.process = {a:{pre:1,name:"asdf"},b:{pre:8,name:"hh"}};
-
+		$scope.basePath = localStorage.basePath;
+		$scope.baseUrl = localStorage.baseUrl;
 		load(sessionStorage.path||"");
 	});
 

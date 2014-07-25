@@ -259,11 +259,13 @@ class LocalFileSystem extends AbstractFileSytem implements IWebFileSystem {
 	}
 
 	public function mkdir($path,$r=false){
+		echo $path;
 		$file = $this->getFilePath($path);
 
 		if( $this->exsit($file) ){
 			return true;
 		}
+		echo $file;
 		return @mkdir( $file , $r);
 	}
 
@@ -367,7 +369,7 @@ class SaeFileSystem extends AbstractFileSytem implements IWebFileSystem {
 	public function __construct($domain){
 		$this->stor = new SaeStorage();
 		$this->domain = $domain;
-		parent::__construct();
+		$this->curPath = array();
 	}
 
 	public function ls($path = NULL ){
@@ -381,14 +383,14 @@ class SaeFileSystem extends AbstractFileSytem implements IWebFileSystem {
 		foreach ($data['files'] as $file) {
 			$fileList[] = $this->initFile($file,false);
 		}
-		return array('path' => $path , 'files' => $fileList);
+		return $fileList;
 	}
 
 	public function mkdir($path,$r=false){
 		$file = $this->getFilePath($path) . '/' . '.mkdir';
 		$res = $this->stor->write($this->domain , $file , '.mkdir');
 		if( $res ){
-			//$this->rm($file);
+            //$this->rm($file);
 		}
 		return $res;
 	}
@@ -410,13 +412,7 @@ class SaeFileSystem extends AbstractFileSytem implements IWebFileSystem {
 		return $this->cp($s,$d) && $this->rm($s);
 	}
 	public function rm($file){
-		$data = $this->ls($file);
-		$count = 0;
-		foreach ($data['files'] as $f) {
-			$count += $this->rm( $f->localtion);
-		}
-		$count += $this->stor->delete( $this->domain , $this->getFilePath($file) ) ? 1 : 0;
-		return $count;
+		return $this->stor->delete( $this->domain , $this->getFilePath($file) );
 	}
 	public function find($key){
 		//todo
