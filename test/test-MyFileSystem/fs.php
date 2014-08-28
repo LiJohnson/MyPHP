@@ -4,7 +4,7 @@ $file = dirname(__file__);
 $param = json_decode($GLOBALS["HTTP_RAW_POST_DATA"]);
 
 if( defined('SAE_TMP_PATH') ){
-	exit();
+	//exit();
 	$fs = new MyFileSystem('wp');
 }else{
 	$fs = new MyFileSystem( $_POST['basePath'] ? $_POST['basePath'] : $param->basePath , $_POST['baseUrl'] ? $_POST['baseUrl'] : $param->baseUrl );	
