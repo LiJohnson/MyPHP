@@ -383,7 +383,7 @@ class SaeFileSystem extends AbstractFileSytem implements IWebFileSystem {
 		foreach ($data['files'] as $file) {
 			$fileList[] = $this->initFile($file,false);
 		}
-		return $fileList;
+		return array( 'path' => $path , 'files' => $fileList );
 	}
 
 	public function mkdir($path,$r=false){
