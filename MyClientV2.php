@@ -27,6 +27,7 @@ class MyClientV2 extends SaeTClientV2
 		if( $token != null && $token['ip'] ){
 			$this->set_remote_ip($token['ip']);                  
 		}
+		$this->oauth = $this->getOAuth();
 	}
  	
  	/**
@@ -48,8 +49,8 @@ class MyClientV2 extends SaeTClientV2
 			$keys ['redirect_uri'] = $url ;
 			try{
 				$token = $o->getAccessToken ( 'code', $keys );
-				if ($token){
-					$this->oauth = new SaeTOAuthV2( WB_AKEY, WB_SKEY, $token['access_token'], $refresh_token );
+				$this->oauth = $this->getOAuth($token);
+				if ($this->oauth){
 					$_SESSION['token'] = $token;
 					return $token;
 				}
@@ -210,6 +211,30 @@ class MyClientV2 extends SaeTClientV2
 	
 	function post( $api , $params = array() ){
 		return $this->oauth->post( $api, $params );	
+	}
+
+	/**
+	 * 退出登录
+	 * @return [type] [description]
+	 */
+	function end_session(){
+		return $this->get('account/end_session');
+	}
+
+	/**
+	 * 获取一个oauth
+	 * @param  boolean $token [description]
+	 * @return [type]         [description]
+	 */
+	private function getOAuth( $token = false ){
+		if( !$token ){
+			$token = $_SESSION['token'];
+		}
+
+		if( $token && $token['access_token'] ){
+			return  new SaeTOAuthV2( WB_AKEY, WB_SKEY, $token['access_token'], $refresh_token );
+		}
+		return false;
 	}
 	
 }
