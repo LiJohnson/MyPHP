@@ -35,7 +35,7 @@ class MyClientV2 extends SaeTClientV2
  	 * @return [type] [description]
  	 */
  	function wbOauth(){
- 		$url =  $_SERVER ['SCRIPT_URI'] ? $_SERVER ['SCRIPT_URI'] :  "http://" . $_SERVER ['HTTP_HOST'] . $_SERVER ['REQUEST_URI'];
+ 		$url = "http://" . $_SERVER ['HTTP_HOST'] . $_SERVER ['REQUEST_URI'];
  		
  		$o = new SaeTOAuthV2 ( WB_AKEY, WB_SKEY );
  		if(!isset ( $_REQUEST ['code'] )){
