@@ -1,9 +1,9 @@
 <?php 
 /**
+ * 	封装一些curl操作
  *	@author lcs 
- *  @date 2011-10-8
- *  @desc 封装一些curl操作
  *  @version 2.0.1
+ *  @since 2011-10-8
  */
 class MyCurl{
 	/**
@@ -77,6 +77,9 @@ class MyCurl{
 	 * 进行一次请求
 	 * @param  string $url 请求的url
 	 * @return [type]      [description]
+	 * @deprecated 使用get/post代替
+	 * @see MyCurl::get()
+	 * @see MyCurl::post()
 	 */
 	public function fetch( $url = null ){
 		return $this->http($curl);
@@ -115,9 +118,9 @@ class MyCurl{
 	
 	/**
 	 * 获取 curl 信息
-	 * 参考[http://php.net/manual/en/function.curl-getinfo.php]
 	 * @param  int $key 指定的信息
 	 * @return String/array
+	 * @link http://php.net/manual/en/function.curl-getinfo.php
 	 */
 	public function getInfo($key = 0){
 		if( $key ){
@@ -128,9 +131,9 @@ class MyCurl{
 
 	/**
 	 * 设定option
-	 * 参考[http://php.net/manual/en/function.curl-setopt.php]
 	 * @param int $key   
 	 * @param mixed $value
+	 * @link http://php.net/manual/en/function.curl-setopt.php
 	 */
 	public function setOption( $key , $value ){
 		curl_setopt( $this->curlHandle,  $key, $value );
@@ -152,7 +155,7 @@ class MyCurl{
 	 * 		$c->setCookie(array('cookieName1' => 'cookieValue1' , 'cookie2' => 'cookieValue2'))
 	 * 3.以文本形式设置，cookie之间用分号(;)隔开
 	 * 		$c->setCookie('cookieName1=cookieValue1;cookieName2=cookieValue2');
-	 * @param string/array $cookie 
+	 * @param string|array $cookie 
 	 * @param string $value  
 	 */
 	public function setCookie($cookie,$value=null){
@@ -174,7 +177,7 @@ class MyCurl{
 	 * 			Host:http://lcs.io
 	 * 		<<<EOT;
 	 * 		$c->setHeader($header);
-	 * @param string/array $header 
+	 * @param string|array $header 
 	 * @param string $value  
 	 */
 	public function setHeader($header , $value=null){
@@ -185,6 +188,7 @@ class MyCurl{
 		}
 	}
 	/**
+	 * <pre>
 	 * 设置请求数据
 	 * 1.以key-value的形式设置
 	 * 		$c->setPostData('fieldName' ,'value')
@@ -192,7 +196,8 @@ class MyCurl{
 	 * 		$c->setPostData(array('fieldName1' => 'value1' , 'fieldName2' => 'value2'))
 	 * 3.以文本形式设置，各值之间用(&)隔开
 	 * 		$c->setPostData('fieldName1=value1&fieldName2=value2');
-	 * @param string/array $postData 
+	 * 	</pre>
+	 * @param string|array $postData 
 	 * @param string $value    
 	 */
 	public function setPostData($postData , $value = null){

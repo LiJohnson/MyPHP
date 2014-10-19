@@ -8,5 +8,5 @@ phpdoc run \
 	--target="./doc" \
 	--defaultpackagename="MyPHP" \
 	--title="MyPHP" \
-	--template="responsive" \
+	--template="responsive-twig" \
 	--ignore="test/*,lib/*" 
