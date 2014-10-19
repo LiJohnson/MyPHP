@@ -10,12 +10,12 @@ class MyCurl{
 	 * 请求header
 	 * @var array
 	 */
-	private $request;
+	private $header;
 	/**
 	 * 返回header
 	 * @var array
 	 */
-	private $response;
+	private $responseHeader;
 	/**
 	 * cookie
 	 * @var array
@@ -26,7 +26,7 @@ class MyCurl{
 	 * 请求数据
 	 * @var array
 	 */
-	private $postData
+	private $postData ;
 	/**
 	 * curl handle
 	 * @var resource
@@ -40,6 +40,7 @@ class MyCurl{
 	public function __construct( $url = null ) {
 		$this->curlHandle = curl_init($url);
 		$this->setOption(CURLOPT_RETURNTRANSFER, 1);
+		$this->setOption(CURLOPT_AUTOREFERER, 1);
 		$this->init();
 	}
 
@@ -56,8 +57,8 @@ class MyCurl{
 	 * @return void
 	 */
 	private function init(){
-		$this->request = array();
-		$this->response = array();
+		$this->header = array();
+		$this->responseHeader = array();
 		$this->cookie = array();
 		$this->postData = array();
 	}
@@ -87,7 +88,6 @@ class MyCurl{
 	 * @return string
 	 */
 	private function http( $url = null ){
-		
 		if( $url != null){
 			$this->setOption(CURLOPT_URL,$url);
 		}
@@ -120,8 +120,10 @@ class MyCurl{
 	 * @return String/array
 	 */
 	public function getInfo($key = 0){
-		return curl_getinfo($this->curlHandle , $key);
-
+		if( $key ){
+			return curl_getinfo($this->curlHandle , $key);
+		}
+		return curl_getinfo($this->curlHandle );
 	}
 
 	/**
@@ -197,7 +199,20 @@ class MyCurl{
 		if( is_string($postData) && is_string($value) ){
 			$this->postData[$postData] = $value;
 		}else{
-			$this->data = self::praseData($this->data,$postData,"/&/","/=/");
+			$this->postData = self::praseData($this->postData,$postData,"/&/","/=/");
+		}
+	}
+
+	/**
+	 * 是否为异步请求，即是否添加 header'X-Requested-With:XMLHttpRequest'
+	 * @param  boolean $on 
+	 * @return boolean
+	 */
+	public function isAjax( $on = true){
+		if( $on ){
+			$this->setHeader('X-Requested-With','XMLHttpRequest');
+		}else{
+			unset($this->header['X-Requested-With']);
 		}
 	}
 
@@ -212,7 +227,7 @@ class MyCurl{
 	private static function praseData( $oldData , $data , $split1=" ",$split2="="){
 		$result = array();
 		if( is_array($data) ){
-			return $data;
+			$result = $data;
 		}else{
 			$data = preg_split($split1, $data);
 			if( !count($data) )return $result;
@@ -238,24 +253,6 @@ class MyCurl{
 		return join($postField,'&');
 	}
 
-	private function http($url){
-		$cookie = array();
-		$this->setCookie($this->header['Cookie']);
-		foreach ($this->cookie as $key => $value) {
-			$cookie[] = $key . '=' . $value;
-		}
-		$cookie = join($cookie,';');
-		$this->setHeader('Cookie' , $cookie);
-
-		$header = array();
-		foreach ($this->header as $key => $value) {
-			$header[] = $key . ':' .$value;
-		}
-		$this->setOption(CURLOPT_HTTPHEADER,$header);
-		$this->setOption(CURLOPT_HEADER,false);
-		$this->setOption(CURLOPT_HEADERFUNCTION,array($this,'readResponseHeader'));
-		return $this->fetch($url);
-	}
 	/**
 	 * 读取response header
 	 * 参考[CURLOPT_HEADERFUNCTION]
@@ -273,7 +270,7 @@ class MyCurl{
 			$this->setCookie( $cookie );
 			$this->responseHeader['Set-Cookie'][] =  $cookie;
 		}else{
-			$this->responseHeader = array_merge( $this->responseHeader , $this->praseData($header,'/\n/','/:/') );
+			$this->responseHeader = self::praseData( $this->responseHeader , $header,'/\n/','/:/');
 		}
 		return strlen($header);
 	}
@@ -286,12 +283,13 @@ class MyCurl{
 	 */
 	public function get( $url , $postData = array() ){
 		$this->setPostData($postData);
-		$url .= strpos('?', $url) === false ? '?' : '&';
+		$url .= (strpos($url , '?' ) === false ? '?' : '&');
 		$url .= $this->getPostField();
 
 		$this->setOption(CURLOPT_POST,false);
 		$this->setOption(CURLOPT_POSTFIELDS,null);
 		$this->setOption(CURLOPT_HTTPGET,true);
+
 		return $this->http($url);
 	}
 
