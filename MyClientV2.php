@@ -128,11 +128,13 @@ class MyClientV2 extends SaeTClientV2 {
 			$tmpFileIn = "/tmp/wbimage";
 			$tmpFileOut = $tmpFileIn;
 
-			$url = "http://ww2.sinaimg.cn/large/b7b3801bgw1eljv65yw8gj20bk09wgls.jpg";
-
 			file_put_contents ( $tmpFileIn , file_get_contents($img_url));
 			$size = getimagesize( $tmpFileIn );
 
+			if( preg_match('/gif/i', $size['mime']) ){
+				return $tmpFileIn;
+			}
+			
 			exec("convert -crop $size[0]x".($size[1]*0.9)."+0+0 $tmpFileIn $tmpFileOut");
 			return $tmpFileOut;
 		}
