@@ -216,7 +216,7 @@ class MyClientV2 extends SaeTClientV2 {
 	 * @return array
 	 */
 	public function resendWeiboById( $id ,$isSend = true ){
-		return $this->resendWeibo($this->show_status ($id));
+		return $this->resendWeibo($this->show_status ($id) , $isSend);
 	}
 
 	/**
