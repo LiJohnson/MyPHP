@@ -34,13 +34,13 @@ class MyClientV2 extends SaeTClientV2
  	 * 授权
  	 * @return [type] [description]
  	 */
- 	function wbOauth(){
+ 	function wbOauth( $forcelogin = fasle ){
  		$url = defined('WB_CALLBACL_URL') ? WB_CALLBACL_URL :  "http://" . $_SERVER ['HTTP_HOST'] . $_SERVER ['REQUEST_URI'];
  		
  		$o = new SaeTOAuthV2 ( WB_AKEY, WB_SKEY );
  		if(!isset ( $_REQUEST ['code'] )){
 			$code_url = $o->getAuthorizeURL ( $url );
-			header( "refresh:0;url=" . $code_url );
+			header( "Location:" . $code_url . ( $forcelogin ? '&forcelogin=true' : '' ) );
 			exit();
 		}
 		else{
@@ -123,7 +123,10 @@ class MyClientV2 extends SaeTClientV2
 	 * 去除图片下方的水印
 	 * @param unknown_type $img_url
 	 */
-	function changeImg( $img_url , $sy_url = NULL ){		
+	function changeImg( $img_url , $sy_url = NULL ){
+		if( !class_exists('SaeImage') ){
+			return $img_url;
+		}	
 		$base_img_data = file_get_contents($img_url);
 		$img = new SaeImage( $base_img_data );
 		$imgAttr = $img->getImageAttr();   		//var_dump($imgAttr);
@@ -185,7 +188,7 @@ class MyClientV2 extends SaeTClientV2
 			}
 		}
 		if( $pic ){
-			$weibo = $this->upload($text, changeImg($pic));
+			$weibo = $this->upload($text, $this->changeImg($pic));
 		}
 		else{
 			$weibo = $this->update($text);
@@ -194,7 +197,7 @@ class MyClientV2 extends SaeTClientV2
 	}
 	
 	function resendWeiboById( $id ){
-		return resendWeibo($this->show_status ($id));
+		return $this->resendWeibo($this->show_status ($id));
 	}
         
 	function getUserInfo( $id = false ){
@@ -227,6 +230,7 @@ class MyClientV2 extends SaeTClientV2
 	 * @return [type]         [description]
 	 */
 	private function getOAuth( $token = false ){
+		if( $this->oauth )return $this->oauth;
 		if( !$token ){
 			$token = $_SESSION['token'];
 		}
