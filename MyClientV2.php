@@ -9,10 +9,8 @@ if( !defined('WB_SKEY') )die('"WB_SKEY" not defined' );
  *
  */
 //class MyClient extends SaeTClient
-class MyClientV2 extends SaeTClientV2 
-{
+class MyClientV2 extends SaeTClientV2 {
 	/**
-	 * 
 	 * 构造函数
 	 */
 	public function MyClientV2( $token=null ){
@@ -29,12 +27,12 @@ class MyClientV2 extends SaeTClientV2
 		}
 		$this->oauth = $this->getOAuth();
 	}
- 	
- 	/**
+	
+	/**
  	 * 授权
  	 * @return [type] [description]
  	 */
- 	function wbOauth( $forcelogin = fasle ){
+ 	public function wbOauth( $forcelogin = fasle ){
  		$url = defined('WB_CALLBACL_URL') ? WB_CALLBACL_URL :  "http://" . $_SERVER ['HTTP_HOST'] . $_SERVER ['REQUEST_URI'];
  		
  		$o = new SaeTOAuthV2 ( WB_AKEY, WB_SKEY );
@@ -59,15 +57,15 @@ class MyClientV2 extends SaeTClientV2
 				die();
 			}
 		}
- 	}
+	}
 
- 	/**
+	/**
  	 * 是否已经授权
  	 * @return boolean [description]
  	 */
- 	function isOauthed(){
- 		return !!$this->oauth->access_token;
- 	}
+	public function isOauthed(){
+		return !!$this->oauth->access_token;
+	}
 
 	/**
 	 * 随便找几个微博用户 , 并根据 $isFollw 是否对其进行关注
@@ -75,7 +73,7 @@ class MyClientV2 extends SaeTClientV2
 	 * @param unknown_type $isFollow
 	 * @return String
 	 */
-	function getPublicUser( $n = 5 , $isFollow = false ){
+	public function getPublicUser( $n = 5 , $isFollow = false ){
 		$ms = $this->public_timeline($n);
 		$u = "" ;
 		foreach( $ms as $s  ){
@@ -90,11 +88,9 @@ class MyClientV2 extends SaeTClientV2
 	 * 获取所有关注用户的ID
 	 * @return Array
 	 */
-	function get_all_Friends_ids( $uid = null )
-	{
+	public function get_all_Friends_ids( $uid = null ){
 		$ids = Array();
-		do
-		{
+		do{
 			$fr =$this->friends_ids_by_id ( $uid ,$fr['next_cursor'] , 200 ) ;		
 			$ids  = array_merge($ids , $fr['ids']);
 		
@@ -102,12 +98,12 @@ class MyClientV2 extends SaeTClientV2
 		while($fr['next_cursor'] !=  0);
 		return $ids ;
 	}
+
 	/**
 	 * 获取所有粉丝的ID
 	 * @return Array
 	 */
-	function get_all_Followers_ids( $uid = null )
-	{
+	public function get_all_Followers_ids( $uid = null ){
 		$ids = Array();
 		do
 		{
@@ -123,7 +119,7 @@ class MyClientV2 extends SaeTClientV2
 	 * 去除图片下方的水印
 	 * @param unknown_type $img_url
 	 */
-	function changeImg( $img_url , $sy_url = NULL ){
+	private function changeImg( $img_url , $sy_url = NULL ){
 		if( !class_exists('SaeImage') ){
 			return $img_url;
 		}	
@@ -166,27 +162,20 @@ class MyClientV2 extends SaeTClientV2
 	 * 重新发微博
 	 * @param unknown_type $weibo
 	 */
-	function resendWeibo( $weibo ){
+	public function resendWeibo( $weibo ){
 		$text = "";
 		$pic  = "";
-		if(  $weibo['retweeted_status']['text'] ){
-			$text =  $weibo['retweeted_status']['text'] ;
-			if( $weibo['retweeted_status']['original_pic'] ){
-				$pic = $weibo['retweeted_status']['original_pic'] ;
-			}
-			else{
-				$pic = null;
-			}
+		if( $weibo['retweeted_status']['text'] ){
+			$weibo = $weibo['retweeted_status'];
 		}
-		else{
-			$text =  $weibo['text'];
-			if( $weibo['original_pic'] ){
-				$pic = $weibo['original_pic'] ;
-			}
-			else{
-				$pic = null ;
-			}
+
+		$text =  $weibo['text'];
+		if( $weibo['original_pic'] ){
+			$pic = $weibo['original_pic'] ;
 		}
+
+		$text = preg_replace('/@/g', '', $text);
+
 		if( $pic ){
 			$weibo = $this->upload($text, $this->changeImg($pic));
 		}
@@ -196,11 +185,11 @@ class MyClientV2 extends SaeTClientV2
 		return $weibo ;
 	}
 	
-	function resendWeiboById( $id ){
+	public function resendWeiboById( $id ){
 		return $this->resendWeibo($this->show_status ($id));
 	}
         
-	function getUserInfo( $id = false ){
+	public function getUserInfo( $id = false ){
 		if( $id ){
 			return $this->show_user_by_id( $id );
 		}
@@ -208,11 +197,11 @@ class MyClientV2 extends SaeTClientV2
 		return $this->show_user_by_id( $uid_get['uid']);
 	}
 	
-	function get( $api , $params = array() ){
+	public function get( $api , $params = array() ){
 		return $this->oauth->get( $api, $params );	
 	}
 	
-	function post( $api , $params = array() ){
+	public function post( $api , $params = array() ){
 		return $this->oauth->post( $api, $params );	
 	}
 
@@ -220,7 +209,7 @@ class MyClientV2 extends SaeTClientV2
 	 * 退出登录
 	 * @return [type] [description]
 	 */
-	function end_session(){
+	public function end_session(){
 		return $this->get('account/end_session');
 	}
 
@@ -240,5 +229,5 @@ class MyClientV2 extends SaeTClientV2
 		}
 		return false;
 	}
-	
+
 }
