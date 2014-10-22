@@ -3,9 +3,10 @@ require_once( dirname(__file__).'/lib/saetv2.ex.class.php' );
 if( !defined('WB_AKEY') )die('"WB_AKEY" not defined' );
 if( !defined('WB_SKEY') )die('"WB_SKEY" not defined' );
 /**
- * date 2011年5月14日 17:08:17
- * Enter description here ...
+ * 新浪微博API
  * @author lcs
+ * @version 1.0.5
+ * @since 2011年5月14日 17:08:17
  *
  */
 //class MyClient extends SaeTClient
@@ -29,9 +30,10 @@ class MyClientV2 extends SaeTClientV2 {
 	}
 	
 	/**
- 	 * 授权
- 	 * @return [type] [description]
- 	 */
+	 * 授权
+	 * @param  boolean $forcelogin 中否强制登录
+	 * @return 
+	 */
  	public function wbOauth( $forcelogin = fasle ){
  		$url = defined('WB_CALLBACL_URL') ? WB_CALLBACL_URL :  "http://" . $_SERVER ['HTTP_HOST'] . $_SERVER ['REQUEST_URI'];
  		
@@ -117,12 +119,24 @@ class MyClientV2 extends SaeTClientV2 {
 	
 	/**
 	 * 去除图片下方的水印
-	 * @param unknown_type $img_url
+	 * @param  string $img_url 图片url
+	 * @param  string $sy_url  水印图片
+	 * @return string          图片地址
 	 */
 	private function changeImg( $img_url , $sy_url = NULL ){
 		if( !class_exists('SaeImage') ){
-			return $img_url;
-		}	
+			$tmpFileIn = "/tmp/wbimage";
+			$tmpFileOut = $tmpFileIn;
+
+			$url = "http://ww2.sinaimg.cn/large/b7b3801bgw1eljv65yw8gj20bk09wgls.jpg";
+
+			file_put_contents ( $tmpFileIn , file_get_contents($img_url));
+			$size = getimagesize( $tmpFileIn );
+
+			exec("convert -crop $size[0]x".($size[1]*0.9)."+0+0 $tmpFileIn $tmpFileOut");
+			return $tmpFileOut;
+		}
+
 		$base_img_data = file_get_contents($img_url);
 		$img = new SaeImage( $base_img_data );
 		$imgAttr = $img->getImageAttr();   		//var_dump($imgAttr);
@@ -160,35 +174,54 @@ class MyClientV2 extends SaeTClientV2 {
 	
 	/**
 	 * 重新发微博
-	 * @param unknown_type $weibo
+	 * @param  array  $weibo  微博原始数据
+	 * @param  boolean $isSend 是否立马发送
+	 * @return array
 	 */
-	public function resendWeibo( $weibo ){
+	public function resendWeibo( $weibo , $isSend = true ){
+		if( $weibo['isSend'] ){
+			if( $weibo['pic'] ){
+				$weibo = $this->upload($weibo['text'], $weibo['pic']);
+			}
+			else{
+				$weibo = $this->update($weibo['text']);
+			}
+			return $weibo ;
+		}
+
 		$text = "";
-		$pic  = "";
+		$pic  = false;
+
 		if( $weibo['retweeted_status']['text'] ){
 			$weibo = $weibo['retweeted_status'];
 		}
 
 		$text =  $weibo['text'];
 		if( $weibo['original_pic'] ){
-			$pic = $weibo['original_pic'] ;
+			$pic =  $this->changeImg( $weibo['original_pic'] );
 		}
 
-		$text = preg_replace('/@/g', '', $text);
-
-		if( $pic ){
-			$weibo = $this->upload($text, $this->changeImg($pic));
-		}
-		else{
-			$weibo = $this->update($text);
-		}
-		return $weibo ;
+		$text = preg_replace('/@/', '', $text);
+		$weibo = array('text' => $text , 'pic' => $pic , 'isSend' => $isSend );
+		return $isSend ? $this->resendWeibo( $weibo ) : $weibo ;
+		
 	}
 	
-	public function resendWeiboById( $id ){
+	/**
+	 * 重新发微博
+	 * @param  int  $id  微博原始id
+	 * @param  boolean $isSend 是否立马发送
+	 * @return array
+	 */
+	public function resendWeiboById( $id ,$isSend = true ){
 		return $this->resendWeibo($this->show_status ($id));
 	}
-        
+
+	/**
+	 * 获取用户名信息
+	 * @param  boolean $id 用户id
+	 * @return array
+	 */
 	public function getUserInfo( $id = false ){
 		if( $id ){
 			return $this->show_user_by_id( $id );
@@ -197,10 +230,24 @@ class MyClientV2 extends SaeTClientV2 {
 		return $this->show_user_by_id( $uid_get['uid']);
 	}
 	
+	/**
+	 * get请求
+	 * @link http://open.weibo.com/wiki/%E5%BE%AE%E5%8D%9AAPI
+	 * @param  string $api    
+	 * @param  array  $params 
+	 * @return 
+	 */
 	public function get( $api , $params = array() ){
 		return $this->oauth->get( $api, $params );	
 	}
 	
+	/**
+	 * post请求
+	 * @link http://open.weibo.com/wiki/%E5%BE%AE%E5%8D%9AAPI
+	 * @param  string $api    
+	 * @param  array  $params 
+	 * @return 
+	 */
 	public function post( $api , $params = array() ){
 		return $this->oauth->post( $api, $params );	
 	}
@@ -229,5 +276,4 @@ class MyClientV2 extends SaeTClientV2 {
 		}
 		return false;
 	}
-
 }
