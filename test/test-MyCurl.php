@@ -14,15 +14,15 @@ if( $_GET['post'] ){
 	$client->setPostData($_POST['postData']);
 	$client->isAjax($_POST['ajax']);
 
+	$res .= ($client->get($_POST['debugUrl']));
+
 	if( $_POST['post'] ){
-		$res .= ($client->post($_POST['debugUrl']));
 		$res .= $client->post($_POST['url']);
 	}else{
-		$res .= ($client->get($_POST['debugUrl']));
 		$res .= $client->get($_POST['url']);
 	}
-
 	echo $res;
+	var_dump($client->responseHeader);
 exit;
 }
 ?>
