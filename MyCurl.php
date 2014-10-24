@@ -32,6 +32,11 @@ class MyCurl{
 	 * @var resource
 	 */
 	public $curlHandle ;
+	/**
+	 * 调试开关
+	 * @var [type]
+	 */
+	private $debug;
 
 	/**
 	 * 构造方法
@@ -42,6 +47,7 @@ class MyCurl{
 		$this->setOption(CURLOPT_RETURNTRANSFER, 1);
 		$this->setOption(CURLOPT_AUTOREFERER, 1);
 		$this->init();
+		$this->debug = false;
 	}
 
 	/**
@@ -113,7 +119,18 @@ class MyCurl{
 
 		$this->setOption(CURLOPT_HEADERFUNCTION,array($this,'readResponseHeader'));
 		
-		return curl_exec($this->curlHandle);
+		$response = curl_exec($this->curlHandle);
+		if( $this->debug ){
+			echo '=============request header ==============<br>'."\n";
+			var_dump($this->header);			
+			echo '=============post data ==============<br>'."\n";
+			var_dump($this->postData);			
+			echo '=============response header ==============<br>'."\n";
+			var_dump($this->responseHeader);
+			echo '=============body ==============<br>'."\n";
+			var_dump($response);			
+		}
+		return $response;
 	}
 	
 	/**
@@ -175,7 +192,7 @@ class MyCurl{
 	 * 		$header =<<<'EOT'
 	 * 			User-Agent: Mozilla/5.0 Chrome/38.0.2125.101 Mycurl/2.0.1
 	 * 			Host:http://lcs.io
-	 * 		<<<EOT;
+	 * 	  	EOT;
 	 * 		$c->setHeader($header);
 	 * @param string|array $header 
 	 * @param string $value  
@@ -309,5 +326,13 @@ class MyCurl{
 		$this->setOption(CURLOPT_POST,true);
 		$this->setOption(CURLOPT_POSTFIELDS,$this->getPostField());
 		return $this->http($url);
+	}
+
+	/**
+	 * 开启/关闭调试
+	 * @param boolean $on 
+	 */
+	public function setDebug( $on = true ){
+		$this->debug = $on;
 	}
 }
