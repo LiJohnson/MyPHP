@@ -125,7 +125,7 @@ class MyClientV2 extends SaeTClientV2 {
 	 */
 	private function changeImg( $img_url , $sy_url = NULL ){
 		if( !class_exists('SaeImage') ){
-			$tmpFileIn = "/tmp/wbimage";
+			$tmpFileIn = ini_get('upload_tmp_dir')."/wbimage";
 			$tmpFileOut = $tmpFileIn;
 
 			file_put_contents ( $tmpFileIn , file_get_contents($img_url));
