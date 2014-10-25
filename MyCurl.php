@@ -256,7 +256,8 @@ class MyCurl{
 
 			foreach ($data as $value) {
 				$par = preg_split($split2, $value,2);
-				if( trim($par[0]) ){
+				$par[0] = trim($par[0]);
+				if( $par[0] ){
 					$result[$par[0]] = trim($par[1]);
 				}
 			}
