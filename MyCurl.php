@@ -121,6 +121,8 @@ class MyCurl{
 		
 		$response = curl_exec($this->curlHandle);
 		if( $this->debug ){
+			echo '=============request URL ==============<br>'."\n";
+			var_dump($url);
 			echo '=============request header ==============<br>'."\n";
 			var_dump($this->header);			
 			echo '=============post data ==============<br>'."\n";
