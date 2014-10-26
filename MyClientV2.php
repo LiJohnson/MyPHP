@@ -180,8 +180,8 @@ class MyClientV2 extends SaeTClientV2 {
 	 * @param  boolean $isSend 是否立马发送
 	 * @return array
 	 */
-	public function resendWeibo( $weibo , $isSend = true ){
-		if( $isSend ){
+	public function resendWeibo( $weibo , $isSend = null ){
+		if( $isSend === true ){
 			if( $weibo['pic'] ){
 				$weibo = $this->upload($weibo['text'], $weibo['pic']);
 			}
@@ -205,7 +205,7 @@ class MyClientV2 extends SaeTClientV2 {
 
 		$text = preg_replace('/@/', '', $text);
 		$weibo = array('text' => $text , 'pic' => $pic );
-		return $isSend ? $this->resendWeibo( $weibo , true ) : $weibo ;
+		return $isSend === null ? $this->resendWeibo( $weibo , true ) : $weibo ;
 		
 	}
 	
@@ -215,7 +215,7 @@ class MyClientV2 extends SaeTClientV2 {
 	 * @param  boolean $isSend 是否立马发送
 	 * @return array
 	 */
-	public function resendWeiboById( $id ,$isSend = true ){
+	public function resendWeiboById( $id ,$isSend = null ){
 		return $this->resendWeibo($this->show_status ($id) , $isSend);
 	}
 
