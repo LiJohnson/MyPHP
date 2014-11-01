@@ -96,7 +96,7 @@ class MyCurl{
 	 * @param  String $url 请求url
 	 * @return string
 	 */
-	private function http( $url = null ){
+	public function http( $url = null ){
 		if( $url != null){
 			$this->setOption(CURLOPT_URL,$url);
 		}
@@ -329,6 +329,43 @@ class MyCurl{
 		$this->setOption(CURLOPT_POST,true);
 		$this->setOption(CURLOPT_POSTFIELDS,$this->getPostField());
 		return $this->http($url);
+	}
+
+	/**
+	 * post请求,文件上传
+	 * @param  string $url      请求url
+	 * @param  array  $postData 请求数据
+	 * @return 
+	 */
+	public function upload($url , $postData = array()){
+		$tmpfiles = array();
+		foreach ($postData as $key => $value) {
+			if( is_string( $value ) &&  preg_match('/^@/', $value) ){
+				$value = preg_replace('/^@/', '' , $value);
+
+				$filename = explode( '?', basename( $value ) );
+				$filename = $filename[0];
+
+				if( !is_file($value) ){
+					$tmp = ini_get('upload_tmp_dir') . '/f' . rand(1000,9999) . $key .'.tmp';
+					file_put_contents($tmp, file_get_contents($value));
+					$value = $tmp;
+					$tmpfiles[] = $value;
+				}
+				$value = curl_file_create($value,null,$filename);
+			}
+			$this->postData[$key] = $value;
+		}
+
+		$this->setOption(CURLOPT_POST,true);
+		$this->setOption(CURLOPT_POSTFIELDS,$this->postData);
+		$response = $this->http($url);
+		
+		foreach ($tmpfiles as $tmp) {
+			@unlink($tmp);
+		}
+
+		return $response;
 	}
 
 	/**
