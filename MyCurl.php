@@ -333,6 +333,9 @@ class MyCurl{
 
 	/**
 	 * post请求,文件上传
+	 * 文件路径前要加`@`,或直接传一个CURLFILE对象
+	 * $c->upload('http://uploadUrl',['file' => '@c:/test.png', 'file2' => curl_file_create($filename) ]);
+	 * @link http://php.net/manual/en/function.curl-file-create.php
 	 * @param  string $url      请求url
 	 * @param  array  $postData 请求数据
 	 * @return 
