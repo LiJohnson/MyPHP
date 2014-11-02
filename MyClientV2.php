@@ -123,7 +123,7 @@ class MyClientV2 extends SaeTClientV2 {
 	 * @param  string $sy_url  水印图片
 	 * @return string          图片地址
 	 */
-	public function changeImg( $img_url , $sy_url = NULL ){
+	private function changeImg( $img_url , $sy_url = NULL ){
 		if( !class_exists('SaeImage') ){
 			$tmpFileIn = ini_get('upload_tmp_dir')."/wbimage";
 			$tmpFileOut = $tmpFileIn;
