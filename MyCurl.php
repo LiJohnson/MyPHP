@@ -88,7 +88,7 @@ class MyCurl{
 	 * @see MyCurl::post()
 	 */
 	public function fetch( $url = null ){
-		return $this->http($curl);
+		return $this->http($url);
 	}
 
 	/**
