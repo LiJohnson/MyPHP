@@ -88,7 +88,7 @@ class MyCurl{
 	 * @see MyCurl::post()
 	 */
 	public function fetch( $url = null ){
-		return $this->http($curl);
+		return $this->http($url);
 	}
 
 	/**
@@ -96,7 +96,7 @@ class MyCurl{
 	 * @param  String $url 请求url
 	 * @return string
 	 */
-	public function http( $url = null ){
+	private function http( $url = null ){
 		if( $url != null){
 			$this->setOption(CURLOPT_URL,$url);
 		}
