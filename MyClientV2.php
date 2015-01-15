@@ -127,15 +127,19 @@ class MyClientV2 extends SaeTClientV2 {
 		if( !class_exists('SaeImage') ){
 			$tmpFileIn = ini_get('upload_tmp_dir')."/wbimage";
 			$tmpFileOut = $tmpFileIn;
-
-			file_put_contents ( $tmpFileIn , file_get_contents($img_url));
-			$size = getimagesize( $tmpFileIn );
-
-			if( preg_match('/gif/i', $size['mime']) ){
-				return $tmpFileIn;
-			}
 			
-			exec("convert -crop $size[0]x".($size[1]*0.9)."+0+0 $tmpFileIn $tmpFileOut");
+			$file = file_get_contents($img_url);
+			$img = imagecreatefromstring( $file );
+			$info = getimagesizefromstring($file);
+
+			if( $info[2] == IMG_GIF ){
+				file_put_contents($tmpFileOut, $file);
+			}else{
+				$img = imagecrop($img, ['x' => 0 , 'y' => 0 , 'width' => $info[0] , 'height' => $info[1] * 0.9]);
+				imagejpeg($img, $tmpFileOut);
+			}
+			@imagedestroy($img);
+
 			return $tmpFileOut;
 		}
 
