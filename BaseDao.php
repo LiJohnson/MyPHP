@@ -125,7 +125,7 @@ class BaseDao extends MySql {
 	}
 
 	public function getTable(){
-		return $this->tablel;
+		return $this->table;
 	}
 }
 
