@@ -135,7 +135,7 @@ class MyClientV2 extends SaeTClientV2 {
 			if( $info[2] == IMG_GIF ){
 				file_put_contents($tmpFileOut, $file);
 			}else{
-				$img = imagecrop($img, ['x' => 0 , 'y' => 0 , 'width' => $info[0] , 'height' => $info[1] * 0.9]);
+				$img = imagecrop($img, array('x' => 0 , 'y' => 0 , 'width' => $info[0] , 'height' => $info[1] * 0.9));
 				imagejpeg($img, $tmpFileOut);
 			}
 			@imagedestroy($img);
