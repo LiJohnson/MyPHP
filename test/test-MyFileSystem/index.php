@@ -12,7 +12,7 @@
 		
 		<script src="//ajax.useso.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 		<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-		<script src="http://lcs.com/sae/gtbcode/1/js/jquery.plugin.js"></script>
+		<script src="//gtbcode.sinaapp.com/js/jquery.plugin.js"></script>
 		<script src="angular.js"></script>
 		<script src="fs.js"></script>
 		<script>$.box = $.box3 || $.box;</script>
