@@ -14,6 +14,10 @@
 		<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 		<script src="//gtbcode.sinaapp.com/js/jquery.plugin.js"></script>
 		<script src="angular.js"></script>
+		<script>
+		window.BASE_PATH = "<?=$_GET['basePath']?>";
+		window.BASE_URL = "<?=$_GET['baseUrl']?>";
+		</script>
 		<script src="fs.js"></script>
 		<script>$.box = $.box3 || $.box;</script>
 		<title>FS</title>
@@ -45,8 +49,8 @@
 						</div>
 					</form>
 					<form class="navbar-form navbar-left" >
-						<input type="text" ng-model="basePath" ng-change="updatePath()" class="form-control" style="width:200px;" placeholder="basepath"  />
-						<input type="text" ng-model="baseUrl" ng-change="updatePath()" class="form-control" style="width:200px;" placeholder="baseUrl" />
+						<input type="text" ng-model="basePath" ng-change="updatePath()" class="form-control" style="width:200px;" placeholder="basepath" ng-init="basePath='<?=$_GET['basePath']?>'" />
+						<input type="text" ng-model="baseUrl" ng-change="updatePath()" class="form-control" style="width:200px;" placeholder="baseUrl"  ng-init="baseUrl='<?=$_GET['baseUrl']?>'" />
 					</form>
 					<ul class="nav navbar-nav navbar-left">
 						<li>
