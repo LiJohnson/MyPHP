@@ -49,8 +49,8 @@
 						</div>
 					</form>
 					<form class="navbar-form navbar-left" >
-						<input type="text" ng-model="basePath" ng-change="updatePath()" class="form-control" style="width:200px;" placeholder="basepath" ng-init="basePath='<?=$_GET['basePath']?>'" />
-						<input type="text" ng-model="baseUrl" ng-change="updatePath()" class="form-control" style="width:200px;" placeholder="baseUrl"  ng-init="baseUrl='<?=$_GET['baseUrl']?>'" />
+						<input type="text" ng-model="basePath" ng-change="updatePath()" class="form-control" style="width:200px;" placeholder="basepath" />
+						<input type="text" ng-model="baseUrl" ng-change="updatePath()" class="form-control" style="width:200px;" placeholder="baseUrl" />
 					</form>
 					<ul class="nav navbar-nav navbar-left">
 						<li>
