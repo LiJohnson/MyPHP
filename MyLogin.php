@@ -45,10 +45,10 @@ class MyLogin{
 		$this->dao = new BaseDao(MY_DB_NAME);
 		$this->dao->setTable('users');
 
-		if (! $_SERVER ['SCRIPT_URI']){
-			$_SERVER ['SCRIPT_URI'] = "http://" . $_SERVER ['HTTP_HOST'] . $_SERVER ['REQUEST_URI'];
-		}
-		$this->callbackUrl = $_SERVER ['SCRIPT_URI'];
+		//if (! $_SERVER ['SCRIPT_URI']){
+		//	$_SERVER ['SCRIPT_URI'] = "http://" . $_SERVER ['HTTP_HOST'] . $_SERVER ['REQUEST_URI'];
+		//}
+		$this->callbackUrl = defined('WB_CALLBACL_URL') ? WB_CALLBACL_URL :  "http://" . $_SERVER ['HTTP_HOST'] . $_SERVER ['REQUEST_URI'];;
 		$this->client = new MyClientV2();
 	}
 	/**

@@ -12,8 +12,12 @@
 		
 		<script src="//ajax.useso.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 		<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-		<script src="http://lcs.com/sae/gtbcode/1/js/jquery.plugin.js"></script>
+		<script src="//gtbcode.lcs.io/js/jquery.plugin.js"></script>
 		<script src="angular.js"></script>
+		<script>
+		window.BASE_PATH = "<?=$_GET['basePath']?>";
+		window.BASE_URL = "<?=$_GET['baseUrl']?>";
+		</script>
 		<script src="fs.js"></script>
 		<script>$.box = $.box3 || $.box;</script>
 		<title>FS</title>
@@ -46,7 +50,7 @@
 					</form>
 					<form class="navbar-form navbar-left" >
 						<input type="text" ng-model="basePath" ng-change="updatePath()" class="form-control" style="width:200px;" placeholder="basepath" />
-						<input type="text" ng-model="baseUrl" ng-change="updatePath()" class="form-control" style="width:200px;" placeholder="basepath" />
+						<input type="text" ng-model="baseUrl" ng-change="updatePath()" class="form-control" style="width:200px;" placeholder="baseUrl" />
 					</form>
 					<ul class="nav navbar-nav navbar-left">
 						<li>

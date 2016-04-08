@@ -100,8 +100,8 @@
 			$(this).val("");
 		});
 		//$scope.process = {a:{pre:1,name:"asdf"},b:{pre:8,name:"hh"}};
-		$scope.basePath = localStorage.basePath;
-		$scope.baseUrl = localStorage.baseUrl;
+		$scope.basePath =window.BASE_PATH || localStorage.basePath;
+		$scope.baseUrl = window.BASE_URL || localStorage.baseUrl;
 		load(sessionStorage.path||"");
 	});
 
