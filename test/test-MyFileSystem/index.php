@@ -12,7 +12,7 @@
 		
 		<script src="//ajax.useso.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 		<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-		<script src="//gtbcode.sinaapp.com/js/jquery.plugin.js"></script>
+		<script src="//gtbcode.lcs.io/js/jquery.plugin.js"></script>
 		<script src="angular.js"></script>
 		<script>
 		window.BASE_PATH = "<?=$_GET['basePath']?>";
