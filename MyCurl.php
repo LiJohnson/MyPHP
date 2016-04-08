@@ -325,9 +325,9 @@ class MyCurl{
 	 * @return 
 	 */
 	public function post($url , $postData = array()){
-		$this->setPostData($postData);
+		//$this->setPostData($postData);
 		$this->setOption(CURLOPT_POST,true);
-		$this->setOption(CURLOPT_POSTFIELDS,$this->getPostField());
+		$this->setOption(CURLOPT_POSTFIELDS,$postData);//$this->getPostField());
 		return $this->http($url);
 	}
 
