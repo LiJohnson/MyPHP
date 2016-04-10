@@ -1,7 +1,7 @@
 <?php
 include "../../MyFileSystem.php";
 $file = dirname(__file__);
-$param = json_decode($GLOBALS["HTTP_RAW_POST_DATA"]);
+$param = json_decode(file_get_contents('php://input','r'));
 
 if( defined('SAE_TMP_PATH') ){
 	//exit();
@@ -17,7 +17,7 @@ if( $_POST['cmd'] == 'upload' ){
 	exit();
 }
 
-$param = json_decode($GLOBALS["HTTP_RAW_POST_DATA"]);
+#$param = json_decode($GLOBALS["HTTP_RAW_POST_DATA"]);
 echo json_encode (call_user_func('cmd_'.$param->cmd, $fs , $param));
 
 function cmd_ls( $fs , $param ){
