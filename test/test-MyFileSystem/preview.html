@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>preview</title>
+</head>
+<body>
+	<script type="text/javascript">
+		var url = location.hash.replace(/^#/,'');
+		var type = {
+			audio:/mp3$/i,
+			video:/(mp4|mkv)$/i,
+			img:/(jpg|jpeg|png|gif)$/i
+		}
+		var preview = function(url){
+			for( var i in type ){
+				if( type[i].test(url) ){
+					var e = document.createElement(i);
+					e.src = url;
+					e.controls = true;
+					e.autoplay = true;;
+					return document.body.appendChild(e);
+				}
+			}
+			location.href = url;
+		};
+		preview(url);
+	</script>
+</body>
+</html>

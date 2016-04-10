@@ -41,7 +41,7 @@
 
 
 		$scope.clickFile = function(){
-			this.file.isDir ? load(this.file.path + "/" + this.file.name) : window.open(this.file.url ,"_blank");
+			this.file.isDir ? load(this.file.path + "/" + this.file.name) : window.open("preview.html#"+this.file.url ,"preview");
 			$.log(this.file);
 		}
 
