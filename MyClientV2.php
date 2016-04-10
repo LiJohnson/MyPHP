@@ -34,7 +34,7 @@ class MyClientV2 extends SaeTClientV2 {
 	 * @param  boolean $forcelogin 中否强制登录
 	 * @return 
 	 */
- 	public function wbOauth( $forcelogin = fasle ){
+ 	public function wbOauth( $forcelogin = FALSE ){
  		$url = defined('WB_CALLBACL_URL') ? WB_CALLBACL_URL :  "http://" . $_SERVER ['HTTP_HOST'] . $_SERVER ['REQUEST_URI'];
  		
  		$o = new SaeTOAuthV2 ( WB_AKEY, WB_SKEY );
