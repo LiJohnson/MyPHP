@@ -138,7 +138,7 @@ class WebFile{
 	public $url;
 
 	function __construct($path = '' ,$root = '' , $url = ""){
-		$stat = stat($path);
+		$stat = @stat($path);
 
 		$this->name = basename($path);
 		$this->path = str_replace($root, '', dirname($path));
