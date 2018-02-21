@@ -127,7 +127,7 @@ class Mysqli2 extends BaseMysql
 		if (is_bool($result)) {
 			return $result;
 		} else {
-			while( $Array = mysqli_fetch_array( $result, MYSQL_ASSOC ) )
+			while( $Array = mysqli_fetch_assoc( $result ) )
 			{
 				$data[$i++] = $Array;
 			}

@@ -321,8 +321,15 @@ class SaeTOAuthV2 {
 	 */
 	function oAuthRequest($url, $method, $parameters, $multi = false) {
 
-		if (strrpos($url, 'http://') !== 0 && strrpos($url, 'https://') !== 0) {
+	if (strrpos($url, 'http://') !== 0 && strrpos($url, 'https://') !== 0) {
 			$url = "{$this->host}{$url}.{$this->format}";
+	}
+
+	if( !$parameters  ){
+		$parameters = ['access_token'=>$this->access_token];
+	}
+	if( !$parameters['access_token'] ){
+		$parameters['access_token'] = $this->access_token;
 	}
 
 	switch ($method) {
@@ -405,7 +412,7 @@ class SaeTOAuthV2 {
 		$this->url = $url;
 
 		if ($this->debug) {
-			echo "=====post data======\r\n";
+			echo "\r\n=====post data======\r\n";
 			var_dump($postfields);
 
 			echo "=====headers======\r\n";
